@@ -1,6 +1,8 @@
 import { EventBus } from '../../EventBus';
 import Phaser, { Scene } from 'phaser';
 import { canvas } from '../../constants';
+import { Character } from './Character';
+import { Button } from './UI';
 // import { Character } from './Character';
 
 
@@ -21,7 +23,7 @@ export default class Room extends Scene
         this.load.setPath('assets');
 
         // character.load();
-        
+        this.load.image('star', 'star.png');
         this.load.spritesheet('mummy', 'mummy37x45.png', { frameWidth: 37, frameHeight: 45 });
         this.load.image('background-room', 'background-room.png');
     }
@@ -31,30 +33,33 @@ export default class Room extends Scene
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0xFF0000);
 
-        const x = new Phaser.Class();
-        console.log(x);
-
+        const Andy = new Character(this, 120, 220, 'mummy');
+        Andy.handleDirect('left');
+        // console.log(newCharacter);
+        
         // this.background = this.add.image(canvas.width, canvas.height, 'background-room');
+        const shopButton = new Button(this, 30, 80, 'star', 'shop');
+
         this.background = this.add.image(canvas.width/2, canvas.height/2, 'background-room');
         this.background.setScale(1.5);
 
         // defined animation
-        this.anims.create({
-            key: 'walk',
-            frames: this.anims.generateFrameNumbers('mummy'),
-            frameRate: 12,
-            repeat: -1
-        });
-        this.character = this.add.sprite(50, 100, 'mummy').setScale(1);
+        // this.anims.create({
+        //     key: 'walk',
+        //     frames: this.anims.generateFrameNumbers('mummy'),
+        //     frameRate: 12,
+        //     repeat: -1
+        // });
+        // const character = this.add.sprite(50, 100, 'mummy').setScale(1);
         
 
         // animation
         // character.play({ key: 'walk', randomFrame: true, delay: 2000, showBeforeDelay: true });
-        this.character.play('walk');
+        // character.play('walk');
 
-        this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
-            this.anims.remove('run')
-        })
+        // this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+        //     this.anims.remove('run')
+        // })
         
 
         // movement

@@ -2,7 +2,10 @@ import { EventBus } from '../../EventBus';
 import Phaser, { Scene } from 'phaser';
 import { canvas } from '../../constants';
 
-class Button extends Phaser.GameObjects.Container {
+export class Button extends Phaser.GameObjects.Container {
+    onPointerDown!: () => void;
+    onPointerUp!: () => void;
+
     constructor(
         scene: Phaser.Scene,
         x: number,
@@ -12,6 +15,7 @@ class Button extends Phaser.GameObjects.Container {
     )
     {
         super(scene);
+
         this.scene = scene;
         this.x = x;
         this.y = y;
@@ -29,16 +33,30 @@ class Button extends Phaser.GameObjects.Container {
         this.add(button);
         this.add(buttonText);
 
-        button.on('pointerdown', () => {
+        button.on('pointerover', () => {
             button.setTexture(`${key}_down`);
         });
-        button.on('pointerup', () => {
+        button.on('pointerout', () => {
             button.setTexture(`${key}_up`);
         });
+        
+        button.on('pointerdown', () => {
+            button.setTexture(`${key}_down`);
+            if (this.onPointerDown) {
+                this.onPointerDown();
+            }
+        });
+
+        button.on('pointerup', () => {
+            button.setTexture(`${key}_up`);
+            if (this.onPointerUp) {
+                this.onPointerUp();
+            }
+        });
+
         this.scene.add.existing(this);
     }
 }
-
 
 export default class UI extends Scene
 {
@@ -56,7 +74,7 @@ export default class UI extends Scene
         this.load.setPath('assets');
         this.load.image('star', 'star.png');
         this.load.image('star_up', 'star.png');
-        this.load.image('star_down', 'star.png');
+        this.load.image('star_down', 'star_reverse.png');
         this.load.image('background-header', 'background-header.png');
     }
 
@@ -64,23 +82,14 @@ export default class UI extends Scene
     {
 
         this.scene.bringToTop();
-
         this.background = this.add.image(canvas.width/2, 0, 'background-header');
 
-        const settingsButton = new Button(this, 100, 100, 'star', 'Settings');
-        
-        const shopButton = this.add.sprite(30, 30, 'star').setInteractive({
-            cursor: 'pointer'
-        });
-        const roomButton = this.add.sprite(80, 30, 'star').setInteractive({
-            cursor: 'pointer'
-        });
+        const shopButton = new Button(this, 30, 30, 'star', 'shop');
+        const roomButton = new Button(this, 80, 30, 'star', 'room');
+        shopButton.onPointerDown = () => this.goToShop();
+        roomButton.onPointerDown = () => this.goToRoom();
 
-        shopButton.on('pointerdown', () => this.goToShop());
-        roomButton.on('pointerdown', () => this.goToRoom());
-        
-
-        this.gameText = this.add.text(100, 200, 'This is UI', {
+        this.gameText = this.add.text(160, 30, 'This is UI', {
             fontFamily: 'Arial Black', fontSize: 12, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
