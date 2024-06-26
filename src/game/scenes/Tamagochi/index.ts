@@ -1,0 +1,40 @@
+import { EventBus } from '../../EventBus';
+import Phaser, { Scene } from 'phaser';
+
+
+const status = {
+    mood: '',
+    happiness: 100,
+    hunger: 100,
+}
+
+
+export default class Tamagochi extends Scene
+{
+    timer: undefined;
+    
+    camera: Phaser.Cameras.Scene2D.Camera;
+    background: Phaser.GameObjects.Image;
+    gameText: Phaser.GameObjects.Text;
+
+    constructor ()
+    {
+        super('Tamagochi');
+    }
+
+    create ()
+    {
+        this.camera = this.cameras.main;
+        this.camera.setBackgroundColor(0xffff00);
+
+        // this.scene.launch('UI');
+        this.scene.launch('Room');
+
+        EventBus.emit('current-scene-ready', this);
+    }
+
+    // changeScene ()
+    // {
+    //     this.scene.start('GameOver');
+    // }
+}
