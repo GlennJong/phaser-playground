@@ -1,112 +1,119 @@
-import Phaser from 'phaser';
+import Phaser from "phaser";
 
-
-
-type TDirection = 'left' | 'right' | 'top' | 'down';
+type TDirection = "none" | "left" | "right" | "top" | "down";
 
 export class Character extends Phaser.GameObjects.Container {
-    handleUpdate: (time: number) => void;
-    handleDirect: (direction: TDirection) => void;
-    direction: TDirection;
+    public handleUpdate: (time: number) => void;
+    private character: Phaser.GameObjects.Sprite;
 
     constructor(
         scene: Phaser.Scene,
         x: number,
         y: number,
         key: string,
-        direction?: TDirection,
-    )
-    {
+    ) {
         super(scene);
 
         this.scene = scene;
-        this.x = x;
-        this.y = y;
 
         // idle
         this.scene.anims.create({
-            key: 'idle',
+            key: "idle-left",
             frames: this.scene.anims.generateFrameNames(key, {
-                prefix: 'idle-',
+                prefix: "idle-left_",
+                end: 2,
+            }),
+            frameRate: 4,
+            repeat: -1,
+        });
+        this.scene.anims.create({
+            key: "idle-right",
+            frames: this.scene.anims.generateFrameNames(key, {
+                prefix: "idle-right_",
                 end: 2,
             }),
             frameRate: 4,
             repeat: -1,
         });
 
-        const character = this.scene.add.sprite(150, 150, key).setScale(1);
-        character.play('idle');
+        // walk
+        this.scene.anims.create({
+            key: "walk-left",
+            frames: this.scene.anims.generateFrameNames(key, {
+                prefix: "walk-left_",
+                end: 2,
+            }),
+            frameRate: 4,
+            repeat: 0,
+        });
+        this.scene.anims.create({
+            key: "walk-right",
+            frames: this.scene.anims.generateFrameNames(key, {
+                prefix: "walk-right_",
+                end: 2,
+            }),
+            frameRate: 4,
+            repeat: 0,
+        });
 
-        this.add(character);
-        
-        
-        this.direction = direction || 'down';
+        this.character = this.scene.add.sprite(x, y, key).setScale(1);
+        this.character.play("idle-left");
 
-        this.handleUpdate = (time) => {
-            console.log(time);
-            // if (time >= this.moveTime) {
-            //     return this.move(time);
-            // }
-        };
-
-        this.handleDirect = (direction) => {
-            this.direction = direction;
-        }
-
-        // faceLeft: function ()
-        // {
-        //     if (this.direction === UP || this.direction === DOWN)
-        //     {
-        //         this.heading = LEFT;
-        //     }
-        // },
-
-        // faceRight: function ()
-        // {
-        //     if (this.direction === UP || this.direction === DOWN)
-        //     {
-        //         this.heading = RIGHT;
-        //     }
-        // },
-
-        // faceUp: function ()
-        // {
-        //     if (this.direction === LEFT || this.direction === RIGHT)
-        //     {
-        //         this.heading = UP;
-        //     }
-        // },
-
-        // faceDown: function ()
-        // {
-        //     if (this.direction === LEFT || this.direction === RIGHT)
-        //     {
-        //         this.heading = DOWN;
-        //     }
-        // },
-
-        // this.move = (time) => {
-        //     switch (this.direction)
-        //     {
-        //         case 'left':
-        //             this.x = Phaser.Math.Wrap(this.x - 1, 0, 40);
-        //             break;
-
-        //         case 'right':
-        //             this.x = Phaser.Math.Wrap(this.x + 1, 0, 40);
-        //             break;
-
-        //         case 'top':
-        //             this.y = Phaser.Math.Wrap(this.y - 1, 0, 30);
-        //             break;
-
-        //         case 'down':
-        //             this.y = Phaser.Math.Wrap(this.y + 1, 0, 30);
-        //             break;
-        //     }
-
-        // }
-
+        this.add(this.character);
         this.scene.add.existing(this);
     }
+
+    private movement?: {
+        direction: TDirection,
+        from: { x: number, y: number }
+        to: { x: number, y: number }
+    };
+    private movingFrame = { total: 60, count: 0 };
+
+    // moving
+    public moveDirection(direction: TDirection, distance: number): void {
+        if (!this.movement) {
+            let x = this.character.x, y = this.character.y;
+
+            if (direction === 'left') { x -= distance }
+            else if (direction === 'right') { x += distance }
+            else if (direction === 'top') { y -= distance }
+            else if (direction === 'down') { y += distance }
+
+            this.character.play(`walk-${direction}`);
+
+            this.movement = {
+                direction,
+                from: { x: this.character.x, y: this.character.y },
+                to: { x, y }
+            }
+            console.log(this.movement)
+        }
+    }
+    public updatePosition() {
+
+        if (this.movement) {
+            // Start count the frames
+            this.movingFrame.count += 1;
+
+            const { direction, from, to } = this.movement;
+            const { total, count } = this.movingFrame;
+
+            this.character.setPosition(
+                from.x + ((to.x - from.x) * count/total),
+                from.y + ((to.y - from.y) * count/total),
+            );
+
+            if (total == count) {
+                this.character.setPosition(to.x, to.y);
+                this.character.play(`idle-${direction}`);
+
+                // reset
+                this.movement = undefined;
+                this.movingFrame.count = 0;
+            }
+        }
+        
+    }
 }
+
