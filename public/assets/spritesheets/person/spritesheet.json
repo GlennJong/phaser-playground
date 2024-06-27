@@ -1,0 +1,19 @@
+{
+	"frames": [
+		{
+			"filename": "idle-0",
+			"frame": {"x":0,"y":0,"w":32,"h":32},
+			"anchor": {"x":1, "y": 1}
+		},
+		{
+			"filename": "idle-1",
+			"frame": {"x":32,"y":0,"w":32,"h":32},
+			"anchor": {"x":1, "y": 1}
+		},
+		{
+			"filename": "idle-2",
+			"frame": {"x":64,"y":0,"w":32,"h":32},
+			"anchor": {"x":1, "y": 1}
+		}
+	]
+}

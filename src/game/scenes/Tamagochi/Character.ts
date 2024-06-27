@@ -22,21 +22,22 @@ export class Character extends Phaser.GameObjects.Container {
         this.scene = scene;
         this.x = x;
         this.y = y;
-        
+
+        // idle
         this.scene.anims.create({
-            key: 'walk',
-            frames: this.scene.anims.generateFrameNumbers('mummy'),
-            frameRate: 12,
-            repeat: -1
+            key: 'idle',
+            frames: this.scene.anims.generateFrameNames(key, {
+                prefix: 'idle-',
+                end: 2,
+            }),
+            frameRate: 4,
+            repeat: -1,
         });
 
-        const button = this.scene.add.image(x, y, `star_up`).setInteractive();
+        const character = this.scene.add.sprite(150, 150, key).setScale(1);
+        character.play('idle');
 
-        // const character = this.scene.add.sprite(x, y, key).setScale(1);
-        // console.log({character});
-        // character.play({ key: 'walk', randomFrame: true, delay: 2000, showBeforeDelay: true });
-        // character.play('walk');
-        this.add(button);
+        this.add(character);
         
         
         this.direction = direction || 'down';

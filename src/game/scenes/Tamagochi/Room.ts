@@ -3,7 +3,6 @@ import Phaser, { Scene } from 'phaser';
 import { canvas } from '../../constants';
 import { Character } from './Character';
 import { Button } from './UI';
-// import { Character } from './Character';
 
 
 
@@ -24,6 +23,9 @@ export default class Room extends Scene
 
         // character.load();
         this.load.image('star', 'star.png');
+        this.load.atlas('person', 'spritesheets/person/spritesheet.png', 'spritesheets/person/spritesheet.json');
+
+        this.load.image('star', 'star.png');
         this.load.spritesheet('mummy', 'mummy37x45.png', { frameWidth: 37, frameHeight: 45 });
         this.load.image('background-room', 'background-room.png');
     }
@@ -33,15 +35,31 @@ export default class Room extends Scene
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0xFF0000);
 
-        const Andy = new Character(this, 120, 220, 'mummy');
+        this.background = this.add.image(canvas.width/2, canvas.height/2, 'background-room');
+        this.background.setScale(1.5);
+
+        // this.anims.create({
+        //     key: 'idle',
+        //     frames: this.anims.generateFrameNames('person', {
+        //         prefix: 'idle-',
+        //         end: 2,
+        //     }),
+        //     frameRate: 4,
+        //     repeat: -1,
+        // });
+        // const character = this.add.sprite(150, 150, 'person').setScale(1);
+        // character.play('idle');
+
+        
+        const Andy = new Character(this, 120, 220, 'person');
         Andy.handleDirect('left');
         // console.log(newCharacter);
         
         // this.background = this.add.image(canvas.width, canvas.height, 'background-room');
-        const shopButton = new Button(this, 30, 80, 'star', 'shop');
+        // const shopButton = new Button(this, 30, 80, 'star', 'shop');
+        // const button = this.add.image(30, 200, `star`).setInteractive();
 
-        this.background = this.add.image(canvas.width/2, canvas.height/2, 'background-room');
-        this.background.setScale(1.5);
+
 
         // defined animation
         // this.anims.create({
@@ -75,7 +93,7 @@ export default class Room extends Scene
 
         this.scene.launch('UI');
 
-        this.gameText = this.add.text(200, 200, 'This is Room', {
+        this.gameText = this.add.text(400, 200, 'This is Room', {
             fontFamily: 'Arial Black', fontSize: 12, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'

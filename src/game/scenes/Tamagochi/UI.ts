@@ -60,7 +60,6 @@ export class Button extends Phaser.GameObjects.Container {
 
 export default class UI extends Scene
 {
-    camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
     gameText: Phaser.GameObjects.Text;
 
@@ -86,6 +85,8 @@ export default class UI extends Scene
 
         const shopButton = new Button(this, 30, 30, 'star', 'shop');
         const roomButton = new Button(this, 80, 30, 'star', 'room');
+        const testButton = new Button(this, 140, 30, 'star', 'test');
+
         shopButton.onPointerDown = () => this.goToShop();
         roomButton.onPointerDown = () => this.goToRoom();
 
