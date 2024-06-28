@@ -3,6 +3,13 @@ export const canvas = {
   height: 600
 }
 
+export const tamagochi = {
+  character: {
+    width: 32,
+    height: 32
+  }
+}
+
 export type scene_tamagochi = {
   main: ['Room'],
   shop: ['Food', 'Toy'],
