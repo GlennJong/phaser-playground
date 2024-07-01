@@ -2,7 +2,14 @@ import { EventBus } from '../../EventBus';
 import Phaser, { Scene } from 'phaser';
 import { canvas } from '../../constants';
 import { Character } from './Character';
-import { Dialogue } from '../../ui/Dialogue';
+import { PrimaryDialogue } from '../../components/PrimaryDialogue';
+
+const contents = [
+    { icon: 'happy_1', text: 'HELLO WORLD!\nTHIS IS THE EXAMPLE TO DEMONSTRATE THE DIALOGUE.'},
+    { icon: 'happy_2', text: 'PHASER JS IS THE MOST INTERESTING GAME FRAMEWORK IN THE WORD!'},
+    { icon: 'happy_1', text: '字型是俐方體11！'},
+]
+
 
 export default class Room extends Scene
 {
@@ -23,17 +30,12 @@ export default class Room extends Scene
     preload()
     {
         this.load.setPath('assets');
-
-        this.load.image('star', 'star.png');
-        this.load.atlas('person', 'spritesheets/person/spritesheet.png', 'spritesheets/person/spritesheet.json');
-
-        this.load.image('star', 'star.png');
-        this.load.spritesheet('mummy', 'mummy37x45.png', { frameWidth: 37, frameHeight: 45 });
+        this.load.atlas('default_character', 'spritesheets/default/motions.png', 'spritesheets/default/motions.json');
         this.load.image('background-room', 'background-room.png');
+        this.load.image('happy_1', 'spritesheets/default/1.png');
+        this.load.image('happy_2', 'spritesheets/default/2.png');
         
-
-        this.load.atlas('ui', 'ui/nine-slice.png', 'ui/nine-slice.json');
-        // this.load.atlas('dialog', 'spritesheets/dialog/spritesheet.png', 'spritesheets/dialog/spritesheet.json');
+        this.load.atlas('frame', 'ui/frame.png', 'ui/frame.json');
     }
     
     create ()
@@ -41,36 +43,26 @@ export default class Room extends Scene
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0xFF0000);
         
-        
         this.background = this.add.image(canvas.width/2, canvas.height/2, 'background-room');
-        this.background.setScale(1.5);
+        this.background.displayWidth = canvas.width;
+        this.background.displayHeight = canvas.height;
 
-        // const board = this.add.nineslice(400, 300, 'ui', 'blue-box', 100, 100, 16, 16, 32, 16);
+        const board = new PrimaryDialogue(this);
 
-        const board = new Dialogue(this, 400, 300, 100, 100, 'blue-box', 'text');
+        async function startDialog() {
+            const status = await board.runDialog(contents);
+            console.log(status, 'wwweeee');
+        }
 
-        this.tweens.add({
-            targets: board,
-            width: 300,
-            height: 300,
-            duration: 1000,
-            ease: 'sine.inout',
-            yoyo: true,
-            repeat: -1,
-        });
+        setTimeout(() => {
+            startDialog();
+        }, 1000)
         
-        this.tamagochi = new Character(this, 220, 220, 'person');
+        
 
-        this.scene.launch('UI');
-
-        this.gameText = this.add.text(400, 200, 'This is Room', {
-            fontFamily: 'Arial Black', fontSize: 12, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        }).setOrigin(0.5).setDepth(100);
+        this.tamagochi = new Character(this, 100, 100, 'default_character');
 
         EventBus.emit('current-scene-ready', this);
-        // console.log(this.game.loop.actualFps);
     }
 
     private fireEach5sec = 0;
@@ -99,7 +91,7 @@ export default class Room extends Scene
                     }
                 }
                 else {
-                    const activity = ['sleeping', false][Math.floor(Math.random() * 2)]
+                    const activity = ['sleep', false][Math.floor(Math.random() * 2)]
                     if (activity) {
                         this.tamagochi.doActivity(activity);
                     }
@@ -108,35 +100,5 @@ export default class Room extends Scene
             }
             this.tamagochi.updatePosition();
         }
-        
-        // activity controller
-        // if (Math.floor(time/1000)%10 === 0) {
-        //     if (Math.floor(time/1000)/10 !== this.fireEach10sec) {
-        //         const activity = ['sleeping', false][Math.floor(Math.random() * 2)]
-        //         if (activity) {
-        //             this.tamagochi.doActivity(activity);
-        //             this.fireEach10sec = Math.floor(time/1000)/10;
-        //         }
-        //     }
-        // }
-
-        // console.log(time);
-        // if (Number.isInteger(time / 16))
-        // console.log(time/10000);
-        // console.time('123');
-        // if (timer / (1000 * 5))
-        
-        // if (time / 1000) == 5) {
-        //     console.log('work');
-        // }
-        // console.log(Math.floor(time / (10 * 1000))); // triger each 10s
-        // if (Math.floor(time / (10 * 1000)))
-        // console.log(time);
-        // const value = Phaser.Math.FloatBetween(0, 1);
-        // console.log(value);
-
-        // if (delta < 16) {
-        //     console.log('work')
-        // }
     }
 }

@@ -38,35 +38,40 @@ export class Character extends Phaser.GameObjects.Container {
             key: "walk-left",
             frames: this.scene.anims.generateFrameNames(key, {
                 prefix: "walk-left_",
-                end: 2,
+                end: 1,
             }),
             frameRate: 4,
-            repeat: 0,
+            repeat: -1,
         });
         this.scene.anims.create({
             key: "walk-right",
             frames: this.scene.anims.generateFrameNames(key, {
                 prefix: "walk-right_",
-                end: 2,
-            }),
-            frameRate: 4,
-            repeat: 0,
-        });
-
-        // activities
-        this.scene.anims.create({
-            key: "sleeping",
-            frames: this.scene.anims.generateFrameNames(key, {
-                prefix: "sleeping_",
                 end: 1,
             }),
             frameRate: 4,
-            repeat: 0,
+            repeat: -1,
+        });
+
+
+        // activities
+        this.scene.anims.create({
+            key: "sleep",
+            frames: this.scene.anims.generateFrameNames(key, {
+                prefix: "sleep_",
+                end: 1,
+            }),
+            frameRate: 2,
+            repeat: -1,
         });
 
         // create character
         this.character = this.scene.add.sprite(x, y, key).setScale(1);
         this.character.play("idle-left"); // default animation
+
+        this.character.on('animationcomplete', (e) => {
+            console.log(e)
+        })
 
         this.add(this.character);
         this.scene.add.existing(this);

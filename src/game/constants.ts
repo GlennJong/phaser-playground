@@ -1,6 +1,9 @@
+export const originalWidth = 160;
+export const originalHeight = 160;
+
 export const canvas = {
-  width: 800,
-  height: 600
+  width: 160,
+  height: 144
 }
 
 export const tamagochi = {
