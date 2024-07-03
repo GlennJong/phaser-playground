@@ -64,7 +64,7 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
             bottomHeight: 16,
         });
 
-        const icon = this.scene.make.sprite({key: 'default_character_icons', frame: 'happy_1'})
+        const icon = scene.make.sprite({key: 'default_character_icons', frame: 'happy_1'});
         // const icon = this.scene.make.image({ key: 'star' });
         icon.displayWidth = defaultIconWidth;
         icon.displayHeight = defaultIconHeight;
@@ -126,13 +126,24 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
                 else {
                     if (this._textBox.isLastPage) {
                         this._textBox.off('pointerdown');
+                        this._textBox.off('pageend');
                         resolve();
                     }
                     else {
                         this._textBox.typeNextPage();
                     }
                 }
-            }, this._textBox);
+            }, this._textBox)
+            // .on('pageend', () => {
+            //     if (this._textBox.isLastPage) {
+            //         this._textBox.off('pointerdown');
+            //         this._textBox.off('pageend');
+            //         resolve();
+            //     }
+            //     else {
+            //         this._textBox.typeNextPage();
+            //     }
+            // });
             this._textBox.start(text, defaultSpeechSpeed);
             if (icon) { this._textBox.setIconTexture(icon) }
         })

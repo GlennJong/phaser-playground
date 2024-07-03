@@ -61,12 +61,12 @@
 			"anchor": {"x":1, "y": 1}
 		},
 		{
-			"filename": "sleeping_0",
+			"filename": "sleep_0",
 			"frame": {"x":32,"y":96,"w":32,"h":32},
 			"anchor": {"x":1, "y": 1}
 		},
 		{
-			"filename": "sleeping_1",
+			"filename": "sleep_1",
 			"frame": {"x":64,"y":96,"w":32,"h":32},
 			"anchor": {"x":1, "y": 1}
 		}
