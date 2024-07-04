@@ -84,6 +84,7 @@ export default class Room extends Scene
     private fireEach5sec = 0;
     
     update(time: number) {
+        
         // movement controller
         this.tamagochi.characterHandler(time);
 

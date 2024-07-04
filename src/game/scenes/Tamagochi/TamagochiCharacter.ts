@@ -28,17 +28,21 @@ export class TamagochiCharacter extends Character {
     ) {
         super(scene, x, y, key);
 
+        this.character.play('sleep');
+
+        // this.handleSpecialMovement();
+
+        
         // default animation
-        this.character.play("idle-left"); 
+        // this.character.play("idle-left"); 
     }
 
     private handleNormalMovement() {
-        if (!this.currentMovement.includes('idle')) return;
+        if (this.isMoving) return;
         const options: TDirection[] = ['left', 'right', 'none'];
         const direction = options[Math.floor(Math.random() * options.length)];
         if (direction !== 'none') {
             this.isMoving = true;
-            // this.currentDirection = direction;
             this.character.play(`walk-${direction}`);
             this.moveDirection(direction, 32, () => {
                 this.isMoving = false;
@@ -47,13 +51,15 @@ export class TamagochiCharacter extends Character {
         }
     }
     
-    private handleSpecialMovement() {
-        if (!this.currentMovement.includes('idle')) return;
+    private async handleSpecialMovement() {
+        if (this.isMoving) return;
         const options: TSpecialMovement[] = ['sleep', 'none'];
         const movement = options[Math.floor(Math.random() * options.length)];
+        // console.log(movement);
         if (movement !== 'none') {
             this.currentMovement = movement;
             this.character.play(movement);
+            this.character.play(defaultIdleMovement);
         }
     }
 
@@ -100,7 +106,7 @@ export class TamagochiCharacter extends Character {
                 
                 // walk or idle each 5 secs
                 if (this.fireEach5sec % 5 !== 0) {
-                    this.handleNormalMovement();
+                    // this.handleNormalMovement();
                 }
                 // special movement each 25 secs
                 else if (this.fireEach5sec % 5 === 0) {

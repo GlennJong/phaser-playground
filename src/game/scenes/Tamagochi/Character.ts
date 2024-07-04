@@ -5,17 +5,20 @@ type TDirection = "none" | "left" | "right" | "top" | "down";
 type TAnimsConfig = {
     key: string,
     qty: number,
-    freq: number,
-    repeat: boolean,
+    freq?: number,
+    duration?: number,
+    repeat: number,
 }
 
 const animsConfigs: { [key: string]: TAnimsConfig[] } = {
     default: [
-        { key: 'idle-left',  qty: 2, freq: 2, repeat: true },
-        { key: 'idle-right', qty: 2, freq: 2, repeat: true },
-        { key: 'walk-left',  qty: 2, freq: 12, repeat: true },
-        { key: 'walk-right', qty: 2, freq: 12, repeat: true },
-        { key: 'sleep',      qty: 2, freq: 2,  repeat: true },
+        { key: 'key', qty: 2, freq: 2, duration: 2000, loop: 10, infinite: true }, // here
+
+        { key: 'idle-left',  qty: 2, freq: 2, repeat: -1 },
+        { key: 'idle-right', qty: 2, freq: 2, repeat: -1 },
+        // { key: 'walk-left',  qty: 2, freq: 12, repeat: -1 },
+        // { key: 'walk-right', qty: 2, freq: 12, repeat: -1 },
+        { key: 'sleep',      qty: 2, freq: 2, duration: 1000, repeat: 0 },
     ]
 }
 
@@ -33,12 +36,14 @@ export class Character extends Phaser.GameObjects.Container {
         // load animation
         const currentConfig = animsConfigs[key];
         currentConfig.forEach(_ani => {
-            scene.anims.create({
+            const data: Phaser.Types.Animations.Animation = {
                 key: _ani.key,
                 frames: scene.anims.generateFrameNames(key, { prefix: `${_ani.key}_`, end: _ani.qty - 1 }),
-                frameRate: _ani.freq,
-                repeat: _ani.repeat === true ? -1 : 1,
-            });
+                repeat: _ani.repeat,
+            };
+            if (_ani.freq)     data.frameRate = _ani.freq;
+            if (_ani.duration) data.duration = _ani.duration;
+            scene.anims.create(data);
         })
 
         // create character
@@ -53,6 +58,20 @@ export class Character extends Phaser.GameObjects.Container {
         scene.add.existing(this);
     }
 
+    // TODO: 要測試連續跑兩次 on listener 會不會錯
+    public async playAnimation(name) {
+        return new Promise(resolve => {
+            this.character.play(name);
+            this.character.on('animationcomplete', (e) => {
+                if (e.name === name) {
+                    resolve();
+                    console.log(e)
+                    this.character.off('animationcomplete');
+                }
+            })
+        })
+    }
+    
     // move action status
     private currentMoveAction?: {
         from: { x: number, y: number },
