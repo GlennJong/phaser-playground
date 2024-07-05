@@ -35,7 +35,17 @@ export class Preloader extends Scene
         this.load.image('logo', 'logo.png');
         this.load.image('star', 'star.png');
 
-        this.load.plugin('rexbbcodetextplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexbbcodetextplugin.min.js', true)
+        this.load.setPath('assets');
+        this.load.atlas('person', 'spritesheets/person/motions.png', 'spritesheets/person/motions.json');
+        this.load.atlas('default', 'spritesheets/default/motions.png', 'spritesheets/default/motions.json');
+        this.load.image('background-room', 'background-room.png');
+        this.load.image('happy_1', 'spritesheets/default/1.png');
+        this.load.image('happy_2', 'spritesheets/default/2.png');
+        this.load.atlas('frame', 'ui/frame.png', 'ui/frame.json');
+
+        // this.load.image('star', 'star.png');
+        this.load.image('star_up', 'star.png');
+        this.load.image('star_reverse', 'star.png');
     }
 
     create ()

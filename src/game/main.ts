@@ -54,7 +54,7 @@ const config: Phaser.Types.Core.GameConfig = {
     `,
     scene: [
         // Boot,
-        // Preloader,
+        Preloader,
         // MainMenu,
         // MainGame,
         Tamagochi,

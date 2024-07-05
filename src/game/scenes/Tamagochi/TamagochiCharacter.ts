@@ -1,19 +1,19 @@
 import Phaser from "phaser";
 import { Character } from './Character';
 
-
 type TDirection = "none" | "left" | "right";
 
-type TSpecialMovement = "none" | "sleep";
+type TSpecialAction = "none" | "sleep";
 
 type TStatus = {
     [key: string]: number,
 }
-const defaultIdleMovement = 'idle-left';
+const defaultIdleaction = 'idle-left';
+
+const moveDistance = 32;
 
 export class TamagochiCharacter extends Character {
-    private currentMovement: string = 'idle';
-    private isMoving: boolean = false;
+    private isActing: boolean = false;
 
     private status: TStatus = {
         hp: 100,
@@ -28,55 +28,54 @@ export class TamagochiCharacter extends Character {
     ) {
         super(scene, x, y, key);
 
-        this.character.play('sleep');
-
-        // this.handleSpecialMovement();
-
-        
         // default animation
-        // this.character.play("idle-left"); 
+        this.playAnimation(defaultIdleaction);
     }
 
-    private handleNormalMovement() {
-        if (this.isMoving) return;
+    private handleNormalMoveAction() {
+        if (this.isActing) return;
         const options: TDirection[] = ['left', 'right', 'none'];
         const direction = options[Math.floor(Math.random() * options.length)];
         if (direction !== 'none') {
-            this.isMoving = true;
-            this.character.play(`walk-${direction}`);
-            this.moveDirection(direction, 32, () => {
-                this.isMoving = false;
-                this.character.play(`idle-${direction}`);
+            this.isActing = true;
+            this.playAnimation(`walk-${direction}`);
+            this.moveDirection(direction, moveDistance, () => {
+                // reset action after moved
+                this.isActing = false;
+                this.playAnimation(`idle-${direction}`);
             });
         }
     }
     
-    private async handleSpecialMovement() {
-        if (this.isMoving) return;
-        const options: TSpecialMovement[] = ['sleep', 'none'];
-        const movement = options[Math.floor(Math.random() * options.length)];
-        // console.log(movement);
-        if (movement !== 'none') {
-            this.currentMovement = movement;
-            this.character.play(movement);
-            this.character.play(defaultIdleMovement);
+    private async handleSpecialAction() {
+        if (this.isActing) return;
+        const options: TSpecialAction[] = ['sleep', 'none'];
+        const action = options[Math.floor(Math.random() * options.length)];
+        if (action !== 'none') {
+
+            // start animation;
+            this.isActing = true;
+            await this.playAnimation(action);
+            
+            // reset animation;
+            this.isActing = false;
+            this.playAnimation(defaultIdleaction);
         }
     }
 
     private handleDecreaseHealth() {
         this.status.hp -= 1;
-        if (this.status.hp <= 0) {
-            this.currentMovement = 'disabled';
-        }
+        this.handleDetectCharacterDisabled();
     }
 
-    private handlePlayCharacterAnimation() {
-        const moveIsFinish = true;
-        if (moveIsFinish) {
-            this.currentMovement = 'idle';
-            this.character.play(defaultIdleMovement);
+    private handleDetectCharacterDisabled() {
+        if (this.isActing) return;
+        if (this.status.hp <= 0) {
+            this.playAnimation('disable');
         }
-        this.character.play(this.currentMovement);
+        else {
+            this.playAnimation(defaultIdleaction);
+        }
     }
     
     private fireEach5sec?: number = undefined;
@@ -84,8 +83,8 @@ export class TamagochiCharacter extends Character {
     public characterHandler(time: number) {
         
         // update position trigger at every frame
-        // TODO: make sure movement activity could update frequently
-        if (this.isMoving) {
+        // TODO: make sure action activity could update frequently
+        if (this.isActing) {
             this.updatePosition();
         }
 
@@ -102,20 +101,20 @@ export class TamagochiCharacter extends Character {
                 this.handleDecreaseHealth();
             }
             
-            if (this.status.hp > 0) { // stop all of following movement without hp
+            if (this.status.hp > 0) { // stop all of following action without hp
                 
                 // walk or idle each 5 secs
                 if (this.fireEach5sec % 5 !== 0) {
-                    // this.handleNormalMovement();
+                    this.handleNormalMoveAction();
                 }
-                // special movement each 25 secs
+                // special action each 25 secs
                 else if (this.fireEach5sec % 5 === 0) {
-                    // this.handleSpecialMovement();
+                    this.handleSpecialAction();
                 }
             }
 
             // choose the animation display after all handler
-            // this.handlePlayCharacterAnimation();
+            this.handleDetectCharacterDisabled();
         }
 
     }

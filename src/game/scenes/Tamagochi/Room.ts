@@ -1,7 +1,6 @@
 import { EventBus } from '../../EventBus';
 import Phaser, { Scene } from 'phaser';
 import { canvas } from '../../constants';
-import { Character } from './Character';
 import { PrimaryDialogue } from '../../components/PrimaryDialogue';
 import { Header } from '../Header';
 import { TamagochiCharacter } from './TamagochiCharacter';
@@ -23,7 +22,7 @@ export default class Room extends Scene
     keyTop: typeof Phaser.Input.Keyboard | null;
     keyDown: typeof Phaser.Input.Keyboard | null;
 
-    private tamagochi: Character;
+    private tamagochi: TamagochiCharacter;
 
     constructor ()
     {
@@ -31,17 +30,6 @@ export default class Room extends Scene
     }
     preload()
     {
-        this.load.setPath('assets');
-        this.load.atlas('person', 'spritesheets/person/motions.png', 'spritesheets/person/motions.json');
-        this.load.atlas('default', 'spritesheets/default/motions.png', 'spritesheets/default/motions.json');
-        this.load.image('background-room', 'background-room.png');
-        this.load.image('happy_1', 'spritesheets/default/1.png');
-        this.load.image('happy_2', 'spritesheets/default/2.png');
-        this.load.atlas('frame', 'ui/frame.png', 'ui/frame.json');
-
-        // this.load.image('star', 'star.png');
-        this.load.image('star_up', 'star.png');
-        this.load.image('star_reverse', 'star.png');
         
     }
     
@@ -77,50 +65,13 @@ export default class Room extends Scene
 
         // Build Tamagochi Charactor
         this.tamagochi = new TamagochiCharacter(scene, 110, 100, 'default');
-        // this.tamagochi2 = new Character(this, 70, 100, 'default_character');
     }
     
     
-    private fireEach5sec = 0;
     
     update(time: number) {
         
         // movement controller
         this.tamagochi.characterHandler(time);
-
-        
-        // if (this.input.keyboard) {
-        //     const cursors = this.input.keyboard.createCursorKeys();
-        //     if (cursors.left.isDown) {
-        //     this.tamagochi.moveDirection('left', 32);
-        //     } else if (cursors.right.isDown) {
-        //     this.tamagochi.moveDirection('right', 32);
-        //     } else if (cursors.up.isDown) {
-        //     this.tamagochi.moveDirection('top', 32);
-        //     } else if (cursors.down.isDown) {
-        //     this.tamagochi.moveDirection('down', 32);
-        //     }
-        //     this.tamagochi.updatePosition();
-        // }
-        // if (Math.floor(time/1000)%5 === 0) {
-        //     if (Math.floor(time/1000)/5 !== this.fireEach5sec) {
-        //         this.tamagochi.updateStatus();
-
-        //         if (this.fireEach5sec % 5 !== 0) {
-        //             const direction = ['left', 'right', false][Math.floor(Math.random() * 3)]
-        //             if (direction) {
-        //                 this.tamagochi.moveDirection(direction, 32);
-        //             }
-        //         }
-        //         else {
-        //             const activity = ['sleep', false][Math.floor(Math.random() * 2)]
-        //             if (activity) {
-        //                 this.tamagochi.doActivity(activity);
-        //             }
-        //         }
-        //         this.fireEach5sec = Math.floor(time/1000)/5;
-        //     }
-        //     this.tamagochi.updatePosition();
-        // }
     }
 }

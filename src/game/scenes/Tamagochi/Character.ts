@@ -12,13 +12,11 @@ type TAnimsConfig = {
 
 const animsConfigs: { [key: string]: TAnimsConfig[] } = {
     default: [
-        { key: 'key', qty: 2, freq: 2, duration: 2000, loop: 10, infinite: true }, // here
-
         { key: 'idle-left',  qty: 2, freq: 2, repeat: -1 },
         { key: 'idle-right', qty: 2, freq: 2, repeat: -1 },
-        // { key: 'walk-left',  qty: 2, freq: 12, repeat: -1 },
-        // { key: 'walk-right', qty: 2, freq: 12, repeat: -1 },
-        { key: 'sleep',      qty: 2, freq: 2, duration: 1000, repeat: 0 },
+        { key: 'walk-left',  qty: 2, freq: 12, repeat: -1 },
+        { key: 'walk-right', qty: 2, freq: 12, repeat: -1 },
+        { key: 'sleep',      qty: 2, freq: 2,  repeat: 4 },
     ]
 }
 
@@ -33,8 +31,9 @@ export class Character extends Phaser.GameObjects.Container {
     ) {
         super(scene);
 
-        // load animation
+        // load animation by key
         const currentConfig = animsConfigs[key];
+        
         currentConfig.forEach(_ani => {
             const data: Phaser.Types.Animations.Animation = {
                 key: _ani.key,
@@ -43,29 +42,24 @@ export class Character extends Phaser.GameObjects.Container {
             };
             if (_ani.freq)     data.frameRate = _ani.freq;
             if (_ani.duration) data.duration = _ani.duration;
+
             scene.anims.create(data);
         })
 
         // create character
         const character = scene.add.sprite(x, y, key).setScale(1);
 
-        character.on('animationcomplete', (e) => {
-            console.log(e)
-        })
-
         this.add(character);
         this.character = character;
         scene.add.existing(this);
     }
 
-    // TODO: 要測試連續跑兩次 on listener 會不會錯
-    public async playAnimation(name) {
+    public async playAnimation(key: string): Promise<void> {
         return new Promise(resolve => {
-            this.character.play(name);
-            this.character.on('animationcomplete', (e) => {
-                if (e.name === name) {
+            this.character.play(key);
+            this.character.on('animationcomplete', (e: Phaser.Animations.Animation) => {
+                if (e.key === key) {
                     resolve();
-                    console.log(e)
                     this.character.off('animationcomplete');
                 }
             })
@@ -115,7 +109,7 @@ export class Character extends Phaser.GameObjects.Container {
             if (total == count) {
                 this.character.setPosition(to.x, to.y);
 
-                // reset
+                // reset after moved
                 this.currentMoveAction.callback();
                 this.currentMoveAction = undefined;
                 this.currentMovingFrame.count = 0;
