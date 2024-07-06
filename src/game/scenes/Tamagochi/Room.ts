@@ -4,6 +4,7 @@ import { canvas } from '../../constants';
 import { PrimaryDialogue } from '../../components/PrimaryDialogue';
 import { Header } from '../Header';
 import { TamagochiCharacter } from './TamagochiCharacter';
+import { HeartBar } from './HeartBar';
 
 const contents = [
     { icon: 'happy_1', text: 'OJOSAMA, IT\' TIME TO GO TO BED.'},
@@ -23,15 +24,14 @@ export default class Room extends Scene
     keyDown: typeof Phaser.Input.Keyboard | null;
 
     private tamagochi: TamagochiCharacter;
+    private heartBar: HeartBar;
 
     constructor ()
     {
         super('Room');
     }
     preload()
-    {
-        
-    }
+    {}
     
     create ()
     {
@@ -65,6 +65,7 @@ export default class Room extends Scene
 
         // Build Tamagochi Charactor
         this.tamagochi = new TamagochiCharacter(scene, 110, 100, 'default');
+        this.heartBar = new HeartBar(scene, 15, 45, 100);
     }
     
     
@@ -73,5 +74,7 @@ export default class Room extends Scene
         
         // movement controller
         this.tamagochi.characterHandler(time);
+        this.heartBar.update(this.tamagochi.status.hp);
+        
     }
 }

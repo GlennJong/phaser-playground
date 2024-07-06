@@ -53,7 +53,7 @@ export class TransitionTweenSprite extends Phaser.GameObjects.Container {
     }
 
     
-    public run = (): Promise<void> => {
+    public run(): Promise<void> {
         this.setVisible(true);
         return new Promise(resolve => {
             this.tween.resume();

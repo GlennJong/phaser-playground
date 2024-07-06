@@ -29,15 +29,18 @@ export class Preloader extends Scene
 
     preload ()
     {
-        //  Load the assets for the game - Replace with your own assets
         this.load.setPath('assets');
-
+        
+        //  Load the assets for the game - Replace with your own assets
         this.load.image('logo', 'logo.png');
         this.load.image('star', 'star.png');
 
-        this.load.setPath('assets');
+        // Tamagochi
         this.load.atlas('person', 'spritesheets/person/motions.png', 'spritesheets/person/motions.json');
         this.load.atlas('default', 'spritesheets/default/motions.png', 'spritesheets/default/motions.json');
+        this.load.atlas('heart', 'spritesheets/energy/heart.png', 'spritesheets/energy/heart.json');
+        this.load.atlas('battery', 'spritesheets/energy/battery.png', 'spritesheets/energy/battery.json');
+
         this.load.image('background-room', 'background-room.png');
         this.load.image('happy_1', 'spritesheets/default/1.png');
         this.load.image('happy_2', 'spritesheets/default/2.png');

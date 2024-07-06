@@ -15,8 +15,8 @@ const moveDistance = 32;
 export class TamagochiCharacter extends Character {
     private isActing: boolean = false;
 
-    private status: TStatus = {
-        hp: 100,
+    public status: TStatus = {
+        hp: 21,
         mp: 100
     };
 
