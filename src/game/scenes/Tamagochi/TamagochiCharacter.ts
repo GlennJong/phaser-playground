@@ -40,6 +40,7 @@ export class TamagochiCharacter extends Character {
             this.isActing = true;
             this.playAnimation(`walk-${direction}`);
             this.moveDirection(direction, moveDistance, () => {
+
                 // reset action after moved
                 this.isActing = false;
                 this.playAnimation(`idle-${direction}`);

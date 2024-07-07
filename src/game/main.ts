@@ -10,20 +10,27 @@ import { Preloader } from './scenes/Preloader';
 
 // declare RexUIPligin to phaser.scene.rexUI
 import 'phaser';
+
+// Pulugins
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import BBCodeTextPlugin from 'phaser3-rex-plugins/plugins/bbcodetext-plugin.js';
+
 declare module 'phaser' {
   interface Scene {
     rexUI: RexUIPlugin;
   }
 }
 
+// General
+import { canvas } from './constants';
+
 // Tamagochi Scene
 import Tamagochi from './scenes/Tamagochi';
 import TamagochiRoom from './scenes/Tamagochi/Room';
-import TamagochiUI from './scenes/Tamagochi/UI';
 import TamagochiShop from './scenes/Tamagochi/Shop';
-import { canvas } from './constants';
+
+// Battle Scene
+import Battle from './scenes/Battle';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
@@ -58,9 +65,9 @@ const config: Phaser.Types.Core.GameConfig = {
         // MainMenu,
         // MainGame,
         Tamagochi,
-        TamagochiUI,
         TamagochiRoom,
         TamagochiShop,
+        Battle,
         GameOver
     ]
 };

@@ -36,15 +36,48 @@ export class Header extends Phaser.GameObjects.Container {
             topHeight: 16,
             bottomHeight: 16,
         }).setOrigin(0.5);
-        this.add(background);
 
 
         // 3. defined button
-        buttons.forEach((_button, i) => {
-            // const button = new Button(scene, (10 * i), 10, _button.key, _button.text);
-            // this.add(button);
-        })
-        
+        const battleButton = scene.make.sprite({
+            key: 'header-icons',
+            frame: 'battle',
+            x: 24,
+            y: 14,
+        });
+
+        const roomButton = scene.make.sprite({
+            key: 'header-icons',
+            frame: 'room',
+            x: 54,
+            y: 15,
+        });
+
+        // 4. Arrow
+        const selector = scene.make.sprite({
+            key: 'header-icons',
+            frame: 'arrow',
+            x: 12,
+            y: 14,
+        });
+
+        scene.tweens.add({
+            targets: selector,
+            repeat: -1,
+            yoyo: true,
+            ease: 'linear',
+            duration: 500,
+            alpha: 0,
+            pause: true,
+        });
+
+
+        this.add(background);
+
+        this.add(selector);
+        this.add(battleButton);
+        this.add(roomButton);
+
         scene.add.existing(this); // board
         
     }

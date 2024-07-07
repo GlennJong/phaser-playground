@@ -134,16 +134,17 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
                     }
                 }
             }, this._textBox)
-            // .on('pageend', () => {
-            //     if (this._textBox.isLastPage) {
-            //         this._textBox.off('pointerdown');
-            //         this._textBox.off('pageend');
-            //         resolve();
-            //     }
-            //     else {
-            //         this._textBox.typeNextPage();
-            //     }
-            // });
+            .on('pageend', () => {
+                if (this._textBox.isLastPage) {
+                    this._textBox.off('pointerdown');
+                    this._textBox.off('pageend');
+                    setTimeout(() => resolve(), 1000);
+                    // resolve();
+                }
+                else {
+                    this._textBox.typeNextPage();
+                }
+            });
             this._textBox.start(text, defaultSpeechSpeed);
             if (icon) { this._textBox.setIconTexture(icon) }
         })

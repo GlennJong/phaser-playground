@@ -63,8 +63,6 @@ export class HeartBar extends Phaser.GameObjects.Container {
     
     public update(value: number) {
         const currentStep = mapping.findIndex(_item => _item.threshold >= value);
-        console.log(currentStep);
-
         if (currentStep === this.step) return;
         this.step = currentStep;
 

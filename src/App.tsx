@@ -82,7 +82,13 @@ function App()
     }
 
     return (
-        <div id="app">
+        <div id="app" style={{ flexDirection: 'column', background: `url('/img/background.png')`, backgroundSize: 'cover' }}>
+            <p style={{ background: `hsla(0, 0%, 0%, .75)`, padding: '12px'  }}>
+                看能不能在 1:30 前把扣血機制 + 攻擊流程寫完<br/>
+                - (O) phaser text align is not working (use "setOrigin")<br/>
+                - (O) tween animation for hp calculation (need refactor)<br/>
+                - (X) queue for battle process<br/>
+            </p>
             <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
             <div>
                 {/* <div>

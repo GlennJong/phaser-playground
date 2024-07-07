@@ -5,13 +5,13 @@ import { PrimaryDialogue } from '../../components/PrimaryDialogue';
 import { Header } from '../Header';
 import { TamagochiCharacter } from './TamagochiCharacter';
 import { HeartBar } from './HeartBar';
+import { sceneConverter } from '../../components/SceneTransition';
 
 const contents = [
     { icon: 'happy_1', text: 'OJOSAMA, IT\' TIME TO GO TO BED.'},
     { icon: 'happy_2', text: 'YARE YARE'},
     { icon: 'happy_1', text: 'HELLO WORLD!\nTHIS IS THE EXAMPLE TO DEMONSTRATE THE DIALOGUE.'},
 ]
-
 
 export default class Room extends Scene
 {
@@ -31,8 +31,9 @@ export default class Room extends Scene
         super('Room');
     }
     preload()
-    {}
-    
+    {
+
+    }
     create ()
     {
         this.camera = this.cameras.main;
@@ -58,14 +59,22 @@ export default class Room extends Scene
         }
 
         setTimeout(() => {
-            startDialog();
+            // startDialog();
+
+            
         }, 1000)
         
         
-
         // Build Tamagochi Charactor
         this.tamagochi = new TamagochiCharacter(scene, 110, 100, 'default');
         this.heartBar = new HeartBar(scene, 15, 45, 100);
+
+
+        // this.scene.launch('Shop');
+        // this.scene.manager.start('GameOver');
+        // console.log(this, scene);
+        
+        sceneConverter(scene, 'Shop');
     }
     
     

@@ -40,8 +40,14 @@ export class Preloader extends Scene
         this.load.atlas('default', 'spritesheets/default/motions.png', 'spritesheets/default/motions.json');
         this.load.atlas('heart', 'spritesheets/energy/heart.png', 'spritesheets/energy/heart.json');
         this.load.atlas('battery', 'spritesheets/energy/battery.png', 'spritesheets/energy/battery.json');
+        this.load.atlas('header-icons', 'spritesheets/header/icons.png', 'spritesheets/header/icons.json');
+        
+        this.load.atlas('battle-character-1', 'spritesheets/battle-character-1/character.png', 'spritesheets/battle-character-1/character.json');
+        this.load.atlas('battle-character-2', 'spritesheets/battle-character-2/character.png', 'spritesheets/battle-character-2/character.json');
+        this.load.atlas('status-board-hp', 'spritesheets/status-board/hp.png', 'spritesheets/status-board/hp.json');
 
         this.load.image('background-room', 'background-room.png');
+        this.load.image('transition-cover', 'transition-cover.png');
         this.load.image('happy_1', 'spritesheets/default/1.png');
         this.load.image('happy_2', 'spritesheets/default/2.png');
         this.load.atlas('frame', 'ui/frame.png', 'ui/frame.json');
@@ -57,6 +63,6 @@ export class Preloader extends Scene
         //  For example, you can define global animations here, so we can use them in other scenes.
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-        this.scene.start('Tamagochi');
+        this.scene.start('Battle');
     }
 }

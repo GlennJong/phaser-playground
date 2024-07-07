@@ -1,14 +1,6 @@
 import { EventBus } from '../../EventBus';
 import Phaser, { Scene } from 'phaser';
 
-
-const status = {
-    mood: '',
-    happiness: 100,
-    hunger: 100,
-}
-
-
 export default class Tamagochi extends Scene
 {
     timer: undefined;
@@ -32,6 +24,7 @@ export default class Tamagochi extends Scene
 
         EventBus.emit('current-scene-ready', this);
     }
+
 
     // changeScene ()
     // {

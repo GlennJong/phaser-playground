@@ -14,7 +14,6 @@ export function runTween<T>(
             ...options
         });
     
-        
         return new Promise(resolve => {
             if (!tween) {
                 resolve()
