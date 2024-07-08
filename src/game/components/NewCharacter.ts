@@ -20,30 +20,35 @@ const animsConfigs: { [key: string]: TAnimsConfig[] } = {
     ],
     'default-battle': [
         { key: 'normal',  qty: 2, freq: 2, repeat: -1 },
-        { key: 'attack', qty: 2, freq: 2, repeat: 1 },
-        { key: 'damage',  qty: 2, freq: 2, repeat: 1 },
+        { key: 'attack', qty: 2, freq: 2, repeat: 0 },
+        { key: 'damage',  qty: 2, freq: 2, repeat: 0 },
     ],
     'battle-character-1': [
         { key: 'normal',  qty: 2, freq: 2, repeat: -1 },
-        { key: 'attack', qty: 2, freq: 2, repeat: -1 },
-        { key: 'damage',  qty: 2, freq: 2, repeat: -1 },
+        { key: 'attack', qty: 2, freq: 2, repeat: 0 },
+        { key: 'damage',  qty: 2, freq: 12, repeat: 0 },
     ]
 }
 
-export class Character extends Phaser.GameObjects.Container {
+export type CharacterProps = {
+    x?: number,
+    y?: number,
+    key: string,
+}
+
+export class NewCharacter extends Phaser.GameObjects.Container {
     public character: Phaser.GameObjects.Sprite;
     
     constructor(
         scene: Phaser.Scene,
-        x: number,
-        y: number,
-        key: string,
+        props: CharacterProps
     ) {
         super(scene);
 
+        const { x, y, key } = props;
+
         // load animation by key
         const currentConfig = animsConfigs[key];
-        
         
         currentConfig.forEach(_ani => {
             const data: Phaser.Types.Animations.Animation = {
@@ -58,7 +63,9 @@ export class Character extends Phaser.GameObjects.Container {
         })
 
         // create character
-        const character = scene.add.sprite(x, y, key).setScale(1);
+        const posX = x || 0;
+        const posY = y || 0;
+        const character = scene.add.sprite(posX, posY, key).setScale(1);
 
         this.add(character);
         this.character = character;

@@ -59,9 +59,7 @@ export default class Room extends Scene
         }
 
         setTimeout(() => {
-            // startDialog();
-
-            
+            startDialog();
         }, 1000)
         
         
@@ -74,7 +72,7 @@ export default class Room extends Scene
         // this.scene.manager.start('GameOver');
         // console.log(this, scene);
         
-        sceneConverter(scene, 'Shop');
+        // sceneConverter(scene, 'Shop');
     }
     
     

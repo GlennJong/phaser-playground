@@ -38,6 +38,7 @@ export class Preloader extends Scene
         // Tamagochi
         this.load.atlas('person', 'spritesheets/person/motions.png', 'spritesheets/person/motions.json');
         this.load.atlas('default', 'spritesheets/default/motions.png', 'spritesheets/default/motions.json');
+        this.load.atlas('default-battle', 'spritesheets/default/battle.png', 'spritesheets/default/battle.json');
         this.load.atlas('heart', 'spritesheets/energy/heart.png', 'spritesheets/energy/heart.json');
         this.load.atlas('battery', 'spritesheets/energy/battery.png', 'spritesheets/energy/battery.json');
         this.load.atlas('header-icons', 'spritesheets/header/icons.png', 'spritesheets/header/icons.json');
@@ -63,6 +64,6 @@ export class Preloader extends Scene
         //  For example, you can define global animations here, so we can use them in other scenes.
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-        this.scene.start('Battle');
+        this.scene.start('Tamagochi');
     }
 }

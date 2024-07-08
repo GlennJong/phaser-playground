@@ -18,7 +18,6 @@ export default defineConfig({
         host: true,
         port: 8000,
         sourcemap: true,
-
     },
     preview: {
         host: true,

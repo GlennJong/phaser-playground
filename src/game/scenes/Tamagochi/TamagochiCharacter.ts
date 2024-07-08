@@ -16,7 +16,7 @@ export class TamagochiCharacter extends Character {
     private isActing: boolean = false;
 
     public status: TStatus = {
-        hp: 21,
+        hp: 100,
         mp: 100
     };
 

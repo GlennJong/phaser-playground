@@ -153,6 +153,8 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
     private _startDialogs(data: TDialogData[]): Promise<void> {
         return new Promise(resolve => {
             (async () => {
+                // Clear content before dialog start
+                // this._textBox.clear();
                 for (let i = 0; i < data.length; i++) {
                     await this._runTextBox(data[i]);
                 }

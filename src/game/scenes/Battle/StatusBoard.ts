@@ -28,6 +28,7 @@ export class StatusBoard extends Phaser.GameObjects.Container {
         scene: Phaser.Scene,
         x: number,
         y: number,
+        name: string,
     )
     {
         // 1. Inherite from scene
@@ -48,11 +49,11 @@ export class StatusBoard extends Phaser.GameObjects.Container {
         .setPosition(x, y);
 
         // 3. name
-        const name = scene.make.text({
+        const boardName = scene.make.text({
           x: x - 40,
-          y: y - 16,
-          style: { fontFamily: '俐方體11號', fontSize: 9, color: '#000' },
-          text: 'name',
+          y: y - 14,
+          style: { fontFamily: '俐方體11號', fontSize: 8, color: '#000' },
+          text: name,
         });
 
         // 4. hp bar
@@ -90,20 +91,17 @@ export class StatusBoard extends Phaser.GameObjects.Container {
         this.hpBar = hpBar;
 
         this.add(background);
-        this.add(name);
+        this.add(boardName);
         this.add(hpFrame);
         this.add(hpBar);
 
         // 5. hp number
-
-        
         const currentHP = scene.make.text({
             x: x - 40,
             y: y + 2,
             style: { fontFamily: '俐方體11號', fontSize: 9, color: '#000' },
             text: this.hp,
         });
-
 
         const slash = scene.make.text({
             x: x,
@@ -135,24 +133,24 @@ export class StatusBoard extends Phaser.GameObjects.Container {
     };
     private currentUpdateFrame = { total: 60, count: 0 };
     
-    public decreaseHP(value: number, callbackFunc: () => void) {
+    private handleDecreaseHP(value: number, callbackFunc: () => void) {
         if (!this.currentHpAction) {
 
             const resultHp = this.hp - value;
-            
-            // let hp = this.hp;
-
-            // if (direction === 'left') { x -= distance }
-            // else if (direction === 'right') { x += distance }
-            // else if (direction === 'top') { y -= distance }
-            // else if (direction === 'down') { y += distance }
-
             this.currentHpAction = {
                 from: { hp: this.hp, },
                 to: { hp: resultHp },
                 callback: callbackFunc
             }
         }
+    }
+
+    public decreaseHP(value: number): Promise<void> {
+        return new Promise(resolve => {
+            this.handleDecreaseHP(value, () => {
+                resolve();
+            })
+        })
     }
     
     public updateStatusBoard() {
@@ -169,12 +167,9 @@ export class StatusBoard extends Phaser.GameObjects.Container {
             
             this.hp = Math.floor(point);
             this.hpBar.width = (point / this.fullHp) * hpFrameWidth;
-            this.currentHp.setText(this.hp);
-
-            // this.character.setPosition(
-            //     from.x + ((to.x - from.x) * count/total),
-            //     from.y + ((to.y - from.y) * count/total),
-            // );
+            if (this.currentHp) {
+                this.currentHp.setText(this.hp);
+            }
 
             if (total == count) {
                 this.hp = to.hp;

@@ -82,14 +82,26 @@ function App()
     }
 
     return (
-        <div id="app" style={{ flexDirection: 'column', background: `url('/img/background.png')`, backgroundSize: 'cover' }}>
-            <p style={{ background: `hsla(0, 0%, 0%, .75)`, padding: '12px'  }}>
-                看能不能在 1:30 前把扣血機制 + 攻擊流程寫完<br/>
-                - (O) phaser text align is not working (use "setOrigin")<br/>
-                - (O) tween animation for hp calculation (need refactor)<br/>
-                - (X) queue for battle process<br/>
-            </p>
-            <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
+        <div id="app" style={{ position: 'relative', flexDirection: 'column', background: `url('/img/background.png')`, backgroundSize: 'cover' }}>
+            <div style={{
+                position: 'absolute',
+                top: '0', left: '0', bottom: '0', right: '0',
+                background: '#000',
+                opacity: 0.6
+            }}
+            ></div>
+            <div style={{
+                position: 'relative',
+                zIndex: '1',
+            }}>
+                {/* <p style={{ background: `hsla(0, 0%, 0%, .75)`, padding: '12px'  }}>
+                    看能不能在 12:00 前把戰鬥角色寫完<br/>
+                    - 角色移動限制器<br/>
+                    - 解析度調節器<br/>
+                    - 串接 Twitch API<br/>
+                </p> */}
+                <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
+            </div>
             <div>
                 {/* <div>
                     <p style={{ color: '#fff',
