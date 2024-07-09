@@ -1,11 +1,7 @@
-import { EventBus } from '../../EventBus';
-import Phaser, { Scene } from 'phaser';
-import { canvas } from '../../constants';
-import { PrimaryDialogue } from '../../components/PrimaryDialogue';
+import Phaser from 'phaser';
 import { runTween } from '../../utils/runTween';
 import { StatusBoard } from './StatusBoard';
-import { Character } from '../Tamagochi/Character';
-import { CharacterProps, NewCharacter } from '../../components/NewCharacter';
+import { CharacterProps, Character } from '../../components/Character';
 
 const defaultCharacterPosition = {
     self: { x: 30, y: 80 },
@@ -33,21 +29,7 @@ const animsConfigs: { [key: string]: TAnimsConfig[] } = {
     ]
 }
 
-const data = {
-    name: 'char',
-    key: 'char',
-    hp_current: 100,
-    hp_max: 100,
-}
-
-
-function getCharacterDefaultPosition(role) {
-    const characterPosition = defaultCharacterPosition[role];
-
-
-}
-
-export default class BattleCharacter extends NewCharacter
+export default class BattleCharacter extends Character
 {
     // private character: Phaser.GameObjects.Sprite;
     public board: StatusBoard;
@@ -58,7 +40,6 @@ export default class BattleCharacter extends NewCharacter
         props: CharacterProps,
         role: 'self' | 'opponent',
         data: any,
-        // key: string,
     )
     {
 

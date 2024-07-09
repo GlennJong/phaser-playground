@@ -64,13 +64,12 @@ export default class Room extends Scene
         
         
         // Build Tamagochi Charactor
-        this.tamagochi = new TamagochiCharacter(scene, 110, 100, 'default');
+        this.tamagochi = new TamagochiCharacter(
+            scene,
+            { x: 110, y: 100, key:'default' }
+        );
         this.heartBar = new HeartBar(scene, 15, 45, 100);
 
-
-        // this.scene.launch('Shop');
-        // this.scene.manager.start('GameOver');
-        // console.log(this, scene);
         
         // sceneConverter(scene, 'Shop');
     }

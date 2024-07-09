@@ -94,12 +94,14 @@ function App()
                 position: 'relative',
                 zIndex: '1',
             }}>
-                {/* <p style={{ background: `hsla(0, 0%, 0%, .75)`, padding: '12px'  }}>
+
+                <p style={{ background: `hsla(0, 0%, 0%, .75)`, padding: '12px'  }}>
                     看能不能在 12:00 前把戰鬥角色寫完<br/>
+                    - 戰鬥角色忘記做死掉的狀態了<br/>
                     - 角色移動限制器<br/>
                     - 解析度調節器<br/>
                     - 串接 Twitch API<br/>
-                </p> */}
+                </p>
                 <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
             </div>
             <div>

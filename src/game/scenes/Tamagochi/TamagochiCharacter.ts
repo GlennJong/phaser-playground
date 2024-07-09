@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { Character } from './Character';
+import { Character, CharacterProps } from "../../components/Character";
 
 type TDirection = "none" | "left" | "right";
 
@@ -22,11 +22,10 @@ export class TamagochiCharacter extends Character {
 
     constructor(
         scene: Phaser.Scene,
-        x: number,
-        y: number,
-        key: string,
+        props: CharacterProps,
     ) {
-        super(scene, x, y, key);
+        super(scene, props);
+
 
         // default animation
         this.playAnimation(defaultIdleaction);
