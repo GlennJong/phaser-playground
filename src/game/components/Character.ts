@@ -22,6 +22,8 @@ const animsConfigs: { [key: string]: TAnimsConfig[] } = {
         { key: 'normal',  qty: 2, freq: 2, repeat: -1 },
         { key: 'attack', qty: 2, freq: 2, repeat: 0 },
         { key: 'damage',  qty: 2, freq: 2, repeat: 0 },
+        { key: 'win',  qty: 2, freq: 2, repeat: -1 },
+        { key: 'dead',  qty: 2, freq: 2, repeat: -1 },
     ],
     'battle-character-1': [
         { key: 'normal',  qty: 2, freq: 2, repeat: -1 },

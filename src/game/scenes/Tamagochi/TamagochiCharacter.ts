@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { Character, CharacterProps } from "../../components/Character";
+import { canvas } from "../../constants";
 
 type TDirection = "none" | "left" | "right";
 
@@ -14,6 +15,7 @@ const moveDistance = 32;
 
 export class TamagochiCharacter extends Character {
     private isActing: boolean = false;
+    private spaceEdge: { from: number, to: number };
 
     public status: TStatus = {
         hp: 100,
@@ -23,19 +25,27 @@ export class TamagochiCharacter extends Character {
     constructor(
         scene: Phaser.Scene,
         props: CharacterProps,
+        edge: { from: number, to: number },
     ) {
         super(scene, props);
 
+        // define moving limitation
+        this.spaceEdge = edge || { from: 0, to: canvas.width } 
 
         // default animation
         this.playAnimation(defaultIdleaction);
     }
 
     private handleNormalMoveAction() {
+        // stop move action if character is acting
         if (this.isActing) return;
+        
         const options: TDirection[] = ['left', 'right', 'none'];
-        const direction = options[Math.floor(Math.random() * options.length)];
+        let direction = options[Math.floor(Math.random() * options.length)];
+        
         if (direction !== 'none') {
+            // change direction if character close to edge
+            direction = this.character.x < this.spaceEdge.from ? 'right' : this.character.x > this.spaceEdge.to ? 'left' : direction;
             this.isActing = true;
             this.playAnimation(`walk-${direction}`);
             this.moveDirection(direction, moveDistance, () => {
@@ -64,7 +74,7 @@ export class TamagochiCharacter extends Character {
     }
 
     private handleDecreaseHealth() {
-        this.status.hp -= 1;
+        this.status.hp -= 20;
         this.handleDetectCharacterDisabled();
     }
 

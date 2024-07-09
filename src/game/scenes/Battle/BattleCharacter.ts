@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { runTween } from '../../utils/runTween';
-import { StatusBoard } from './StatusBoard';
+import { StatusBoard, TStatusBoardProps } from './StatusBoard';
 import { CharacterProps, Character } from '../../components/Character';
 
 const defaultCharacterPosition = {
@@ -31,15 +31,16 @@ const animsConfigs: { [key: string]: TAnimsConfig[] } = {
 
 export default class BattleCharacter extends Character
 {
-    // private character: Phaser.GameObjects.Sprite;
     public board: StatusBoard;
     private role: 'self' | 'opponent';
+
+    private currentHp: number;
 
     constructor (
         scene: Phaser.Scene,
         props: CharacterProps,
         role: 'self' | 'opponent',
-        data: any,
+        data: TStatusBoardProps,
     )
     {
 
@@ -54,12 +55,16 @@ export default class BattleCharacter extends Character
                 ...props
             }
         );
+
+        // step3: define current hp
+        this.currentHp = data.hp;
         
-        // step2: 
+        // step3: set default character animation
         this.playAnimation('normal');
 
+        // step4: set default character status board
         const boardPosition = defaultStatusBoardPosition[role];
-        this.board = new StatusBoard(scene, boardPosition.x, boardPosition.y, data.name);
+        this.board = new StatusBoard(scene, boardPosition.x, boardPosition.y, data);
 
     }
 
@@ -75,9 +80,28 @@ export default class BattleCharacter extends Character
     }
 
     public async sufferDamage(value: number) {
+        // update hp value
+        this.currentHp -= value;
+
+        // do suffering damage animation
         this.playAnimation('damage');
         await this.board.decreaseHP(value);
         this.playAnimation('normal');
+
+        // end battle if hp is 0
+        if (this.currentHp <= 0) {
+            return 'finish';
+        }
+    }
+
+    public async winBattle() {
+        this.playAnimation('win');
+        this.board.setAlpha(0);
+    }
+
+    public async loseBattle() {
+        this.playAnimation('dead');
+        this.board.setAlpha(0);
     }
 
     public async attack() {

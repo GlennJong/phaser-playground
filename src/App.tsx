@@ -96,32 +96,17 @@ function App()
             }}>
 
                 <p style={{ background: `hsla(0, 0%, 0%, .75)`, padding: '12px'  }}>
+                    AFK
                     看能不能在 12:00 前把戰鬥角色寫完<br/>
-                    - 戰鬥角色忘記做死掉的狀態了<br/>
-                    - 角色移動限制器<br/>
+                    - <del>戰鬥角色忘記做死掉的狀態了</del><br/>
+                    - <del>角色移動限制器</del><br/>
+                    - 字體解析度問題<br/>
                     - 解析度調節器<br/>
                     - 串接 Twitch API<br/>
                 </p>
                 <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
             </div>
             <div>
-                {/* <div>
-                    <p style={{ color: '#fff',
-                        fontFamily: '俐方體11號',
-                        fontSize: '11px' }}>壹貳參</p>
-                    
-                    
-                    <button className="button" onClick={changeScene}>Change Scene</button>
-                </div> */}
-                {/* <div>
-                    <button disabled={canMoveSprite} className="button" onClick={moveSprite}>Toggle Movement</button>
-                </div> */}
-                {/* <div className="spritePosition">Sprite Position:
-                    <pre>{`{\n  x: ${spritePosition.x}\n  y: ${spritePosition.y}\n}`}</pre>
-                </div> */}
-                {/* <div>
-                    <button className="button" onClick={addSprite}>Add New Sprite</button>
-                </div> */}
             </div>
         </div>
     )

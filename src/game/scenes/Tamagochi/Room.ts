@@ -55,7 +55,7 @@ export default class Room extends Scene
 
         async function startDialog() {
             const status = await board.runDialog(contents);
-            console.log(status, 'wwweeee');
+            console.log({status});
         }
 
         setTimeout(() => {
@@ -66,11 +66,13 @@ export default class Room extends Scene
         // Build Tamagochi Charactor
         this.tamagochi = new TamagochiCharacter(
             scene,
-            { x: 110, y: 100, key:'default' }
+            { x: 110, y: 100, key:'default' },
+            { from: 50, to: 120 }
         );
         this.heartBar = new HeartBar(scene, 15, 45, 100);
 
         
+        // Change to other scene
         // sceneConverter(scene, 'Shop');
     }
     
