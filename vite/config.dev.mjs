@@ -1,6 +1,19 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import mkcert from 'vite-plugin-mkcert'
+// import mkcert from 'vite-plugin-mkcert'
+
+const proxySetting = {
+    '/api': {
+        target: 'http://localhost:8001/api',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '')
+    },
+    '/socket': {
+        target: 'ws://localhost:8002',
+        ws: true
+    }
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -8,24 +21,26 @@ export default defineConfig({
     base: './',
     plugins: [
         react(),
-        mkcert()
+        // mkcert()
     ],
-    experimental: {
-        acceptExports: true,
-    },
-    mete: {
-        hot: { acceptExports: true }
-    },
+    // experimental: {
+    //     acceptExports: true,
+    // },
+    // mete: {
+    //     hot: { acceptExports: true }
+    // },
     server: {
-        https: true,
+        // https: true,
         host: true,
         port: 8000,
+        proxy: proxySetting,
         sourcemap: true,
     },
     preview: {
-        https: true,
+        // https: true,
         host: true,
         port: 8000,
+        proxy: proxySetting,
         sourcemap: true,
-    } 
+    } ,
 })
