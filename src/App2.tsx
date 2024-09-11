@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { connectChatWebhook, disconnectChatWebhook, getBasic, TBasic } from './provider/Basic';
 import { IRefPhaserGame, PhaserGame } from './game/PhaserGame';
 import { openTwitchOauthLogin } from './connection/twitchOauthLogin';
 import { getUserDataById } from './connection/twitchGetUserData';
+import { Game } from './game/scenes/Game';
 
 function App2()
 {
@@ -13,24 +14,23 @@ function App2()
     // const isConnectedRef = useRef(false);
 
     const [ temp, setTemp ] = useState([
-        { user: 'tmp', message: '123' }
+        {user: 'example', message: 'test'},
+        {user: 'example2', message: 'test2'},
     ]);
     
     useEffect(() => {
-        handleGetBasic();
+        // handleGetBasic();
+        // handleClickConnectWebsocket();
     }, [])
 
     const handleGetBasic = async() => {
         const data = await getBasic();
-        // if (data) {
-        //     setUserData(data);
-        // }
+        if (data) {
+            setUserData(data);
+        }
     }
 
     
-    // The sprite can only be moved in the MainMenu Scene
-    const websocketRef = useRef();
-
     function getData(url, headers) {
         // Default options are marked with *
         return fetch(url, {
@@ -44,10 +44,10 @@ function App2()
         }).then((response) => response.json()); // 輸出成 json
     }
     
+    const websocketRef = useRef();
+    
     const handleClickConnectWebsocket = async () => {
-        let ws = new WebSocket('ws://localhost:8001');
-
-        let isConnected = false;
+        let ws = new WebSocket('/socket');
 
         ws.onopen = () => {
             console.log('open connection')
@@ -58,9 +58,43 @@ function App2()
 
         ws.addEventListener("message", async (event) => {
             const data = JSON.parse(event.data);
-            console.log(data);
 
+            const message = data.event.message.text;
+            const user = data.event.chatter_user_name;
+            const scene = phaserRef.current.scene as Game;
+
+            if (message.includes('up')) {
+                scene.controller('up');
+                temp.push({ user, message });
+                setTemp([...temp]);
+            }
+            else if (message.includes('left')) {
+                scene.controller('left');
+                temp.push({ user, message });
+                setTemp([...temp]);
+            }
+            else if (message.includes('right')) {
+                scene.controller('right');
+                temp.push({ user, message });
+                setTemp([...temp]);
+            }
+            else if (message.includes('down')) {
+                scene.controller('down');
+                temp.push({ user, message });
+                setTemp([...temp]);
+            }
+            else if (message.includes('sleep')) {
+                scene.controller('sleep');
+                temp.push({ user, message });
+                setTemp([...temp]);
+            }
+            else if (message.includes('say:')) {
+                scene.customDialog(message.replace('say:', ''));
+                temp.push({ user, message });
+                setTemp([...temp]);
+            }
             
+            // console.log(data);
         });
         // const res = await getData('http://localhost:8001', {
         // })
@@ -68,20 +102,21 @@ function App2()
 
         websocketRef.current = ws;
     }
-
-    const handleConnectChatWebhook = async() => {
-        const result = await connectChatWebhook();
-        console.log('connected', result);
-        
-    }
-    const handleDisconnectChatWebhook = async () => {
-        const result = await disconnectChatWebhook();
-        console.log('disconnected', result);
-    }
     
-    const handleSend = () => {
-      websocketRef.current.send('messsss');
-    }
+
+    // const handleConnectChatWebhook = async() => {
+    //     const result = await connectChatWebhook();
+    //     console.log('connected', result);
+        
+    // }
+    // const handleDisconnectChatWebhook = async () => {
+    //     const result = await disconnectChatWebhook();
+    //     console.log('disconnected', result);
+    // }
+    
+    // const handleSend = () => {
+    //   websocketRef.current.send('messsss');
+    // }
 
     const handleClickOauthLoginButton = () => {
         if (app.client_id) {
@@ -93,9 +128,16 @@ function App2()
 
 
 
+    const handleClickTestButton = () => {
+        setTemp([...temp, { user: 'test', message: '123' }])
+        // console.log(phaserRef.current)
+        // const scene = phaserRef.current.scene as Game;
+        // scene.controller('left');
+    }
 
     return (
         <div id="app" style={{ position: 'relative', flexDirection: 'column', background: `black` }}>
+            
           <div style={{
                 position: 'absolute',
                 top: '0', left: '0', bottom: '0', right: '0',
@@ -106,22 +148,23 @@ function App2()
             }}
             ></div>
             
+            
             <div style={{ zIndex: 1, position: 'relative' }}>
                 <PhaserGame ref={phaserRef} currentActiveScene={undefined} />
-                {
-                    userData ? 'allow connection' : 'connect yet'
-                }
-                {
-                    temp.map((_item, i) =>
-                        <div key={i}>{ _item.user }: { _item.message }</div>
-                    )
-                }
+                <div style={{ width: '500px', whiteSpace: 'break-spaces' }}>
+                    {
+                        [...temp].reverse().slice(0, 5).map((_item, i) =>
+                            <div key={i}>{ _item.user }: { _item.message }</div>
+                        )
+                    }
+                </div>
+                {/* <a href="https://prod.liveshare.vsengsaas.visualstudio.com/join?CDA0537B23170EE7C7CDE5091D8728CE8278">link</a> */}
                 <br />
                 <button onClick={handleClickOauthLoginButton}>login</button>
+                <button onClick={handleClickTestButton}>test</button>
                 {/* <button onClick={handleConnectChatWebhook}>Connect Chat webhook</button> */}
                 {/* <button onClick={handleDisconnectChatWebhook}>Disconnect Chat webhook</button> */}
-                <button onClick={handleClickConnectWebsocket}>connect websocket</button>
-                <button onClick={handleSend}>Send</button>
+                {/* <button onClick={handleClickConnectWebsocket}>connect websocket</button> */}
             </div>
 
         </div>

@@ -24,10 +24,10 @@ declare module 'phaser' {
 // General
 import { canvas } from './constants';
 
-// Tamagochi Scene
-import Tamagochi from './scenes/Tamagochi';
-import TamagochiRoom from './scenes/Tamagochi/Room';
-import TamagochiShop from './scenes/Tamagochi/Shop';
+// Tamagotchi Scene
+import Tamagotchi from './scenes/Tamagotchi';
+import TamagotchiRoom from './scenes/Tamagotchi/Room';
+import TamagotchiShop from './scenes/Tamagotchi/Shop';
 
 // Battle Scene
 import Battle from './scenes/Battle';
@@ -37,6 +37,14 @@ const config: Phaser.Types.Core.GameConfig = {
     width: canvas.width,
     height: canvas.height,
     parent: 'game-container',
+    // scale: {
+    //     width: canvas.width,
+    //     height: canvas.height,
+    //     // parent: 'core',
+    //     // fullscreenTarget: 'core',
+    //     autoCenter: Phaser.Scale.CENTER_BOTH,
+    //     mode: Phaser.Scale.FIT,
+    // },
     zoom: 2,
     plugins: {
         global: [
@@ -64,9 +72,9 @@ const config: Phaser.Types.Core.GameConfig = {
         Preloader,
         // MainMenu,
         // MainGame,
-        Tamagochi,
-        TamagochiRoom,
-        TamagochiShop,
+        Tamagotchi,
+        TamagotchiRoom,
+        TamagotchiShop,
         Battle,
         GameOver
     ]

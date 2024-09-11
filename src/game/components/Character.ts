@@ -11,7 +11,26 @@ type TAnimsConfig = {
 }
 
 const animsConfigs: { [key: string]: TAnimsConfig[] } = {
-    default: [
+    'tamagotchi_character_afk': [
+        { key: 'born',        qty: 7, freq: 8, repeat: 0 },
+        { key: 'drink',       qty: 7, freq: 4, repeat: 0 },
+        { key: 'egg',         qty: 2, freq: 1, repeat: -1 },
+        { key: 'walk-left',   qty: 6, freq: 8, repeat: 4 },
+        { key: 'walk-right',  qty: 6, freq: 8, repeat: 4 },
+        { key: 'write',       qty: 13, freq: 8, repeat: 0 },
+        { key: 'lay-down',    qty: 4, freq: 8, repeat: 0 },
+        { key: 'sleep',       qty: 5, freq: 2, repeat: -1 },
+        { key: 'idle-left',   qty: 5, freq: 2, repeat: -1 },
+        { key: 'idle-right',  qty: 5, freq: 2, repeat: -1 },
+        { key: 'sp-1-left',   qty: 6, freq: 8, repeat: 0 },
+        { key: 'sp-1-right',  qty: 6, freq: 8, repeat: 0 },
+
+    ],
+    'battle_beibei': [
+    ],
+    'battle_afk': [
+    ],
+    'default': [
         { key: 'idle-left',  qty: 2, freq: 2, repeat: -1 },
         { key: 'idle-right', qty: 2, freq: 2, repeat: -1 },
         { key: 'walk-left',  qty: 2, freq: 12, repeat: -1 },
@@ -51,18 +70,21 @@ export class Character extends Phaser.GameObjects.Container {
 
         // load animation by key
         const currentConfig = animsConfigs[key];
-        
+
         currentConfig.forEach(_ani => {
             const data: Phaser.Types.Animations.Animation = {
                 key: _ani.key,
-                frames: scene.anims.generateFrameNames(key, { prefix: `${_ani.key}_`, end: _ani.qty - 1 }),
+                frames: scene.anims.generateFrameNames(key, { prefix: `${_ani.key}_`, start: 1, end: _ani.qty }),
                 repeat: _ani.repeat,
             };
             if (_ani.freq)     data.frameRate = _ani.freq;
             if (_ani.duration) data.duration = _ani.duration;
 
+            
             scene.anims.create(data);
-        })
+        });
+
+        // console.log({ currentConfig });
 
         // create character
         const posX = x || 0;
@@ -74,12 +96,17 @@ export class Character extends Phaser.GameObjects.Container {
         scene.add.existing(this);
     }
 
-    public async playAnimation(key: string): Promise<void> {
+    public async playAnimation(key: string, time?: number): Promise<void> {
         return new Promise(resolve => {
             this.character.play(key);
             this.character.on('animationcomplete', (e: Phaser.Animations.Animation) => {
                 if (e.key === key) {
-                    resolve();
+                    if (typeof time !== 'undefined') {
+                        setTimeout(() => resolve(), time);
+                    }
+                    else {
+                        resolve();
+                    }
                     this.character.off('animationcomplete');
                 }
             })

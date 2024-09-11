@@ -4,13 +4,13 @@ import react from '@vitejs/plugin-react'
 
 const proxySetting = {
     '/api': {
-        target: 'http://localhost:8001/api',
+        target: 'http://192.168.0.19:8001/api',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, '')
     },
     '/socket': {
-        target: 'ws://localhost:8002',
+        target: 'ws://192.168.0.19:8001',
         ws: true
     }
 }

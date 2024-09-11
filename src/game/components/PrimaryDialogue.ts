@@ -4,7 +4,7 @@ import { canvas } from '../constants';
 import { runTween } from '../utils/runTween';
 
 type TDialogData = {
-    icon: string,
+    icon: { key: string, frame: string },
     text: string
 }
 
@@ -14,20 +14,23 @@ const defaultAlign: {text: 'left' | 'center' | 'right' } = {
 
 const typingMode = 'page';
 
-const defaultSpeechSpeed = 100;
+const defaultSpeechSpeed = 50;
+const defaultStaticDelay = 800;
+const defaultDialogTransitionSpeed = 150;
 
 const defaultHeight = 40;
 const defaultSpacing = 12;
 
-const textBoxWidth = 120;
+const textBoxWidth = 110;
 const textBoxHeight = defaultHeight;
 const textBoxFontSize = 10;
-const textBoxFontFamily = '俐方體11號';
+// const textBoxFontFamily = 'Tiny5, "cubic-11"';
+const textBoxFontFamily = '"cubic-11"';
 const textBoxSpacing = 4;
 
 const defaultIconWidth = 32;
 const defaultIconHeight = 32;
-const defaultIconSpacing = 4;
+const defaultIconSpacing = 8;
 
 //
 const defaultX = canvas.width/2;
@@ -56,18 +59,17 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
         
         // 2. Create others visual game objects
         const background = scene.make.nineslice({
-            key: 'frame',
-            frame: 'example',
-            leftWidth: 16,
-            rightWidth: 16,
-            topHeight: 16,
-            bottomHeight: 16,
+            key: 'dialogue_frame',
+            frame: 'frame',
+            leftWidth: 8,
+            rightWidth: 8,
+            topHeight: 8,
+            bottomHeight: 8,
         });
-
-        const icon = scene.make.sprite({key: 'default_character_icons', frame: 'happy_1'});
-        // const icon = this.scene.make.image({ key: 'star' });
-        icon.displayWidth = defaultIconWidth;
-        icon.displayHeight = defaultIconHeight;
+        
+        const face = scene.make.sprite({ key: 'tamagotchi_character_afk', frame: 'face-sad' });
+        face.displayWidth = defaultIconWidth;
+        face.displayHeight = defaultIconHeight;
 
         // 3. Create textBox
         const innerDialogue = scene.rexUI.add.BBCodeText(0, 0, '', {
@@ -81,21 +83,24 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
                 top: textBoxSpacing,
                 bottom: textBoxSpacing,
             },
-            resolution: 2,
+            resolution: 4,
             wrap: {
                 mode: 'word',
                 width: textBoxWidth - (textBoxSpacing * 2)
             },
             maxLines: 2
         });
-        
+
+        // high resolition would get bad performance on dialog animation.
+        // innerDialogue.setResolution(2);
+
         const textBox = scene.rexUI.add.textBox({
             x: defaultX,
             y: defaultY,
             width: defaultWidth,
             height: defaultHeight,
             typingMode: typingMode,
-            icon,
+            icon: face,
             background,
             text: innerDialogue,
             expandTextWidth: false,
@@ -105,6 +110,7 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
         })
         .setOrigin(0.5)
         .layout();
+
     
         // defined text box interaction
         textBox.setInteractive();
@@ -138,23 +144,25 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
                 if (this._textBox.isLastPage) {
                     this._textBox.off('pointerdown');
                     this._textBox.off('pageend');
-                    setTimeout(() => resolve(), 1000);
-                    // resolve();
+                    setTimeout(() => {
+                        this._textBox.setText(''); // Clear content after dialog finish
+                        resolve();
+                    }, defaultStaticDelay);
                 }
                 else {
-                    this._textBox.typeNextPage();
+                    setTimeout(() => {
+                        this._textBox.typeNextPage();
+                    }, defaultStaticDelay);
                 }
             });
             this._textBox.start(text, defaultSpeechSpeed);
-            if (icon) { this._textBox.setIconTexture(icon) }
+            if (icon) { this._textBox.setIconTexture(icon.key, icon.frame) }
         })
     }
     
     private _startDialogs(data: TDialogData[]): Promise<void> {
         return new Promise(resolve => {
             (async () => {
-                // Clear content before dialog start
-                // this._textBox.clear();
                 for (let i = 0; i < data.length; i++) {
                     await this._runTextBox(data[i]);
                 }
@@ -168,13 +176,13 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
         this.setVisible(true);
         
         // 2. run transition for opening dialog
-        await runTween<RexUIPlugin.TextBox>(this._textBox, { scale: 1 }, 100);
+        await runTween<RexUIPlugin.TextBox>(this._textBox, { scale: 1 }, defaultDialogTransitionSpeed);
         
         // 3. start dialogs
         await this._startDialogs(contents);
         
         // 4. run transition for closing dialog
-        await runTween<RexUIPlugin.TextBox>(this._textBox, { scale: 0 }, 100);
+        await runTween<RexUIPlugin.TextBox>(this._textBox, { scale: 0 }, defaultDialogTransitionSpeed);
 
         // 5. hide dialugue container
         this.setVisible(false);

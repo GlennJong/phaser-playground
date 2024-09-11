@@ -6,6 +6,9 @@ const defaultHeight = 36;
 const hpFrameWidth = 80;
 const hpFrameHeight = 6;
 
+const textBoxFontFamily = '"cubic-11"';
+
+
 export type TStatusBoardProps = {
     name: string,
     hp: number,
@@ -51,7 +54,7 @@ export class StatusBoard extends Phaser.GameObjects.Container {
         const boardName = scene.make.text({
           x: x - 40,
           y: y - 14,
-          style: { fontFamily: '俐方體11號', fontSize: 8, color: '#000' },
+          style: { fontFamily: textBoxFontFamily, fontSize: 8, color: '#000' },
           text: data.name,
         });
 
@@ -93,7 +96,7 @@ export class StatusBoard extends Phaser.GameObjects.Container {
         const currentHPText = scene.make.text({
             x: x - 40,
             y: y + 2,
-            style: { fontFamily: '俐方體11號', fontSize: 9, color: '#000' },
+            style: { fontFamily: textBoxFontFamily, fontSize: 9, color: '#000' },
             text: this.hp.toString(),
         });
         this.add(currentHPText);
@@ -102,7 +105,7 @@ export class StatusBoard extends Phaser.GameObjects.Container {
         const slash = scene.make.text({
             x: x,
             y: y + 2,
-            style: { fontFamily: '俐方體11號', fontSize: 9, color: '#000' },
+            style: { fontFamily: textBoxFontFamily, fontSize: 9, color: '#000' },
             text: '/',
         });
         this.add(slash);
@@ -110,7 +113,7 @@ export class StatusBoard extends Phaser.GameObjects.Container {
         const allHPText = scene.make.text({
             x: x + 40,
             y: y + 2,
-            style: { fontFamily: '俐方體11號', fontSize: 9, color: '#000' },
+            style: { fontFamily: textBoxFontFamily, fontSize: 9, color: '#000' },
             text: '100',
         }).setOrigin(1, 0);
         this.add(allHPText);

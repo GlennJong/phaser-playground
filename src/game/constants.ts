@@ -6,14 +6,14 @@ export const canvas = {
   height: 144
 }
 
-export const tamagochi = {
+export const tamagotchi = {
   character: {
     width: 32,
     height: 32
   }
 }
 
-export type scene_tamagochi = {
+export type scene_tamagotchi = {
   main: ['Room'],
   shop: ['Food', 'Toy'],
 }

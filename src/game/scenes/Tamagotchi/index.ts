@@ -1,7 +1,7 @@
 import { EventBus } from '../../EventBus';
 import Phaser, { Scene } from 'phaser';
 
-export default class Tamagochi extends Scene
+export default class Tamagotchi extends Scene
 {
     timer: undefined;
     
@@ -11,7 +11,7 @@ export default class Tamagochi extends Scene
 
     constructor ()
     {
-        super('Tamagochi');
+        super('Tamagotchi');
     }
 
     create ()

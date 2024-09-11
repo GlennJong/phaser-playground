@@ -54,6 +54,7 @@ function App()
 
     return (
         <div id="app" style={{ position: 'relative', flexDirection: 'column', background: `url('/img/background.png')`, backgroundSize: 'cover' }}>
+            
             <div style={{
                 position: 'absolute',
                 top: '0', left: '0', bottom: '0', right: '0',

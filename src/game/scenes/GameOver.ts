@@ -31,6 +31,6 @@ export class GameOver extends Scene
 
     changeScene ()
     {
-        this.scene.start('Tamagochi');
+        this.scene.start('Tamagotchi');
     }
 }
