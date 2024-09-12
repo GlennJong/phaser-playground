@@ -31,7 +31,11 @@ export class TamagotchiCharacter extends Character {
         edge: { from: number, to: number },
         callbackFunctions: any,
     ) {
-        super(scene, props);
+
+        // static character here
+        const key = 'tamagotchi_character_afk';
+        
+        super(scene, key, props);
 
         // define moving limitation
         this.spaceEdge = edge || { from: 0, to: canvas.width } 

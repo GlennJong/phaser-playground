@@ -65,7 +65,7 @@ export default class Battle extends Scene
         // init characters
         this.opponent = new BattleOpponentCharacter(
             scene,
-            { key: 'battle_beibei' },
+            'battle_beibei',
             {
                 name: '貝貝',
                 hp: 100,
@@ -75,7 +75,7 @@ export default class Battle extends Scene
 
         this.self = new BattleSelfCharacter(
             scene,
-            { key: 'battle_afk' },
+            'battle_afk',
             {
                 name: 'AFK',
                 hp: 100,
@@ -99,7 +99,7 @@ export default class Battle extends Scene
         for (let i = 0; i < step; i++) {
             result.push({
                 from: ['self', 'opponent'][i%2],
-                type: ['attack', 'sp'][Math.random() > 0.5 ? 0 : 1],
+                movement: ['attack', 'sp'][Math.random() > 0.5 ? 0 : 1],
                 // damage: Math.floor(Math.random() * 100),
                 // action: ['HIT', 'BITE', 'KICK'][Math.floor(Math.random() * 3)]
             })
@@ -108,28 +108,40 @@ export default class Battle extends Scene
         return result;
     }
 
-    private async applyBattle(process: TProcess[]) {
+    private async applyBattle(tprocess: TProcess[]) {
+        const process = [
+            { from: 'opponent', movement: 'attack'},
+            { from: 'self', movement: 'sp'},
+            { from: 'opponent', movement: 'sp'},
+            { from: 'self', movement: 'attack'},
+        ];
+        
+        // console.log({process});
         for (let i = 0; i < process.length; i++) {
-            const { from, type } = process[i];
-            const actionCharacter = from === 'self' ? this.self : this.opponent; 
-            const sufferCharacter = from !== 'self' ? this.self : this.opponent; 
-            // const sentence = `${from === 'self' ? 'YOU' : 'ENEMY'} ${action} ${from !== 'self' ? 'YOU' : 'ENEMY'}, CAUSED ${damage} DAMAGES!`
-            
-            const actionData = type === 'sp' ? actionCharacter.sp() : actionCharacter.attack();
+            const { from, movement } = process[i];
+
+            // detect is finished
             let isFinished = false;
             
-            // TODO: dialog refaceter:
-            // return: icon, value, type, setnences($variable)
-            if (actionData.type === 'damage') {
-                await this.dialogue.runDialog([{ icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: `Damage: ${actionData.value}`}])
-                isFinished = await sufferCharacter.getDamage(actionData.value);
-            }
-            else if (actionData.type === 'recover') {
-                await this.dialogue.runDialog([{ icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: `Recover: ${actionData.value}`}])
-                isFinished = await sufferCharacter.getRecover(actionData.value);
-            }
-            // await actionCharacter.attack();
-            // await this.dialogue.runDialog([{ icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: '123'}])
+            // action movement
+            const actionCharacter = from === 'self' ? this.self : this.opponent; 
+            const { type, target, value, icon: actionIcon, dialog: actionDialog } = movement === 'sp' ? actionCharacter.sp() : actionCharacter.attack();
+            await this.dialogue.runDialog([{ icon: actionIcon, text: actionDialog }])
+
+
+            // suffer move
+            const sufferCharacter = target === 'self' ? this.self : this.opponent; 
+            // const { icon: sufferIcon, dialog: sufferDialog, isDead } = type === 'damage' ? sufferCharacter.getDamage(value) : sufferCharacter.getRecover(value);
+            const result = type === 'damage' ? sufferCharacter.getDamage(value) : sufferCharacter.getRecover(value);
+            const { icon: sufferIcon, dialog: sufferDialog, isDead } = result;
+            console.log({result});
+            await this.dialogue.runDialog([{ icon: sufferIcon, text: sufferDialog }])
+
+
+            // detect isDead after suffer from action
+            isFinished = isDead;
+            
+            
             if (isFinished) {
                 actionCharacter.winBattle();
                 sufferCharacter.loseBattle();
@@ -137,7 +149,7 @@ export default class Battle extends Scene
                 return;
             }
             else {
-                await this.dialogue.runDialog([{ icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: 'TURN!'}])
+                // await this.dialogue.runDialog([{ icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: 'TURN!'}])
             }
         }
     }
@@ -149,7 +161,7 @@ export default class Battle extends Scene
     }
 
     private async handleFinishGame() {
-        await this.dialogue.runDialog([{ icon: 'happy_2', text: 'FINISH!\nBACK TO ROOM!'}])
+        // await this.dialogue.runDialog([{ icon: 'happy_2', text: 'FINISH!\nBACK TO ROOM!'}])
         // sceneConverter(this.scene.scene, 'Room');
     }
     

@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { runTween } from '../../utils/runTween';
 import { StatusBoard, TStatusBoardProps } from './StatusBoard';
-import { CharacterProps, Character } from '../../components/Character';
+import { Character } from '../../components/Character';
 
 const fullWidth = 160;
 
@@ -13,41 +13,60 @@ const defaultStatusBoardPosition = {
     x: 110, y: 80
 }
 
+
+function getRandomDialog(data: string[]) {
+    return data[Math.floor(Math.random() * data.length)];
+}
+
 export default class BattleSelfCharacter extends Character
 {
     public board: StatusBoard;
     private currentHp: number;
 
+    private iconBag: { [key: string]: undefined | { key: string, frame: string } } = {
+        normal: undefined,
+        attack: undefined,
+        hurt: undefined,
+    };
+
+    private dialogBag = {
+        attack: [
+            '我踢！',
+            '我打！'
+        ],
+        sp: [
+            '吃我的大招！',
+            '特殊攻擊！'
+        ],
+        getDamage: [
+            '好痛啦！',
+            '不要打我！',
+        ],
+        getRecover: [
+            '補血！我復活啦！',
+            '補補血',
+        ]
+    }
+    
     constructor (
         scene: Phaser.Scene,
-        props: CharacterProps,
+        key: string,
         data: TStatusBoardProps,
     )
     {
         super(
             scene,
-            {
-                ...defaultCharacterPosition,
-                ...props
-            }
+            key,
+            defaultCharacterPosition,
         );
 
         this.currentHp = data.hp;
 
-        const temp: Phaser.Types.Animations.Animation = {
-            key: 'afk-self-idle',
-            frames: scene.anims.generateFrameNames('battle_afk', { prefix: `self-idle_`, start: 1, end: 2 }),
-            repeat: -1,
-            frameRate: 1,
-            repeatDelay: 1000,
-        };
-        // if (_ani.freq)     data.frameRate = _ani.freq;
-        // if (_ani.duration) data.duration = _ani.duration;
+        this.iconBag.normal = { key, frame: 'face-normal' };
+        this.iconBag.attack = { key, frame: 'face-attack' };
+        this.iconBag.hurt   = { key, frame: 'face-hurt' };
         
-        scene.anims.create(temp);
-        
-        
-        this.playAnimation('afk-self-idle');
+        this.playAnimation('self-idle');
 
         this.board = new StatusBoard(scene, defaultStatusBoardPosition.x, defaultStatusBoardPosition.y, data);
 
@@ -58,7 +77,7 @@ export default class BattleSelfCharacter extends Character
         await runTween(this.character, { x: defaultCharacterPosition.x }, 1000);
     }
 
-    public async getDamage(value: number) {
+    public getDamage(value: number) {
         const _playAnimation = async () => {
             function easeInOutCubic(x: number): number {
                 return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
@@ -72,8 +91,11 @@ export default class BattleSelfCharacter extends Character
         this.currentHp -= value;
         _playAnimation();
 
-        // end battle if hp is 0
-        return this.currentHp <= 0;
+        return {
+            icon: this.iconBag.hurt,
+            dialog: getRandomDialog(this.dialogBag.getDamage),
+            isDead: this.currentHp <= 0
+        };
     }
 
     public getRecover(value: number) {
@@ -87,7 +109,11 @@ export default class BattleSelfCharacter extends Character
         _playAnimation();
 
         // end battle if hp is 0
-        return this.currentHp <= 0;
+        return {
+            icon: this.iconBag.normal,
+            dialog: getRandomDialog(this.dialogBag.getRecover),
+            isDead: this.currentHp <= 0
+        };
     }
 
 
@@ -110,7 +136,13 @@ export default class BattleSelfCharacter extends Character
 
         const value = 20;
         const ratio = (1 + (0.5 - Math.random()));
-        return { type: 'damage', target: 'self', value: Math.floor(value * ratio) };
+        return {
+            type: 'damage',
+            target: 'opponent',
+            value: Math.floor(value * ratio),
+            icon: this.iconBag.attack,
+            dialog: getRandomDialog(this.dialogBag.sp),
+        };
     }
 
     public attack() {
@@ -122,7 +154,13 @@ export default class BattleSelfCharacter extends Character
         
         const value = 10;
         const ratio = (1 + (0.5 - Math.random()));
-        return { type: 'damage', target: 'self', value: Math.floor(value * ratio) };
+        return {
+            type: 'damage',
+            target: 'opponent',
+            value: Math.floor(value * ratio),
+            icon: this.iconBag.normal,
+            dialog: getRandomDialog(this.dialogBag.attack),
+        };
 
     }
 

@@ -3,88 +3,99 @@ import Phaser from "phaser";
 type TDirection = "none" | "left" | "right" | "top" | "down";
 
 type TAnimsConfig = {
-    key: string,
+    prefix: string,
     qty: number,
     freq?: number,
     duration?: number,
     repeat: number,
+    repeatDelay?: number,
 }
 
 const animsConfigs: { [key: string]: TAnimsConfig[] } = {
     'tamagotchi_character_afk': [
-        { key: 'born',        qty: 7, freq: 8, repeat: 0 },
-        { key: 'drink',       qty: 7, freq: 4, repeat: 0 },
-        { key: 'egg',         qty: 2, freq: 1, repeat: -1 },
-        { key: 'walk-left',   qty: 6, freq: 8, repeat: 4 },
-        { key: 'walk-right',  qty: 6, freq: 8, repeat: 4 },
-        { key: 'write',       qty: 13, freq: 8, repeat: 0 },
-        { key: 'lay-down',    qty: 4, freq: 8, repeat: 0 },
-        { key: 'sleep',       qty: 5, freq: 2, repeat: -1 },
-        { key: 'idle-left',   qty: 5, freq: 2, repeat: -1 },
-        { key: 'idle-right',  qty: 5, freq: 2, repeat: -1 },
-        { key: 'sp-1-left',   qty: 6, freq: 8, repeat: 0 },
-        { key: 'sp-1-right',  qty: 6, freq: 8, repeat: 0 },
-
+        { prefix: 'born',        qty: 7, freq: 8, repeat: 0 },
+        { prefix: 'drink',       qty: 7, freq: 4, repeat: 0 },
+        { prefix: 'egg',         qty: 2, freq: 1, repeat: -1 },
+        { prefix: 'walk-left',   qty: 6, freq: 8, repeat: 4 },
+        { prefix: 'walk-right',  qty: 6, freq: 8, repeat: 4 },
+        { prefix: 'write',       qty: 13, freq: 8, repeat: 0 },
+        { prefix: 'lay-down',    qty: 4, freq: 8, repeat: 0 },
+        { prefix: 'sleep',       qty: 5, freq: 2, repeat: -1 },
+        { prefix: 'idle-left',   qty: 5, freq: 2, repeat: -1 },
+        { prefix: 'idle-right',  qty: 5, freq: 2, repeat: -1 },
+        { prefix: 'sp-1-left',   qty: 6, freq: 8, repeat: 0 },
+        { prefix: 'sp-1-right',  qty: 6, freq: 8, repeat: 0 },
     ],
     'battle_beibei': [
+        { prefix: 'idle',      qty: 9, freq: 8, repeat: -1, repeatDelay: 1000 },
+        { prefix: 'self-idle', qty: 5, freq: 8, repeat: 0, },
+        { prefix: 'sp',        qty: 5, freq: 8, repeat: 0, },
     ],
     'battle_afk': [
+        { prefix: 'idle',      qty: 1, freq: 8, repeat: -1, repeatDelay: 1000 },
+        { prefix: 'self-idle', qty: 1, freq: 8, repeat: 0, },
+        { prefix: 'sp',        qty: 1, freq: 8, repeat: 0, },
     ],
-    'default': [
-        { key: 'idle-left',  qty: 2, freq: 2, repeat: -1 },
-        { key: 'idle-right', qty: 2, freq: 2, repeat: -1 },
-        { key: 'walk-left',  qty: 2, freq: 12, repeat: -1 },
-        { key: 'walk-right', qty: 2, freq: 12, repeat: -1 },
-        { key: 'sleep',      qty: 2, freq: 2,  repeat: 4 },
-    ],
-    'default-battle': [
-        { key: 'normal',  qty: 2, freq: 2, repeat: -1 },
-        { key: 'attack', qty: 2, freq: 2, repeat: 0 },
-        { key: 'damage',  qty: 2, freq: 2, repeat: 0 },
-        { key: 'win',  qty: 2, freq: 2, repeat: -1 },
-        { key: 'dead',  qty: 2, freq: 2, repeat: -1 },
-    ],
-    'battle-character-1': [
-        { key: 'normal',  qty: 2, freq: 2, repeat: -1 },
-        { key: 'attack', qty: 2, freq: 2, repeat: 0 },
-        { key: 'damage',  qty: 2, freq: 12, repeat: 0 },
-    ]
+    // 'default': [
+    //     { key: 'idle-left',  qty: 2, freq: 2, repeat: -1 },
+    //     { key: 'idle-right', qty: 2, freq: 2, repeat: -1 },
+    //     { key: 'walk-left',  qty: 2, freq: 12, repeat: -1 },
+    //     { key: 'walk-right', qty: 2, freq: 12, repeat: -1 },
+    //     { key: 'sleep',      qty: 2, freq: 2,  repeat: 4 },
+    // ],
+    // 'default-battle': [
+    //     { key: 'normal',  qty: 2, freq: 2, repeat: -1 },
+    //     { key: 'attack', qty: 2, freq: 2, repeat: 0 },
+    //     { key: 'damage',  qty: 2, freq: 2, repeat: 0 },
+    //     { key: 'win',  qty: 2, freq: 2, repeat: -1 },
+    //     { key: 'dead',  qty: 2, freq: 2, repeat: -1 },
+    // ],
+    // 'battle-character-1': [
+    //     { key: 'normal',  qty: 2, freq: 2, repeat: -1 },
+    //     { key: 'attack', qty: 2, freq: 2, repeat: 0 },
+    //     { key: 'damage',  qty: 2, freq: 12, repeat: 0 },
+    // ]
 }
 
 export type CharacterProps = {
     x?: number,
     y?: number,
-    key: string,
 }
 
 export class Character extends Phaser.GameObjects.Container {
     public character: Phaser.GameObjects.Sprite;
+
+    private characterKey: string;
     
     constructor(
         scene: Phaser.Scene,
+        key: string,
         props: CharacterProps
     ) {
         super(scene);
 
-        const { x, y, key } = props;
+        const { x, y } = props;
 
         // load animation by key
         const currentConfig = animsConfigs[key];
+        this.characterKey = key;
 
+        
         currentConfig.forEach(_ani => {
+
+            const animationName = `${key}_${_ani.prefix}`;
             const data: Phaser.Types.Animations.Animation = {
-                key: _ani.key,
-                frames: scene.anims.generateFrameNames(key, { prefix: `${_ani.key}_`, start: 1, end: _ani.qty }),
+                key: animationName,
+                frames: scene.anims.generateFrameNames(key, { prefix: `${_ani.prefix}_`, start: 1, end: _ani.qty }),
                 repeat: _ani.repeat,
             };
-            if (_ani.freq)     data.frameRate = _ani.freq;
-            if (_ani.duration) data.duration = _ani.duration;
 
+            if (typeof _ani.freq !== 'undefined')        data.frameRate = _ani.freq;
+            if (typeof _ani.duration !== 'undefined')    data.duration = _ani.duration;
+            if (typeof _ani.repeatDelay !== 'undefined') data.duration = _ani.repeatDelay;
             
             scene.anims.create(data);
         });
-
-        // console.log({ currentConfig });
 
         // create character
         const posX = x || 0;
@@ -98,9 +109,11 @@ export class Character extends Phaser.GameObjects.Container {
 
     public async playAnimation(key: string, time?: number): Promise<void> {
         return new Promise(resolve => {
-            this.character.play(key);
+            const animationName = `${this.characterKey}_${key}`;
+            this.character.play(animationName);
+
             this.character.on('animationcomplete', (e: Phaser.Animations.Animation) => {
-                if (e.key === key) {
+                if (e.key === animationName) {
                     if (typeof time !== 'undefined') {
                         setTimeout(() => resolve(), time);
                     }
