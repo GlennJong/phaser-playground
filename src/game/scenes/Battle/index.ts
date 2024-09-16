@@ -2,8 +2,7 @@ import Phaser, { Scene } from 'phaser';
 import { canvas } from '../../constants';
 import { PrimaryDialogue } from '../../components/PrimaryDialogue';
 
-import BattleSelfCharacter from './BattleSelfCharacter';
-import BattleOpponentCharacter from './BattleOpponentCharacter';
+import BattleCharacter from './BattleCharacter';
 
 const contents = [
     { icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: 'READY TO BATTLE!'},
@@ -19,8 +18,8 @@ export default class Battle extends Scene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
-    self: BattleSelfCharacter;
-    opponent: BattleOpponentCharacter;
+    self: BattleCharacter;
+    opponent: BattleCharacter;
     dialogue: PrimaryDialogue;
 
     constructor ()
@@ -63,9 +62,10 @@ export default class Battle extends Scene
 
 
         // init characters
-        this.opponent = new BattleOpponentCharacter(
+        this.opponent = new BattleCharacter(
             scene,
             'battle_beibei',
+            'opponent',
             {
                 name: '貝貝',
                 hp: 100,
@@ -73,9 +73,10 @@ export default class Battle extends Scene
             }
         );
 
-        this.self = new BattleSelfCharacter(
+        this.self = new BattleCharacter(
             scene,
             'battle_afk',
+            'self',
             {
                 name: 'AFK',
                 hp: 100,
@@ -125,16 +126,17 @@ export default class Battle extends Scene
             
             // action movement
             const actionCharacter = from === 'self' ? this.self : this.opponent; 
-            const { type, target, value, icon: actionIcon, dialog: actionDialog } = movement === 'sp' ? actionCharacter.sp() : actionCharacter.attack();
+            const { effect, icon: actionIcon, dialog: actionDialog } = actionCharacter.runAction(movement);
+            const { type, target, value } = effect;
             await this.dialogue.runDialog([{ icon: actionIcon, text: actionDialog }])
 
 
-            // suffer move
+            // reaction movement
             const sufferCharacter = target === 'self' ? this.self : this.opponent; 
             // const { icon: sufferIcon, dialog: sufferDialog, isDead } = type === 'damage' ? sufferCharacter.getDamage(value) : sufferCharacter.getRecover(value);
-            const result = type === 'damage' ? sufferCharacter.getDamage(value) : sufferCharacter.getRecover(value);
-            const { icon: sufferIcon, dialog: sufferDialog, isDead } = result;
-            console.log({result});
+            // const result = type === 'damage' ? sufferCharacter.getDamage(value) : sufferCharacter.getRecover(value);
+            const { icon: sufferIcon, dialog: sufferDialog, isDead } = sufferCharacter.runReaction(type, value);
+            // console.log({result});
             await this.dialogue.runDialog([{ icon: sufferIcon, text: sufferDialog }])
 
 

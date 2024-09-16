@@ -20,7 +20,7 @@
 				"h": 32
 			}
 		},
-		"face-hurt": {
+		"face-damage": {
 			"frame": {
 				"x": 32,
 				"y": 0,
