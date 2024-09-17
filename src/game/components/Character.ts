@@ -28,13 +28,13 @@ const animsConfigs: { [key: string]: TAnimsConfig[] } = {
     ],
     'battle_beibei': [
         { prefix: 'idle',      qty: 9, freq: 8, repeat: -1, repeatDelay: 1000 },
-        { prefix: 'self-idle', qty: 5, freq: 8, repeat: 0, },
+        // { prefix: 'self-idle', qty: 5, freq: 8, repeat: 0, },
         { prefix: 'sp',        qty: 5, freq: 8, repeat: 0, },
     ],
     'battle_afk': [
-        { prefix: 'idle',      qty: 1, freq: 8, repeat: -1, repeatDelay: 1000 },
+        // { prefix: 'idle',      qty: 1, freq: 8, repeat: -1, repeatDelay: 1000 },
         { prefix: 'self-idle', qty: 1, freq: 8, repeat: 0, },
-        { prefix: 'sp',        qty: 1, freq: 8, repeat: 0, },
+        // { prefix: 'sp',        qty: 1, freq: 8, repeat: 0, },
     ],
     // 'default': [
     //     { key: 'idle-left',  qty: 2, freq: 2, repeat: -1 },
@@ -105,6 +105,10 @@ export class Character extends Phaser.GameObjects.Container {
         this.add(character);
         this.character = character;
         scene.add.existing(this);
+    }
+
+    public playStatic(frame: string) {
+        this.character.setTexture(this.characterKey, frame);
     }
 
     public async playAnimation(key: string, time?: number): Promise<void> {

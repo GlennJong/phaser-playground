@@ -15,11 +15,10 @@ const defaultAlign: {text: 'left' | 'center' | 'right' } = {
 const typingMode = 'page';
 
 const defaultSpeechSpeed = 50;
-const defaultStaticDelay = 800;
+const defaultStaticDelay = 1000;
 const defaultDialogTransitionSpeed = 150;
 
 const defaultHeight = 40;
-const defaultSpacing = 12;
 
 const textBoxWidth = 110;
 const textBoxHeight = defaultHeight;
@@ -28,16 +27,16 @@ const textBoxFontSize = 10;
 const textBoxFontFamily = '"cubic-11"';
 const textBoxSpacing = 4;
 
-const defaultIconWidth = 32;
-const defaultIconHeight = 32;
-const defaultIconSpacing = 8;
+const defaultIconSize = 32;
+const defaultIconSpacing = 4;
 
 //
 const defaultX = canvas.width/2;
-const defaultY = canvas.height - defaultHeight + (defaultHeight / 2);
+const defaultY = canvas.height - (defaultHeight/2);
 const defaultWidth = canvas.width;
 
 const defaultSpacingConfig = {
+    iconBottom: -1,
     left: textBoxSpacing,
     right: textBoxSpacing,
     top: textBoxSpacing,
@@ -68,8 +67,6 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
         });
         
         const face = scene.make.sprite({ key: 'tamagotchi_character_afk', frame: 'face-sad' });
-        face.displayWidth = defaultIconWidth;
-        face.displayHeight = defaultIconHeight;
 
         // 3. Create textBox
         const innerDialogue = scene.rexUI.add.BBCodeText(0, 0, '', {
@@ -83,7 +80,7 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
                 top: textBoxSpacing,
                 bottom: textBoxSpacing,
             },
-            resolution: 4,
+            resolution: 5,
             wrap: {
                 mode: 'word',
                 width: textBoxWidth - (textBoxSpacing * 2)
@@ -101,6 +98,7 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
             height: defaultHeight,
             typingMode: typingMode,
             icon: face,
+            iconSize: defaultIconSize,
             background,
             text: innerDialogue,
             expandTextWidth: false,
@@ -171,7 +169,12 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
         })
     }
 
-    public async runDialog(contents: TDialogData[]) {
+    public async hide() {
+        await runTween<RexUIPlugin.TextBox>(this._textBox, { scale: 0 }, defaultDialogTransitionSpeed);
+        this.setVisible(false);
+    }
+    
+    public async runDialog(contents: TDialogData[], alive?: boolean) {
         // 1. show dialogue container
         this.setVisible(true);
         
@@ -181,11 +184,13 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
         // 3. start dialogs
         await this._startDialogs(contents);
         
-        // 4. run transition for closing dialog
-        await runTween<RexUIPlugin.TextBox>(this._textBox, { scale: 0 }, defaultDialogTransitionSpeed);
+        if (!alive) {
+            // 4. run transition for closing dialog
+            await runTween<RexUIPlugin.TextBox>(this._textBox, { scale: 0 }, defaultDialogTransitionSpeed);
 
-        // 5. hide dialugue container
-        this.setVisible(false);
+            // 5. hide dialugue container
+            this.setVisible(false);
+        }
 
         return;
     }

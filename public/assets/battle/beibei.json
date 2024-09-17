@@ -60,6 +60,26 @@
 				"h": 32
 			}
 		},
+		"idle": {
+			"frame": {
+				"x": 96,
+				"y": 0,
+				"w": 64,
+				"h": 64
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 64,
+				"h": 64
+			},
+			"sourceSize": {
+				"w": 64,
+				"h": 64
+			}
+		},
 		"idle_1": {
 			"frame": {
 				"x": 96,

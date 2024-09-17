@@ -46,6 +46,8 @@ export class Preloader extends Scene
         this.load.atlas('tamagotchi_character_afk', 'tamagotchi/character/spritesheet.png', 'tamagotchi/character/spritesheet.json');
 
         // Battle
+        this.load.image('battle_background', 'battle/background.png');
+        this.load.atlas('battle_board', 'battle/board.png', 'battle/board.json');
         this.load.atlas('battle_afk', 'battle/afk.png', 'battle/afk.json');
         this.load.atlas('battle_beibei', 'battle/beibei.png', 'battle/beibei.json');
         this.load.atlas('battle_opponent', 'battle/opponent.png', 'battle/opponent.json');

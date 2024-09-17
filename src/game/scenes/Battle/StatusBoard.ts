@@ -1,13 +1,24 @@
 import Phaser from 'phaser';
 
-const defaultWidth = 100;
-const defaultHeight = 36;
+const defaultWidth = 72;
+const defaultHeight = 32;
+const paddingX = 4;
+const paddingY = 4;
 
-const hpFrameWidth = 80;
+const hpFrameWidth = 60;
 const hpFrameHeight = 6;
 
-const textBoxFontFamily = '"cubic-11"';
+const numberFontFamily = 'Tiny5';
+const numberFontSize = 8;
+const numberFontResolution = 4;
 
+const textFontFamily = '"cubic-11"';
+const textFontSize = 8;
+const textFontResolution = 4;
+
+const playerNameY = 0;
+const barY = 10;
+const hpTextY= 16;
 
 export type TStatusBoardProps = {
     name: string,
@@ -18,7 +29,8 @@ export type TStatusBoardProps = {
 export class StatusBoard extends Phaser.GameObjects.Container {
     private hp: number;
     private maxHp: number;
-    private hpBar: Phaser.GameObjects.NineSlice;
+    private hpBar: Phaser.GameObjects.Sprite;
+    private hpBarWidth: number;
     private currentHpText: Phaser.GameObjects.Text;
 
     constructor(
@@ -33,17 +45,16 @@ export class StatusBoard extends Phaser.GameObjects.Container {
         this.maxHp = data.max_hp;
         this.hp = data.hp;
 
-
         // step2. init background
         const background = scene.make.nineslice({
-            key: 'frame',
-            frame: 'example',
+            key: 'battle_board',
+            frame: 'background',
             width: defaultWidth,
             height: defaultHeight,
-            leftWidth: 16,
-            rightWidth: 16,
-            topHeight: 16,
-            bottomHeight: 16,
+            leftWidth: 3,
+            rightWidth: 3,
+            topHeight: 3,
+            bottomHeight: 3,
         })
         .setOrigin(0.5)
         .setPosition(x, y);
@@ -51,72 +62,84 @@ export class StatusBoard extends Phaser.GameObjects.Container {
 
 
         // step3. init status board data
-        const boardName = scene.make.text({
-          x: x - 40,
-          y: y - 14,
-          style: { fontFamily: textBoxFontFamily, fontSize: 8, color: '#000' },
-          text: data.name,
-        });
+        const hpBarHead = scene.make.sprite({
+            key: 'battle_board',
+            frame: 'bar-head',
+        })
+        hpBarHead.setPosition(x - (defaultWidth/2) + paddingX + (hpBarHead.width/2), y - (defaultHeight/2) + paddingY + barY + (hpBarHead.height/2));
 
         const hpFrame = scene.make.nineslice({
-            key: 'status-board-hp',
-            frame: 'frame',
-            width: hpFrameWidth,
+            key: 'battle_board',
+            frame: 'bar-frame',
+            width: defaultWidth - paddingX*2 - hpBarHead.width,
             height: hpFrameHeight,
-            leftWidth: 3,
-            rightWidth: 3,
-            topHeight: 3,
-            bottomHeight: 3,
+            leftWidth: 2,
+            rightWidth: 2,
+            topHeight: 2,
+            bottomHeight: 2,
+            x: x - (defaultWidth/2) + paddingX + hpBarHead.width,
+            y: y - (defaultHeight/2) + paddingY + barY
         })
-        .setOrigin(0)
-        .setPosition(x - 40, y - 4);
+        .setOrigin(0);
         
         // step4. init hp bar
-        const hpBar = scene.make.nineslice({
-            key: 'status-board-hp',
+        const hpBar = scene.make.sprite({
+            key: 'battle_board',
             frame: 'bar',
-            width: hpFrameWidth,
-            height: 6,
-            leftWidth: 3,
-            rightWidth: 3,
-            topHeight: 3,
-            bottomHeight: 3,
+            x: x - (defaultWidth/2) + paddingX + hpBarHead.width + 1,
+            y: y - (defaultHeight/2) + paddingY + barY + 2,
         })
-        .setOrigin(0)
-        .setPosition(x - 40, y - 4);
+        .setOrigin(0);
 
-        hpBar.width = (this.hp / this.maxHp) * hpFrameWidth;
-        this.add(boardName);
+        this.hpBarWidth = hpFrameWidth - (hpBarHead.width/2) - paddingX - 3;
+        hpBar.displayWidth = (this.hp / this.maxHp) * this.hpBarWidth;
+        this.hpBar = hpBar;
+
         this.add(hpFrame);
         this.add(hpBar);
-
-        this.hpBar = hpBar;
+        this.add(hpBarHead);
+        
+        // 5. player name
+        const playerName = scene.make.text({
+            x: x - (defaultWidth/2) + paddingX,
+            y: y - (defaultHeight/2) + paddingY + playerNameY,
+            style: { fontFamily: textFontFamily, fontSize: textFontSize, color: '#000' },
+            text: data.name,
+        });
+        playerName.setResolution(textFontResolution);
+        this.add(playerName);
 
         // 5. hp number
         const currentHPText = scene.make.text({
-            x: x - 40,
-            y: y + 2,
-            style: { fontFamily: textBoxFontFamily, fontSize: 9, color: '#000' },
+            x: x - (defaultWidth/2) + paddingX,
+            y: y - (defaultHeight/2) + paddingY + hpTextY,
+            style: { fontFamily: numberFontFamily, fontSize: numberFontSize, color: '#000' },
             text: this.hp.toString(),
         });
+        currentHPText.setResolution(numberFontResolution);
         this.add(currentHPText);
         this.currentHpText = currentHPText;
 
         const slash = scene.make.text({
-            x: x,
-            y: y + 2,
-            style: { fontFamily: textBoxFontFamily, fontSize: 9, color: '#000' },
+            x: x, // at center
+            y: y - (defaultHeight/2) + paddingY + hpTextY,
+            style: { fontFamily: numberFontFamily, fontSize: numberFontSize, color: '#000' },
             text: '/',
         });
+        slash.setResolution(numberFontResolution);
+
         this.add(slash);
 
-        const allHPText = scene.make.text({
-            x: x + 40,
-            y: y + 2,
-            style: { fontFamily: textBoxFontFamily, fontSize: 9, color: '#000' },
-            text: '100',
+        const maxHPText = scene.make.text({
+            x: x + (defaultWidth/2) - paddingX,
+            y: y - (defaultHeight/2) + paddingY + hpTextY,
+            style: { fontFamily: numberFontFamily, fontSize: numberFontSize, color: '#000' },
+            text: this.maxHp.toString(),
         }).setOrigin(1, 0);
-        this.add(allHPText);
+        
+        maxHPText.setResolution(numberFontResolution);
+        
+        this.add(maxHPText);
 
         scene.add.existing(this);
     }
@@ -130,10 +153,10 @@ export class StatusBoard extends Phaser.GameObjects.Container {
     
     private currentUpdateFrame = { total: 60, count: 0 };
     
-    private handleDecreaseHP(value: number, callbackFunc: () => void) {
+    private handleSetHP(value: number, callbackFunc: () => void) {
         if (!this.currentHpAction) {
 
-            const resultHp = this.hp - value;
+            const resultHp = value;
             this.currentHpAction = {
                 from: { hp: this.hp, },
                 to: { hp: resultHp < 0 ? 0 : resultHp},
@@ -142,9 +165,10 @@ export class StatusBoard extends Phaser.GameObjects.Container {
         }
     }
 
-    public decreaseHP(value: number): Promise<void> {
+
+    public setHP(value: number): Promise<void> {
         return new Promise(resolve => {
-            this.handleDecreaseHP(value, () => {
+            this.handleSetHP(value, () => {
                 resolve();
             })
         })
@@ -163,14 +187,14 @@ export class StatusBoard extends Phaser.GameObjects.Container {
             const point = from.hp + ((to.hp - from.hp) * count/total)
             
             this.hp = Math.floor(point);
-            this.hpBar.width = (point / this.maxHp) * hpFrameWidth;
+            this.hpBar.displayWidth = (this.hp / this.maxHp) * this.hpBarWidth;
             if (this.currentHpText) {
                 this.currentHpText.setText(this.hp.toString());
             }
 
             if (total == count) {
                 this.hp = to.hp;
-                this.hpBar.width = (this.hp / this.maxHp) * hpFrameWidth;
+                this.hpBar.displayWidth = (this.hp / this.maxHp) * this.hpBarWidth;
                 this.currentHpText.setText(this.hp.toString());
                 
                 // reset after moved

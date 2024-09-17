@@ -14,8 +14,8 @@ function App2()
     // const isConnectedRef = useRef(false);
 
     const [ temp, setTemp ] = useState([
-        {user: 'example', message: 'test'},
-        {user: 'example2', message: 'test2'},
+        // {user: 'example', message: 'test'},
+        // {user: 'example2', message: 'test2'},
     ]);
     
     useEffect(() => {
@@ -158,10 +158,10 @@ function App2()
                         )
                     }
                 </div>
-                <a href="https://prod.liveshare.vsengsaas.visualstudio.com/join?18D421D8EE18C8014064A7CBD3A7CC6F6D39">link</a>
+                {/* <a href="https://prod.liveshare.vsengsaas.visualstudio.com/join?18D421D8EE18C8014064A7CBD3A7CC6F6D39">link</a> */}
                 <br />
-                <button onClick={handleClickOauthLoginButton}>login</button>
-                <button onClick={handleClickTestButton}>test</button>
+                {/* <button onClick={handleClickOauthLoginButton}>login</button> */}
+                {/* <button onClick={handleClickTestButton}>test</button> */}
                 {/* <button onClick={handleConnectChatWebhook}>Connect Chat webhook</button> */}
                 {/* <button onClick={handleDisconnectChatWebhook}>Disconnect Chat webhook</button> */}
                 {/* <button onClick={handleClickConnectWebsocket}>connect websocket</button> */}

@@ -7,6 +7,9 @@ import BattleCharacter from './BattleCharacter';
 const contents = [
     { icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: 'READY TO BATTLE!'},
 ]
+const contents2 = [
+    { icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: '挑戰者是貝貝!'},
+]
 
 type TProcess = {
     from: 'self' | 'opponent',
@@ -41,10 +44,6 @@ export default class Battle extends Scene
         // init
         this.handleInitGameScene(this);
         this.handleStartGameScene();
-        // setTimeout(() => {
-        // }, 5000);
-        
-        // EventBus.emit('current-scene-ready', this);
     }
 
     update() {
@@ -55,7 +54,7 @@ export default class Battle extends Scene
     private handleInitGameScene(scene: Phaser.Scene) {
 
         this.background = scene.make.image({
-            key: 'background-battle',
+            key: 'battle_background',
             x: canvas.width/2,
             y: canvas.height/2,
         });
@@ -66,22 +65,14 @@ export default class Battle extends Scene
             scene,
             'battle_beibei',
             'opponent',
-            {
-                name: '貝貝',
-                hp: 100,
-                max_hp: 100,
-            }
+            {}
         );
 
         this.self = new BattleCharacter(
             scene,
             'battle_afk',
             'self',
-            {
-                name: 'AFK',
-                hp: 100,
-                max_hp: 100,
-            }
+            { hp: 40 }
         );
 
         // default hide status board
@@ -109,49 +100,53 @@ export default class Battle extends Scene
         return result;
     }
 
-    private async applyBattle(tprocess: TProcess[]) {
-        const process = [
-            { from: 'opponent', movement: 'attack'},
-            { from: 'self', movement: 'sp'},
-            { from: 'opponent', movement: 'sp'},
-            { from: 'self', movement: 'attack'},
-        ];
+    private async applyBattle(process: TProcess[]) {
+        // const process = [
+        //     { from: 'opponent', movement: 'attack'},
+        //     { from: 'self', movement: 'sp'},
+        //     { from: 'opponent', movement: 'sp'},
+        //     { from: 'self', movement: 'attack'},
+        // ];
         
         // console.log({process});
         for (let i = 0; i < process.length; i++) {
             const { from, movement } = process[i];
 
-            // detect is finished
-            let isFinished = false;
-            
             // action movement
             const actionCharacter = from === 'self' ? this.self : this.opponent; 
-            const { effect, icon: actionIcon, dialog: actionDialog } = actionCharacter.runAction(movement);
-            const { type, target, value } = effect;
-            await this.dialogue.runDialog([{ icon: actionIcon, text: actionDialog }])
 
+            const currentAction = actionCharacter.getRandomAction();
+            const actionResult = actionCharacter.runAction(currentAction);
+            if (!actionResult) return ;
+            
+            const { effect, icon: actionIcon, dialog: actionDialog } = actionResult;
+            if (!effect) return ;
+
+            const { type, target, value } = effect;
+            await this.dialogue.runDialog([{ icon: actionIcon, text: actionDialog }], true)
 
             // reaction movement
             const sufferCharacter = target === 'self' ? this.self : this.opponent; 
-            // const { icon: sufferIcon, dialog: sufferDialog, isDead } = type === 'damage' ? sufferCharacter.getDamage(value) : sufferCharacter.getRecover(value);
-            // const result = type === 'damage' ? sufferCharacter.getDamage(value) : sufferCharacter.getRecover(value);
-            const { icon: sufferIcon, dialog: sufferDialog, isDead } = sufferCharacter.runReaction(type, value);
-            // console.log({result});
-            await this.dialogue.runDialog([{ icon: sufferIcon, text: sufferDialog }])
+            const reactionResult = sufferCharacter.runReaction(type, value || 0);
 
+            if (!reactionResult) return ;
+            const { icon: sufferIcon, dialog: sufferDialog, isDead } = reactionResult;
+            await this.dialogue.runDialog([{ icon: sufferIcon, text: sufferDialog }], true)
 
-            // detect isDead after suffer from action
-            isFinished = isDead;
-            
-            
-            if (isFinished) {
-                actionCharacter.winBattle();
-                sufferCharacter.loseBattle();
+            if (isDead) {
+                const winResult = actionCharacter.runResult('win');
+                if (!winResult) return;
+                const { icon: winnerIcon, dialog: winnerDialog } = winResult;
+                await this.dialogue.runDialog([{ icon: winnerIcon, text: winnerDialog }], true)
+
+                sufferCharacter.runResult('lose');
+                const loseResult = sufferCharacter.runResult('lose');
+                if (!loseResult) return;
+                const { icon: loserIcon, dialog: loserDialog } = loseResult;
+                await this.dialogue.runDialog([{ icon: loserIcon, text: loserDialog }]);
+
                 this.handleFinishGame();
                 return;
-            }
-            else {
-                // await this.dialogue.runDialog([{ icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: 'TURN!'}])
             }
         }
     }
@@ -163,10 +158,9 @@ export default class Battle extends Scene
     }
 
     private async handleFinishGame() {
-        // await this.dialogue.runDialog([{ icon: 'happy_2', text: 'FINISH!\nBACK TO ROOM!'}])
+        // await this.dialogue.runDialog([{ text: 'FINISH!\nBACK TO ROOM!'}])
         // sceneConverter(this.scene.scene, 'Room');
     }
-    
 
     private async openingCharacterMovement() {
         this.self.setAlpha(0);
@@ -187,6 +181,8 @@ export default class Battle extends Scene
         this.self.board.setAlpha(1);
         this.opponent.board.setAlpha(1);
 
+        // run battle introduce
+        await this.dialogue.runDialog(contents2);
     }
 
 }
