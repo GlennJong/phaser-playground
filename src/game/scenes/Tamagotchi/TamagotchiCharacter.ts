@@ -20,6 +20,8 @@ export class TamagotchiCharacter extends Character {
     private spaceEdge: { from: number, to: number };
     private callbackFunctions: { [key: string]: (param: any) => any};
 
+    // TODO: direction state
+
     public status: TStatus = {
         hp: 100,
         mp: 100
@@ -30,12 +32,16 @@ export class TamagotchiCharacter extends Character {
         props: CharacterProps,
         edge: { from: number, to: number },
         callbackFunctions: any,
+        hp
     ) {
 
         // static character here
         const key = 'tamagotchi_character_afk';
         
         super(scene, key, props);
+
+        // temp
+        this.status.hp = hp;
 
         // define moving limitation
         this.spaceEdge = edge || { from: 0, to: canvas.width } 

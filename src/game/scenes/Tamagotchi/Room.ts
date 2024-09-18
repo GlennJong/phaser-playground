@@ -6,13 +6,13 @@ import { Header } from './Header';
 import { TamagotchiCharacter } from './TamagotchiCharacter';
 import { RoomWindow } from './RoomWindow';
 import { RoomRecorder } from './RoomRecorder';
-
+import { sceneConverter, sceneStarter } from '../../components/CircleSceneTransition';
 
 // TODO: hotfix for RexDialogue component
 const maxChineseAmount = 8;
 
 // contribute by ai4upwjp
-function converterFromai4upwjp(input: string) {
+function converterFromai4vupwjp(input: string) {
     const result = [];
     let buffer = '';
     let chineseCount = 0;
@@ -62,21 +62,21 @@ const drinkDialogContent = [
             key: 'tamagotchi_character_afk',
             frame: 'face-normal'
         },
-        text: converterFromai4upwjp('感謝 ai4upwjp 兌換喝水，為 AFK 君和安迪補充了 10 點水分！')
+        text: converterFromai4vupwjp('感謝 ai4upwjp 兌換喝水，為 AFK 君和安迪補充了 10 點水分！')
     },
     {
         icon: {
             key: 'tamagotchi_character_afk',
             frame: 'face-angry'
         },
-        text: converterFromai4upwjp('夏天要記得注意補充水分！要是中暑可是很危險的喔！')
+        text: converterFromai4vupwjp('夏天要記得注意補充水分！要是中暑可是很危險的喔！')
     },
     {
         icon: {
             key: 'tamagotchi_character_afk',
             frame: 'face-sad'
         },
-        text: converterFromai4upwjp('拜託一定要喝水喔！')
+        text: converterFromai4vupwjp('拜託一定要喝水喔！')
     },
 ];
 
@@ -86,21 +86,21 @@ const writeDialogContent = [
             key: 'tamagotchi_character_afk',
             frame: 'face-normal'
         },
-        text: converterFromai4upwjp('感謝 curry_cat 兌換存擋，為 AFK 君和安迪補充了 10 點生命，大家記得幫手邊工作存個檔！')
+        text: converterFromai4vupwjp('感謝 curry_cat 兌換存擋，為 AFK 君和安迪補充了 10 點生命，大家記得幫手邊工作存個檔！')
     },
     {
         icon: {
             key: 'tamagotchi_character_afk',
             frame: 'face-angry'
         },
-        text: converterFromai4upwjp('要是突然停電可是很危險的喔！')
+        text: converterFromai4vupwjp('要是突然停電可是很危險的喔！')
     },
     {
         icon: {
             key: 'tamagotchi_character_afk',
             frame: 'face-sad'
         },
-        text: converterFromai4upwjp('拜託一定要存檔喔！')
+        text: converterFromai4vupwjp('拜託一定要存檔喔！')
     },
 ];
 
@@ -110,14 +110,14 @@ const sleepDialogContent = [
             key: 'tamagotchi_character_afk',
             frame: 'face-sad'
         },
-        text: converterFromai4upwjp('我累了，讓我睡一下，16:30 回來...')
+        text: converterFromai4vupwjp('我累了，讓我睡一下，16:30 回來...')
     },
     {
         icon: {
             key: 'tamagotchi_character_afk',
             frame: 'face-sad'
         },
-        text: converterFromai4upwjp('大家起來多動一動喔！')
+        text: converterFromai4vupwjp('大家起來多動一動喔！')
     },
 ];
 
@@ -136,34 +136,36 @@ export default class Room extends Scene
     keyboardInputer: typeof Phaser.Input.Keyboard;
 
     private tamagotchi: TamagotchiCharacter;
-    // private heartBar: HeartBar;
 
     constructor ()
     {
         super('Room');
+    }
+    init(data)
+    {
+        this.handleRenderScene(this, data);
+
     }
     preload()
     {
 
     }
     create ()
-    {
+    {        
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0xFF0000);
-        
-        this.handleRenderScene(this);
+
+        sceneStarter(this);
 
         EventBus.emit('current-scene-ready', this);
     }
 
     private dialogue: PrimaryDialogue;
-    // private dialogueCharactor: string;
 
-    private handleRenderScene(scene: Phaser.Scene) {
+    private handleRenderScene(scene: Phaser.Scene, data) {
         const background = scene.add.image(canvas.width/2, canvas.height/2, 'tamagotchi_room');
         background.displayWidth = canvas.width;
         background.displayHeight = canvas.height;
-
 
         // Dialogue
         const dialogue = new PrimaryDialogue(scene);
@@ -185,16 +187,14 @@ export default class Room extends Scene
         // Build Tamagotchi Charactor
         this.tamagotchi = new TamagotchiCharacter(
             scene,
-            { x: 80, y: 84, hp: 10 }, // status
+            { x: 80, y: 84 }, // status
             { from: 50, to: 120 }, // position limitation
-            { onHpChange: (value: number) => this.header.setValue({hp: value}) } // TODO: add action callback
+            { onHpChange: (value: number) => this.header.setValue({hp: value}) }, // TODO: add action callback
+            data.hp || 100
         );
 
         // apply hp
         this.header.setValue({ hp: this.tamagotchi.status.hp });
-
-        this.dialogue.runDialog(sleepDialogContent);
-
         this.keyboardInputer = scene.input.keyboard?.createCursorKeys();
     }
     
@@ -209,18 +209,24 @@ export default class Room extends Scene
         }
     }
 
-    customDialog(input: string) {
-        // this.board.runDialog([{ icon: 'happy_1', text: input}]);
-    }
-
     private keyboardflipFlop = { left: false, right: false, space: false };
 
-    private handleHeaderAction(action) {
+    private async handleHeaderAction(action) {
         // console.log(action)
         if (action === 'drink') {
             this.tamagotchi.runFuntionalAction('drink');
             this.dialogue.runDialog(drinkDialogContent);
         } else if (action === 'battle') {
+            await this.dialogue.runDialog([
+                {
+                    icon: {
+                        key: 'tamagotchi_character_afk',
+                        frame: 'face-sad'
+                    },
+                    text: converterFromai4vupwjp('開戰啦！')
+                }
+            ]);
+            sceneConverter(this, 'Battle', this.tamagotchi.status);
             // 
         } else if (action === 'write') {
             this.tamagotchi.runFuntionalAction('write');

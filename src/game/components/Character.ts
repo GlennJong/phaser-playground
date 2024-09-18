@@ -11,6 +11,8 @@ type TAnimsConfig = {
     repeatDelay?: number,
 }
 
+
+// TODO: intergate with battle character.
 const animsConfigs: { [key: string]: TAnimsConfig[] } = {
     'tamagotchi_character_afk': [
         { prefix: 'born',        qty: 7, freq: 8, repeat: 0 },

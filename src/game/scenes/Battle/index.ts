@@ -3,12 +3,18 @@ import { canvas } from '../../constants';
 import { PrimaryDialogue } from '../../components/PrimaryDialogue';
 
 import BattleCharacter from './BattleCharacter';
+import { sceneConverter, sceneStarter } from '../../components/CircleSceneTransition';
 
 const contents = [
     { icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: 'READY TO BATTLE!'},
 ]
 const contents2 = [
     { icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: '挑戰者是貝貝!'},
+]
+
+const finishDialogs = [
+    { icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: '挑戰結束!'},
+    { icon: { key: 'tamagotchi_character_afk', frame: 'face-angry' }, text: '回到我的小房間!'},
 ]
 
 type TProcess = {
@@ -36,14 +42,20 @@ export default class Battle extends Scene
         this.load.image('background-battle', 'background-battle.png');
     }
 
+    init(data) {
+        console.log(data);
+        this.handleInitGameScene(this, data);
+    }
+
     create ()
     {
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0xEEEEEE);
 
         // init
-        this.handleInitGameScene(this);
-        this.handleStartGameScene();
+        this.handleStartGameScene();        
+
+        sceneStarter(this);
     }
 
     update() {
@@ -51,7 +63,7 @@ export default class Battle extends Scene
         this.opponent.characterHandler();
     }
     
-    private handleInitGameScene(scene: Phaser.Scene) {
+    private handleInitGameScene(scene: Phaser.Scene, playerData) {
 
         this.background = scene.make.image({
             key: 'battle_background',
@@ -72,7 +84,7 @@ export default class Battle extends Scene
             scene,
             'battle_afk',
             'self',
-            { hp: 40 }
+            playerData
         );
 
         // default hide status board
@@ -91,9 +103,6 @@ export default class Battle extends Scene
         for (let i = 0; i < step; i++) {
             result.push({
                 from: ['self', 'opponent'][i%2],
-                movement: ['attack', 'sp'][Math.random() > 0.5 ? 0 : 1],
-                // damage: Math.floor(Math.random() * 100),
-                // action: ['HIT', 'BITE', 'KICK'][Math.floor(Math.random() * 3)]
             })
         }
 
@@ -101,16 +110,9 @@ export default class Battle extends Scene
     }
 
     private async applyBattle(process: TProcess[]) {
-        // const process = [
-        //     { from: 'opponent', movement: 'attack'},
-        //     { from: 'self', movement: 'sp'},
-        //     { from: 'opponent', movement: 'sp'},
-        //     { from: 'self', movement: 'attack'},
-        // ];
         
-        // console.log({process});
         for (let i = 0; i < process.length; i++) {
-            const { from, movement } = process[i];
+            const { from } = process[i];
 
             // action movement
             const actionCharacter = from === 'self' ? this.self : this.opponent; 
@@ -158,8 +160,8 @@ export default class Battle extends Scene
     }
 
     private async handleFinishGame() {
-        // await this.dialogue.runDialog([{ text: 'FINISH!\nBACK TO ROOM!'}])
-        // sceneConverter(this.scene.scene, 'Room');
+        await this.dialogue.runDialog(finishDialogs)
+        sceneConverter(this.scene.scene, 'Room', { hp: this.self.currentHp, mp: 100 });
     }
 
     private async openingCharacterMovement() {

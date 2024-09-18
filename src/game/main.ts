@@ -34,6 +34,7 @@ import Battle from './scenes/Battle';
 
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
+    // type: Phaser.WEBGL,
     width: canvas.width,
     height: canvas.height,
     parent: 'game-container',
@@ -63,10 +64,10 @@ const config: Phaser.Types.Core.GameConfig = {
             },
         ]
     },
-    backgroundColor: '#FFFFFF',
-    canvasStyle: `
-        image-rendering: pixelated;
-    `,
+    backgroundColor: '#000',
+    // canvasStyle: `
+    //     image-rendering: pixelated;
+    // `,
     scene: [
         // Boot,
         Preloader,

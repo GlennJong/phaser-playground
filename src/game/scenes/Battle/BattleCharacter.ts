@@ -63,9 +63,9 @@ const opponentConfig: {
         attack: {
             icon: { key: 'battle_beibei', frame: 'face-normal' },
             animation: 'attack',
-            piority: 1,
+            piority: 80,
             dialogs: [ '吃我的貝貝飛踢攻擊！', '打你！' ],
-            effect: { type: 'damage', target: 'self', basic: 40 },
+            effect: { type: 'damage', target: 'self', basic: 20 },
         },
         sp1: {
             icon: { key: 'battle_beibei', frame: 'face-attack' },
@@ -79,7 +79,7 @@ const opponentConfig: {
             animation: { key: 'sp' },
             piority: 20,
             dialogs: [ '貝貝的殺人飛吻！', '啾！！！！！' ],
-            effect: { type: 'damage', target: 'self', basic: 60 },
+            effect: { type: 'damage', target: 'self', basic: 30 },
         },
     },
     reactions: {
@@ -179,7 +179,7 @@ function getRandomDialog(data: string[]) {
 
 export default class BattleCharacter extends Character
 {
-    private currentHp: number;
+    public currentHp: number;
     private actions: { [key: string]: TAction };
     private reactions: { [key: string]: TReaction };
     private results: { [key: string]: TResult };
@@ -287,7 +287,8 @@ export default class BattleCharacter extends Character
         function easeInOutCubic(x: number): number {
             return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
         }
-        this.currentHp -= value;
+        const result = Math.max(0, this.currentHp - value);
+        this.currentHp = result;
         await runTween(this.character, { alpha: 0, repeat: 3 }, 100, easeInOutCubic);
         this.character.setAlpha(1);
         await this.board.setHP(this.currentHp);

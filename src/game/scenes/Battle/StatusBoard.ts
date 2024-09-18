@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 const defaultWidth = 72;
-const defaultHeight = 32;
+const defaultHeight = 24;
 const paddingX = 4;
 const paddingY = 4;
 
@@ -110,36 +110,36 @@ export class StatusBoard extends Phaser.GameObjects.Container {
         this.add(playerName);
 
         // 5. hp number
-        const currentHPText = scene.make.text({
-            x: x - (defaultWidth/2) + paddingX,
-            y: y - (defaultHeight/2) + paddingY + hpTextY,
-            style: { fontFamily: numberFontFamily, fontSize: numberFontSize, color: '#000' },
-            text: this.hp.toString(),
-        });
-        currentHPText.setResolution(numberFontResolution);
-        this.add(currentHPText);
-        this.currentHpText = currentHPText;
+        // const currentHPText = scene.make.text({
+        //     x: x - (defaultWidth/2) + paddingX,
+        //     y: y - (defaultHeight/2) + paddingY + hpTextY,
+        //     style: { fontFamily: numberFontFamily, fontSize: numberFontSize, color: '#000' },
+        //     text: this.hp.toString(),
+        // });
+        // currentHPText.setResolution(numberFontResolution);
+        // this.add(currentHPText);
+        // this.currentHpText = currentHPText;
 
-        const slash = scene.make.text({
-            x: x, // at center
-            y: y - (defaultHeight/2) + paddingY + hpTextY,
-            style: { fontFamily: numberFontFamily, fontSize: numberFontSize, color: '#000' },
-            text: '/',
-        });
-        slash.setResolution(numberFontResolution);
+        // const slash = scene.make.text({
+        //     x: x, // at center
+        //     y: y - (defaultHeight/2) + paddingY + hpTextY,
+        //     style: { fontFamily: numberFontFamily, fontSize: numberFontSize, color: '#000' },
+        //     text: '/',
+        // });
+        // slash.setResolution(numberFontResolution);
 
-        this.add(slash);
+        // this.add(slash);
 
-        const maxHPText = scene.make.text({
-            x: x + (defaultWidth/2) - paddingX,
-            y: y - (defaultHeight/2) + paddingY + hpTextY,
-            style: { fontFamily: numberFontFamily, fontSize: numberFontSize, color: '#000' },
-            text: this.maxHp.toString(),
-        }).setOrigin(1, 0);
+        // const maxHPText = scene.make.text({
+        //     x: x + (defaultWidth/2) - paddingX,
+        //     y: y - (defaultHeight/2) + paddingY + hpTextY,
+        //     style: { fontFamily: numberFontFamily, fontSize: numberFontSize, color: '#000' },
+        //     text: this.maxHp.toString(),
+        // }).setOrigin(1, 0);
         
-        maxHPText.setResolution(numberFontResolution);
+        // maxHPText.setResolution(numberFontResolution);
         
-        this.add(maxHPText);
+        // this.add(maxHPText);
 
         scene.add.existing(this);
     }
@@ -188,14 +188,14 @@ export class StatusBoard extends Phaser.GameObjects.Container {
             
             this.hp = Math.floor(point);
             this.hpBar.displayWidth = (this.hp / this.maxHp) * this.hpBarWidth;
-            if (this.currentHpText) {
-                this.currentHpText.setText(this.hp.toString());
-            }
+            // if (this.currentHpText) {
+            //     this.currentHpText.setText(this.hp.toString());
+            // }
 
             if (total == count) {
                 this.hp = to.hp;
                 this.hpBar.displayWidth = (this.hp / this.maxHp) * this.hpBarWidth;
-                this.currentHpText.setText(this.hp.toString());
+                // this.currentHpText.setText(this.hp.toString());
                 
                 // reset after moved
                 this.currentHpAction.callback();
