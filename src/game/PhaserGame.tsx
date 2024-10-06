@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
+import { forwardRef, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
 
@@ -17,12 +17,37 @@ export const PhaserGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame
 {
     const game = useRef<Phaser.Game | null>(null!);
 
+    const [ configData, setConfigData ] = useState();
+    
+    useEffect(() => {
+        handleGetGameConfig();
+    }, []);
+
+    const handleGetGameConfig = async() => {
+        const data = await fetchGetGameData()
+        setConfigData(data);
+        // console.log({data});
+    }
+
+    const fetchGetGameData = () => {
+        return new Promise(resolve => {
+            fetch('/configs/battle_character.json')
+            .then(function (response) {
+                resolve(response.json());
+              })
+              .then(function (myJson) {
+                console.log(myJson);
+              });
+        })
+    }
+    
+    
     useLayoutEffect(() =>
     {
-        if (game.current === null)
+        if (game.current === null && typeof configData !== 'undefined')
         {
 
-            game.current = StartGame("game-container");
+            game.current = StartGame("game-container", configData);
 
             if (typeof ref === 'function')
             {
@@ -45,7 +70,7 @@ export const PhaserGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame
                 }
             }
         }
-    }, [ref]);
+    }, [ref, configData]);
 
     useEffect(() =>
     {

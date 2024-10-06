@@ -186,7 +186,7 @@ export default class BattleCharacter extends Character
     private role: 'self' | 'opponent';
     public board: StatusBoard;
     public avaliableActions: string[];
-
+    
     constructor (
         scene: Phaser.Scene,
         key: string,
@@ -194,14 +194,21 @@ export default class BattleCharacter extends Character
         data: { hp?: number },
     )
     {
-        // step2: create Character instance
+        // get current character config
+        const { beibei } = scene.cache.json.get('battle_character');
+
+        const characterProps = {
+            ...defaultCharacterPosition[role],
+            animations: beibei.animations
+        };
+        
         super(
             scene,
             key,
-            defaultCharacterPosition[role]
+            characterProps,
         );
-
         
+
         // step3: define role
         this.role = role;
 

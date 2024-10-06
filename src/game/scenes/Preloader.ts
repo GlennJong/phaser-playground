@@ -25,57 +25,74 @@ export class Preloader extends Scene
             bar.width = 4 + (460 * progress);
 
         });
+
+
     }
 
-    preload ()
+    private config = undefined;
+    
+    preload()
     {
+
         this.load.setPath('assets');
-        
-        //  Load the assets for the game - Replace with your own assets
-        this.load.image('logo', 'logo.png');
-        this.load.image('star', 'star.png');
 
-        // Tamagotchi
-        // this.load.image('tamagotchi_header_frame', 'tamagotchi/header-frame.png');
-        this.load.atlas('tamagotchi_header_frame', 'tamagotchi/header/frame.png', 'tamagotchi/header/frame.json');
-        this.load.atlas('tamagotchi_header_icons', 'tamagotchi/header/icons.png', 'tamagotchi/header/icons.json');
-        this.load.image('tamagotchi_room', 'tamagotchi/room.png');
-        this.load.image('tamagotchi_room_desk', 'tamagotchi/desk.png');
-        this.load.atlas('tamagotchi_room_window', 'tamagotchi/window/spritesheet.png', 'tamagotchi/window/spritesheet.json');
-        this.load.atlas('tamagotchi_room_recorder', 'tamagotchi/recorder/spritesheet.png', 'tamagotchi/recorder/spritesheet.json');
-        this.load.atlas('tamagotchi_character_afk', 'tamagotchi/character/spritesheet.png', 'tamagotchi/character/spritesheet.json');
+        this.load.json('battle_character', 'battle_character.json');
+        this.load.on('filecomplete-json-battle_character', (key, type, data) => {
 
-        // Battle
-        this.load.image('battle_background', 'battle/background.png');
-        this.load.atlas('battle_board', 'battle/board.png', 'battle/board.json');
-        this.load.atlas('battle_afk', 'battle/afk.png', 'battle/afk.json');
-        this.load.atlas('battle_beibei', 'battle/beibei.png', 'battle/beibei.json');
-        this.load.atlas('battle_opponent', 'battle/opponent.png', 'battle/opponent.json');
-        
-        
-        // Dialogue
-        this.load.atlas('dialogue_frame', 'dialogue/frame.png', 'dialogue/frame.json');
-        
-        this.load.atlas('person', 'spritesheets/person/motions.png', 'spritesheets/person/motions.json');
-        this.load.atlas('default', 'spritesheets/default/motions.png', 'spritesheets/default/motions.json');
-        this.load.atlas('default-battle', 'spritesheets/default/battle.png', 'spritesheets/default/battle.json');
-        this.load.atlas('heart', 'spritesheets/energy/heart.png', 'spritesheets/energy/heart.json');
-        this.load.atlas('battery', 'spritesheets/energy/battery.png', 'spritesheets/energy/battery.json');
-        // this.load.atlas('header-icons', 'spritesheets/header/icons.png', 'spritesheets/header/icons.json');
-        
-        this.load.atlas('battle-character-1', 'spritesheets/battle-character-1/character.png', 'spritesheets/battle-character-1/character.json');
-        this.load.atlas('battle-character-2', 'spritesheets/battle-character-2/character.png', 'spritesheets/battle-character-2/character.json');
-        this.load.atlas('status-board-hp', 'spritesheets/status-board/hp.png', 'spritesheets/status-board/hp.json');
+            const { beibei } = data;
+            this.config = data;
+            
+            this.load.atlas(beibei.key, beibei.preload.png, beibei.preload.json);
 
-        this.load.image('background-room', 'background-room.png');
-        this.load.image('transition-cover', 'transition-cover.png');
-        this.load.image('happy_1', 'spritesheets/default/1.png');
-        this.load.image('happy_2', 'spritesheets/default/2.png');
-        this.load.atlas('frame', 'ui/frame.png', 'ui/frame.json');
 
-        // this.load.image('star', 'star.png');
-        this.load.image('star_up', 'star.png');
-        this.load.image('star_reverse', 'star.png');
+            //  Load the assets for the game - Replace with your own assets
+            this.load.image('logo', 'logo.png');
+            this.load.image('star', 'star.png');
+    
+            // Tamagotchi
+            // this.load.image('tamagotchi_header_frame', 'tamagotchi/header-frame.png');
+            this.load.atlas('tamagotchi_header_frame', 'tamagotchi/header/frame.png', 'tamagotchi/header/frame.json');
+            this.load.atlas('tamagotchi_header_icons', 'tamagotchi/header/icons.png', 'tamagotchi/header/icons.json');
+            this.load.image('tamagotchi_room', 'tamagotchi/room.png');
+            this.load.image('tamagotchi_room_desk', 'tamagotchi/desk.png');
+            this.load.atlas('tamagotchi_room_window', 'tamagotchi/window/spritesheet.png', 'tamagotchi/window/spritesheet.json');
+            this.load.atlas('tamagotchi_room_recorder', 'tamagotchi/recorder/spritesheet.png', 'tamagotchi/recorder/spritesheet.json');
+            this.load.atlas('tamagotchi_character_afk', 'tamagotchi/character/spritesheet.png', 'tamagotchi/character/spritesheet.json');
+    
+            // Battle
+            this.load.image('battle_background', 'battle/background.png');
+            this.load.atlas('battle_board', 'battle/board.png', 'battle/board.json');
+            this.load.atlas('battle_afk', 'battle/afk.png', 'battle/afk.json');
+            this.load.atlas('battle_beibei', 'battle/beibei.png', 'battle/beibei.json');
+            this.load.atlas('battle_opponent', 'battle/opponent.png', 'battle/opponent.json');
+            
+            
+            // Dialogue
+            this.load.atlas('dialogue_frame', 'dialogue/frame.png', 'dialogue/frame.json');
+            
+            this.load.atlas('person', 'spritesheets/person/motions.png', 'spritesheets/person/motions.json');
+            this.load.atlas('default', 'spritesheets/default/motions.png', 'spritesheets/default/motions.json');
+            this.load.atlas('default-battle', 'spritesheets/default/battle.png', 'spritesheets/default/battle.json');
+            this.load.atlas('heart', 'spritesheets/energy/heart.png', 'spritesheets/energy/heart.json');
+            this.load.atlas('battery', 'spritesheets/energy/battery.png', 'spritesheets/energy/battery.json');
+            // this.load.atlas('header-icons', 'spritesheets/header/icons.png', 'spritesheets/header/icons.json');
+            
+            this.load.atlas('battle-character-1', 'spritesheets/battle-character-1/character.png', 'spritesheets/battle-character-1/character.json');
+            this.load.atlas('battle-character-2', 'spritesheets/battle-character-2/character.png', 'spritesheets/battle-character-2/character.json');
+            this.load.atlas('status-board-hp', 'spritesheets/status-board/hp.png', 'spritesheets/status-board/hp.json');
+    
+            this.load.image('background-room', 'background-room.png');
+            this.load.image('transition-cover', 'transition-cover.png');
+            this.load.image('happy_1', 'spritesheets/default/1.png');
+            this.load.image('happy_2', 'spritesheets/default/2.png');
+            this.load.atlas('frame', 'ui/frame.png', 'ui/frame.json');
+    
+            // this.load.image('star', 'star.png');
+            this.load.image('star_up', 'star.png');
+            this.load.image('star_reverse', 'star.png');
+        });
+        
+        
     }
 
     create ()
@@ -84,6 +101,6 @@ export class Preloader extends Scene
         //  For example, you can define global animations here, so we can use them in other scenes.
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-        this.scene.start('Tamagotchi');
+        this.scene.start('Tamagotchi', this.config);
     }
 }

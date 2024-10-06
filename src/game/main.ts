@@ -65,14 +65,11 @@ const config: Phaser.Types.Core.GameConfig = {
         ]
     },
     backgroundColor: '#000',
-    // canvasStyle: `
-    //     image-rendering: pixelated;
-    // `,
+    canvasStyle: `
+        image-rendering: pixelated;
+    `,
     scene: [
-        // Boot,
         Preloader,
-        // MainMenu,
-        // MainGame,
         Tamagotchi,
         TamagotchiRoom,
         TamagotchiShop,
@@ -81,9 +78,14 @@ const config: Phaser.Types.Core.GameConfig = {
     ]
 };
 
-const StartGame = (parent: string) => {
+const StartGame = (parent: string, data) => {
 
-    return new Game({ ...config, parent });
+    const myConfig = {
+        ...config,
+        myjson: data
+    }
+    
+    return new Game({ ...myConfig, parent });
 
 }
 

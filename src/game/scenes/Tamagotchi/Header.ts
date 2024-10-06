@@ -70,7 +70,7 @@ export class Header extends Phaser.GameObjects.Container {
         const sleep = new HeaderSelector(scene, {
             key: 'tamagotchi_header_icons',
             frame: 'sleep',
-            x: 80, y: 13, start: 1, end: 2, freq: 1,
+            x: 79, y: 13, start: 1, end: 2, freq: 1,
         })
 
         this.add(sleep);
@@ -128,8 +128,6 @@ export class Header extends Phaser.GameObjects.Container {
     }
 
     public setValue({hp, coin}: { hp?: number, coin?: number }) {
-        console.log({ hp });
-        
         if (typeof hp !== 'undefined') {
             this.hp.setValue(hp);
         }

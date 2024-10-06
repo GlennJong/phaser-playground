@@ -1,0 +1,80 @@
+{
+  "beibei": {
+    "key": "battle_beibei",
+    "preload": {
+      "png": "battle/beibei.png",
+      "json": "battle/beibei.json"
+    },
+    "animations": [
+      { "prefix": "idle", "qty": 9, "freq": 8, "repeat": -1, "repeat_delay": 1000 },
+      { "prefix": "sp", "qty": 5, "freq": 8, "repeat": 0 }
+    ],
+    "battle": {
+      "base": {
+        "max_hp": 60,
+        "name": "貝貝"
+      },
+      "actions": {
+        "attack": {
+          "frame": "face-normal",
+          "animation": "attack",
+          "piority": 80,
+          "dialogs": [
+            "吃我的貝貝飛踢攻擊！",
+            "打你！"
+          ],
+          "effect": {
+            "type": "damage",
+            "target": "self",
+            "value": 20
+          }
+        },
+        "sp1": {
+          "frame": "face-attack",
+          "animation": "sp",
+          "piority": 80,
+          "dialogs": [
+            "貝貝的治療飛吻！",
+            "啾～～～"
+          ],
+          "effect": {
+            "type": "recover",
+            "target": "self",
+            "value": 10
+          }
+        },
+        "sp2": {
+          "frame": "face-attack",
+          "animation": "sp",
+          "piority": 20,
+          "dialogs": [
+            "貝貝的殺人飛吻！",
+            "啾！！！！！"
+          ],
+          "effect": {
+            "type": "damage",
+            "target": "self",
+            "value": 20
+          }
+        }
+      },
+      "reactions": {
+        "damage": {
+          "frame": "face-damage",
+          "animation": "damage",
+          "dialogs": [
+            "你幹嘛打我啦！",
+            "好痛啦！"
+          ]
+        },
+        "recover": {
+          "frame": "face-normal",
+          "animation": "recover",
+          "dialogs": [
+            "貝貝復活！"
+          ]
+        }
+      }
+    }
+  }
+}

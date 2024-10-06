@@ -43,12 +43,13 @@ export default class Battle extends Scene
     }
 
     init(data) {
-        console.log(data);
         this.handleInitGameScene(this, data);
     }
 
     create ()
     {
+        
+        
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0xEEEEEE);
 

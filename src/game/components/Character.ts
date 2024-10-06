@@ -20,7 +20,7 @@ const animsConfigs: { [key: string]: TAnimsConfig[] } = {
         { prefix: 'egg',         qty: 2, freq: 1, repeat: -1 },
         { prefix: 'walk-left',   qty: 6, freq: 8, repeat: 4 },
         { prefix: 'walk-right',  qty: 6, freq: 8, repeat: 4 },
-        { prefix: 'write',       qty: 13, freq: 8, repeat: 0 },
+        { prefix: 'write',       qty: 13,freq: 8, repeat: 0 },
         { prefix: 'lay-down',    qty: 4, freq: 8, repeat: 0 },
         { prefix: 'sleep',       qty: 5, freq: 2, repeat: -1 },
         { prefix: 'idle-left',   qty: 5, freq: 2, repeat: -1 },
@@ -72,32 +72,34 @@ export class Character extends Phaser.GameObjects.Container {
     constructor(
         scene: Phaser.Scene,
         key: string,
-        props: CharacterProps
+        props: CharacterProps,
     ) {
         super(scene);
 
-        const { x, y } = props;
+        const { x, y, animations } = props;
 
         // load animation by key
-        const currentConfig = animsConfigs[key];
+        // const currentConfig = animsConfigs[key];
         this.characterKey = key;
 
+        if (animations) {
+            animations.forEach(_ani => {
+                const animationName = `${key}_${_ani.prefix}`;
+                const data: Phaser.Types.Animations.Animation = {
+                    key: animationName,
+                    frames: scene.anims.generateFrameNames(key, { prefix: `${_ani.prefix}_`, start: 1, end: _ani.qty }),
+                    repeat: _ani.repeat,
+                };
+    
+                if (typeof _ani.freq !== 'undefined')        data.frameRate = _ani.freq;
+                if (typeof _ani.duration !== 'undefined')    data.duration = _ani.duration;
+                if (typeof _ani.repeatDelay !== 'undefined') data.duration = _ani.repeatDelay;
+                
+                scene.anims.create(data);
+            });
+        }
+
         
-        currentConfig.forEach(_ani => {
-
-            const animationName = `${key}_${_ani.prefix}`;
-            const data: Phaser.Types.Animations.Animation = {
-                key: animationName,
-                frames: scene.anims.generateFrameNames(key, { prefix: `${_ani.prefix}_`, start: 1, end: _ani.qty }),
-                repeat: _ani.repeat,
-            };
-
-            if (typeof _ani.freq !== 'undefined')        data.frameRate = _ani.freq;
-            if (typeof _ani.duration !== 'undefined')    data.duration = _ani.duration;
-            if (typeof _ani.repeatDelay !== 'undefined') data.duration = _ani.repeatDelay;
-            
-            scene.anims.create(data);
-        });
 
         // create character
         const posX = x || 0;
