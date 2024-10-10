@@ -78,14 +78,8 @@ const config: Phaser.Types.Core.GameConfig = {
     ]
 };
 
-const StartGame = (parent: string, data) => {
-
-    const myConfig = {
-        ...config,
-        myjson: data
-    }
-    
-    return new Game({ ...myConfig, parent });
+const StartGame = (parent: string) => {
+    return new Game({ ...config, parent});
 
 }
 

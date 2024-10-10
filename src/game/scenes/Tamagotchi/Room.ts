@@ -187,10 +187,14 @@ export default class Room extends Scene
         // Build Tamagotchi Charactor
         this.tamagotchi = new TamagotchiCharacter(
             scene,
-            { x: 80, y: 84 }, // status
-            { from: 50, to: 120 }, // position limitation
-            { onHpChange: (value: number) => this.header.setValue({hp: value}) }, // TODO: add action callback
-            data.hp || 100
+            {
+                 x: 80, y: 84,
+                 edge: { from: 50, to: 120 },
+                 hp: data.hp,
+                 callbackFunctions: {
+                    onHpChange: (value: number) => this.header.setValue({hp: value})
+                }
+            },
         );
 
         // apply hp

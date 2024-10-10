@@ -3,12 +3,31 @@ import { Character, CharacterProps } from "../../components/Character";
 import { canvas } from "../../constants";
 
 type TDirection = "none" | "left" | "right";
-type TSpecialAction = string;
-type TStatus = { [key: string]: number };
 
-const defaultIdleAction = 'idle-left'; // TODO: idle right
+type TAction = {
+    icon: { key: string, frame: string },
+    animation: { key: string },
+    dialogs: string[],
+    piority: number,
+};
+
+
+// type TSpecialAction = string;
+type TStatus = { [key: string]: number };
+type TamagotchiCharacterProps = CharacterProps & {
+    edge: { from: number, to: number },
+    callbackFunctions: { [key: string]: <T extends number>(props: T) => void },
+    hp?: number
+};
+
+const defaultIdlePrefix = 'idle'; // TODO: idle right
+const defaultHp = 100;
 const defaultRecoverHpByTime = 24;
 const defaultDecreaseHpByTime = 1;
+
+const defaultXSecForNormalAction = 2;
+const defaultXSecForSpecialAction = 10;
+
 
 // TODO: low hp status...
 const moveDistance = 32;
@@ -17,11 +36,12 @@ export class TamagotchiCharacter extends Character {
     private isAlive: boolean = true;
     private isBorn: boolean = false;
     private isActing: boolean = false;
+    private actions: { [key: string]: TAction };
     private spaceEdge: { from: number, to: number };
-    private callbackFunctions: { [key: string]: (param: any) => any};
+    private callbackFunctions: { [key: string]: <T extends number>(value: T) => void };
+    private direction: TDirection = 'left';
 
     // TODO: direction state
-
     public status: TStatus = {
         hp: 100,
         mp: 100
@@ -29,28 +49,47 @@ export class TamagotchiCharacter extends Character {
 
     constructor(
         scene: Phaser.Scene,
-        props: CharacterProps,
-        edge: { from: number, to: number },
-        callbackFunctions: any,
-        hp
+        props: TamagotchiCharacterProps,
     ) {
 
         // static character here
-        const key = 'tamagotchi_character_afk';
+        const key = 'tamagotchi_afk';
         
-        super(scene, key, props);
+        // get current character config
+        const { tamagotchi_afk } = scene.cache.json.get('battle_character');
 
+        const characterProps = {
+            ...props,
+            animations: tamagotchi_afk.animations
+        };
+        
+        super(
+            scene,
+            key,
+            characterProps,
+        );
+        
+        const { hp, callbackFunctions } = props;
+        
+        // actions
+        this.actions = tamagotchi_afk.idle_actions;
+        
         // temp
-        this.status.hp = hp;
+        this.status.hp = hp || defaultHp;
 
         // define moving limitation
-        this.spaceEdge = edge || { from: 0, to: canvas.width } 
+        this.spaceEdge = props.edge || { from: 0, to: canvas.width } 
 
         // default animation
-        this.playAnimation(defaultIdleAction);
+        this.handleDefaultIdleAction();
 
         // defined callback function
         this.callbackFunctions = callbackFunctions;
+    }
+
+    private handleDefaultIdleAction() {
+        if (this.isActing) return;
+        this.playAnimation(`${defaultIdlePrefix}-${this.direction}`);
     }
 
     private async handleBornAction() {
@@ -60,45 +99,94 @@ export class TamagotchiCharacter extends Character {
         this.isBorn = false;
     }
 
-    private handleNormalMoveAction() {
-        // stop move action if character is acting
-        if (this.isActing) return;
+    
+    // private handleNormalMoveAction() {
+    //     // stop move action if character is acting
+    //     if (this.isActing) return;
         
-        const options: TDirection[] = ['left', 'right', 'none'];
-        let direction = options[Math.floor(Math.random() * options.length)];
+    //     const options: TDirection[] = ['left', 'right', 'none'];
+    //     const result = options[Math.floor(Math.random() * options.length)];
         
-        if (direction !== 'none') {
-            // change direction if character close to edge
-            direction = this.character.x < this.spaceEdge.from ? 'right' : this.character.x > this.spaceEdge.to ? 'left' : direction;
-            this.isActing = true;
-            this.playAnimation(`walk-${direction}`);
-            this.moveDirection(direction, moveDistance, () => {
+    //     if (result !== 'none') {
+    //         // change direction if character close to edge
+    //         this.direction = this.character.x < this.spaceEdge.from ? 'right' : this.character.x > this.spaceEdge.to ? 'left' : result;
 
-                // reset action after moved
-                this.isActing = false;
-                this.playAnimation(`idle-${direction}`);
-            });
+    //         this.isActing = true;
+    //         this.playAnimation(`walk-${this.direction}`);
+    //         this.moveDirection(this.direction, moveDistance, () => {
+
+    //             // reset action after moved
+    //             this.isActing = false;
+    //             this.handleDefaultIdleAction();
+    //         });
+    //     }
+    // }
+
+
+    public getRandomAction() {
+        const allAction = Object.keys(this.actions);
+        let sumPiority = 0;
+
+        const allActionPoint: { [key: string]: number } = {};
+
+        allAction.forEach(key => {
+            allActionPoint[key] = sumPiority += this.actions[key].piority;
+        });
+
+        const randomPoint = sumPiority * Math.random();
+
+        allAction.forEach(key => {
+            allActionPoint[key] = Math.abs(allActionPoint[key] - randomPoint);
+        });
+
+        const closestPoint = Math.min(...Object.values(allActionPoint));
+        const selectedActionKey = Object.keys(allActionPoint).find(key => allActionPoint[key] === closestPoint);
+
+        if (typeof selectedActionKey !== 'undefined') {
+            return this.actions[selectedActionKey];
         }
     }
+
     
-    private async handleSpecialAction() {
+    private async handleAction() {
         if (this.isActing) return;
-        const options: TSpecialAction[] = ['sp-1-left', 'none'];
-        const action = options[Math.floor(Math.random() * options.length)];
-        // console.log(this.moveDirection)
+
+        const currentAction = this.getRandomAction();
+        console.log(currentAction);
+        // const options: TSpecialAction[] = ['stare-left', 'none'];
+        // const action = options[Math.floor(Math.random() * options.length)];
         
-        if (action !== 'none') {
+        // if (action !== 'none') {
 
             // start animation;
-            this.isActing = true;
-            await this.playAnimation(action);
+            // this.isActing = true;
+            // await this.playAnimation(action);
             // await this.playAnimation(`${action}-${this.moveDirection}`);
             
             // reset animation;
-            this.isActing = false;
-            this.playAnimation(defaultIdleAction);
-        }
+            // this.isActing = false;
+            // this.handleDefaultIdleAction();
+        // }
     }
+    // private async handleSpecialAction() {
+    //     if (this.isActing) return;
+
+    //     // const 
+    //     const options: TSpecialAction[] = ['stare-left', 'none'];
+    //     const action = options[Math.floor(Math.random() * options.length)];
+        
+    //     if (action !== 'none') {
+
+    //         // start animation;
+    //         this.isActing = true;
+    //         await this.playAnimation(action);
+    //         // await this.playAnimation(`${action}-${this.moveDirection}`);
+            
+    //         // reset animation;
+    //         this.isActing = false;
+    //         this.handleDefaultIdleAction();
+    //     }
+    // }
 
     private async handleEggAction() {
         this.playAnimation('egg');
@@ -129,7 +217,7 @@ export class TamagotchiCharacter extends Character {
         }
     }
     
-    private x: number = 2;
+    // private x: number = 2;
     private fireEachXsec?: number = undefined;
     
     public manualContolDirection(direction: 'left' | 'right' ) {
@@ -143,7 +231,7 @@ export class TamagotchiCharacter extends Character {
 
             // reset action after moved
             this.isActing = false;
-            this.playAnimation(`idle-${direction}`);
+            this.handleDefaultIdleAction();
         });
     }
 
@@ -156,7 +244,7 @@ export class TamagotchiCharacter extends Character {
         
         // reset animation;
         this.isActing = false;
-        this.playAnimation(defaultIdleAction);
+        this.handleDefaultIdleAction();
     }
 
     public async runFuntionalAction(action: string) {
@@ -164,13 +252,11 @@ export class TamagotchiCharacter extends Character {
         if (!this.isAlive) return;
         const result = this.status.hp + 10;
         this.status.hp = result >= 100 ? 100 : result <= 0 ? 0: result;
-        // console.log(this.status.hp);
 
         if (action === 'drink') {
             this.isActing = true;
             await this.playAnimation('drink');
             this.isActing = false;
-            // this.playAnimation(defaultIdleAction);
         }
         else if (action === 'write') {
             this.isActing = true;
@@ -185,6 +271,9 @@ export class TamagotchiCharacter extends Character {
         }
     }
     
+
+    private xSec = defaultXSecForNormalAction;
+    private advancedXSec = Math.floor(defaultXSecForSpecialAction / defaultXSecForNormalAction);
     
     public characterHandler(time: number) {
         // update position trigger at every frame
@@ -194,12 +283,12 @@ export class TamagotchiCharacter extends Character {
         }
         
         // run handler every x secs
-        if (Math.floor(time/1000) % this.x === 0) {
+        if (Math.floor(time/1000) % this.xSec === 0) {
              // prevent trigger by each frames in every x secs
-            if (Math.floor(time/1000) / this.x == this.fireEachXsec) return;
+            if (Math.floor(time/1000) / this.xSec == this.fireEachXsec) return;
 
             // update fireEachXsec value;
-            this.fireEachXsec = Math.floor(time/1000) / this.x; 
+            this.fireEachXsec = Math.floor(time/1000) / this.xSec; 
 
             if (this.isAlive) {
                 if (this.isBorn) {
@@ -208,13 +297,15 @@ export class TamagotchiCharacter extends Character {
 
                 this.handleDecreaseHpByTime();
 
-                // walk or idle each 5 secs
-                if (this.fireEachXsec % this.x !== 0) {
-                    this.handleNormalMoveAction();
+                this.handleAction();
+
+                if (this.fireEachXsec % (this.advancedXSec) === 0) {
+                    // do special action when
+                    // this.handleSpecialAction();
                 }
-                // special action each 25 secs
-                else if (this.fireEachXsec % this.x === 0) {
-                    this.handleSpecialAction();
+                else {
+                    // walk or idle each X secs
+                    // this.handleNormalMoveAction();
                 }
 
             }

@@ -1,5 +1,5 @@
 {
-  "beibei": {
+  "battle_beibei": {
     "key": "battle_beibei",
     "preload": {
       "png": "battle/beibei.png",
@@ -74,6 +74,82 @@
             "貝貝復活！"
           ]
         }
+      }
+    }
+  },
+  "tamagotchi_afk": {
+    "key": "tamagotchi_afk",
+    "preload": {
+      "png": "tamagotchi/afk.png",
+      "json": "tamagotchi/afk.json"
+    },
+    "animations": [
+      { "prefix": "born",        "qty": 7,  "freq": 8, "repeat": 0 },
+      { "prefix": "drink",       "qty": 7,  "freq": 4, "repeat": 0 },
+      { "prefix": "egg",         "qty": 2,  "freq": 1, "repeat": -1 },
+      { "prefix": "walk-left",   "qty": 6,  "freq": 8, "repeat": 4 },
+      { "prefix": "walk-right",  "qty": 6,  "freq": 8, "repeat": 4 },
+      { "prefix": "write",       "qty": 13, "freq": 8, "repeat": 0 },
+      { "prefix": "lay-down",    "qty": 4,  "freq": 8, "repeat": 0 },
+      { "prefix": "sleep",       "qty": 5,  "freq": 2, "repeat": -1 },
+      { "prefix": "idle-left",   "qty": 3,  "freq": 2, "repeat": -1 },
+      { "prefix": "idle-right",  "qty": 3,  "freq": 2, "repeat": -1 },
+      { "prefix": "stare-left",  "qty": 6,  "freq": 8, "repeat": 0 },
+      { "prefix": "stare-right", "qty": 6,  "freq": 8, "repeat": 0 }
+    ],
+    "unavailablilities": {
+      "idle": {
+        "animation": "egg"
+      },
+      "born": {
+        "animation": "born"
+      }
+    },
+    "idle_actions": {
+      "idle": {
+        "animation": "idle",
+        "piority": 80,
+        "direction": true
+      },
+      "stare": {
+        "animation": "stare",
+        "piority": 10,
+        "direction": true
+      },
+      "walk": {
+        "animation": "walk",
+        "piority": 10,
+        "direction": true
+      }
+    },
+    "actions": {
+      "drink": {
+        "animation": "drink",
+        "point": 20,
+        "dialogs": [
+          { "face": "face-normal", "text": "drink dialog {{user_name}}!" }
+        ]
+      },
+      "write": {
+        "animation": "write",
+        "point": 20,
+        "dialogs": [
+          { "face": "face-normal", "text": "write dialog {{user_name}}!" }
+        ]
+      },
+      "sleep": {
+        "animation": "lay-down",
+        "point": 20,
+        "dialogs": [
+          { "face": "face-normal", "text": "sleep dialog {{user_name}}!" }
+        ]
+      },
+      "awake": {
+        "animation": "lay-down",
+        "point": 20,
+        "dialogs": [
+          { "face": "face-normal", "text": "awake dialog {{user_name}}!" }
+        ]
       }
     }
   }

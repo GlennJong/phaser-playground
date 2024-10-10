@@ -350,11 +350,6 @@ export default class BattleCharacter extends Character
         };
     }
 
-    // public async loseBattle() {
-    //     this.setAlpha(0.5);
-    //     this.board.setAlpha(0);
-    // }
-
     public getRandomAction() {
         const allAction = Object.keys(this.actions);
         let sumPiority = 0;

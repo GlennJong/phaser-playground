@@ -39,10 +39,16 @@ export class Preloader extends Scene
         this.load.json('battle_character', 'battle_character.json');
         this.load.on('filecomplete-json-battle_character', (key, type, data) => {
 
-            const { beibei } = data;
+            console.log({data});
+
+            const { battle_beibei, tamagotchi_afk } = data;
             this.config = data;
             
-            this.load.atlas(beibei.key, beibei.preload.png, beibei.preload.json);
+            // Battle Character
+            this.load.atlas(battle_beibei.key, battle_beibei.preload.png, battle_beibei.preload.json);
+
+            // Tamagotchi Character
+            this.load.atlas(tamagotchi_afk.key, tamagotchi_afk.preload.png, tamagotchi_afk.preload.json);
 
 
             //  Load the assets for the game - Replace with your own assets

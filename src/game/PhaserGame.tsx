@@ -24,30 +24,14 @@ export const PhaserGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame
     }, []);
 
     const handleGetGameConfig = async() => {
-        const data = await fetchGetGameData()
-        setConfigData(data);
-        // console.log({data});
     }
-
-    const fetchGetGameData = () => {
-        return new Promise(resolve => {
-            fetch('/configs/battle_character.json')
-            .then(function (response) {
-                resolve(response.json());
-              })
-              .then(function (myJson) {
-                console.log(myJson);
-              });
-        })
-    }
-    
     
     useLayoutEffect(() =>
     {
-        if (game.current === null && typeof configData !== 'undefined')
+        if (game.current === null)
         {
 
-            game.current = StartGame("game-container", configData);
+            game.current = StartGame("game-container");
 
             if (typeof ref === 'function')
             {
