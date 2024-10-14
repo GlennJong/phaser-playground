@@ -76,14 +76,14 @@ export default class Battle extends Scene
         // init characters
         this.opponent = new BattleCharacter(
             scene,
-            'battle_beibei',
+            'battle_beibei_opponent',
             'opponent',
             {}
         );
 
         this.self = new BattleCharacter(
             scene,
-            'battle_afk',
+            'battle_afk_self',
             'self',
             playerData
         );
@@ -122,31 +122,32 @@ export default class Battle extends Scene
             const actionResult = actionCharacter.runAction(currentAction);
             if (!actionResult) return ;
             
-            const { effect, icon: actionIcon, dialog: actionDialog } = actionResult;
+            const { effect, dialog: actionDialog } = actionResult;
+
             if (!effect) return ;
 
             const { type, target, value } = effect;
-            await this.dialogue.runDialog([{ icon: actionIcon, text: actionDialog }], true)
+            await this.dialogue.runDialog(actionDialog, true)
 
             // reaction movement
             const sufferCharacter = target === 'self' ? this.self : this.opponent; 
             const reactionResult = sufferCharacter.runReaction(type, value || 0);
 
             if (!reactionResult) return ;
-            const { icon: sufferIcon, dialog: sufferDialog, isDead } = reactionResult;
-            await this.dialogue.runDialog([{ icon: sufferIcon, text: sufferDialog }], true)
+            const { dialog: sufferDialog, isDead } = reactionResult;
+            await this.dialogue.runDialog(sufferDialog, true)
 
             if (isDead) {
                 const winResult = actionCharacter.runResult('win');
                 if (!winResult) return;
-                const { icon: winnerIcon, dialog: winnerDialog } = winResult;
-                await this.dialogue.runDialog([{ icon: winnerIcon, text: winnerDialog }], true)
+                const { dialog: winnerDialog } = winResult;
+                await this.dialogue.runDialog(winnerDialog, true)
 
                 sufferCharacter.runResult('lose');
                 const loseResult = sufferCharacter.runResult('lose');
                 if (!loseResult) return;
-                const { icon: loserIcon, dialog: loserDialog } = loseResult;
-                await this.dialogue.runDialog([{ icon: loserIcon, text: loserDialog }]);
+                const { dialog: loserDialog } = loseResult;
+                await this.dialogue.runDialog(loserDialog);
 
                 this.handleFinishGame();
                 return;

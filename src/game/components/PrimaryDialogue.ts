@@ -3,8 +3,8 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import { canvas } from '../constants';
 import { runTween } from '../utils/runTween';
 
-type TDialogData = {
-    icon: { key: string, frame: string },
+export type TDialogData = {
+    face: { key: string, frame: string },
     text: string
 }
 
@@ -44,6 +44,50 @@ const defaultSpacingConfig = {
     icon: defaultIconSpacing,
 }
 
+const maxChineseAmount = 8;
+
+function converterFromai4vupwjp(input: string) {
+    const result = [];
+    let buffer = '';
+    let chineseCount = 0;
+    
+    for (let i = 0; i < input.length; i++) {
+        const char = input[i];
+        
+        if (char.match(/[a-zA-Z\d]/)) {
+            if (chineseCount > 0) {
+                result.push(buffer);
+                buffer = '';
+                chineseCount = 0;
+            }
+            buffer += char;
+        } else if (char.match(/[\u4e00-\uff1f]/)) {
+            if (buffer.length > 0 && chineseCount === 0) {
+                result.push(buffer);
+                buffer = '';
+            }
+            buffer += char;
+            chineseCount++;
+            if (chineseCount === maxChineseAmount) {
+                result.push(buffer);
+                buffer = '';
+                chineseCount = 0;
+            }
+        } else {
+            if (buffer.length > 0) {
+                result.push(buffer);
+                buffer = '';
+                chineseCount = 0;
+            }
+        }
+    }
+    
+    if (buffer.length > 0) {
+        result.push(buffer);
+    }
+    
+    return result.join(' ');
+}
 
 export class PrimaryDialogue extends Phaser.GameObjects.Container {
     private _textBox: RexUIPlugin.TextBox;
@@ -121,7 +165,7 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
         
     }
     private _runTextBox(data: TDialogData): Promise<void> {
-        const { icon, text } = data;
+        const { face, text } = data;
         return new Promise((resolve) => {
             this._textBox.on('pointerdown', () => {
                 if (this._textBox.isTyping) {
@@ -153,8 +197,8 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
                     }, defaultStaticDelay);
                 }
             });
-            this._textBox.start(text, defaultSpeechSpeed);
-            if (icon) { this._textBox.setIconTexture(icon.key, icon.frame) }
+            this._textBox.start(converterFromai4vupwjp(text), defaultSpeechSpeed);
+            if (face) { this._textBox.setIconTexture(face.key, face.frame) }
         })
     }
     
@@ -175,6 +219,7 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
     }
     
     public async runDialog(contents: TDialogData[], alive?: boolean) {
+
         // 1. show dialogue container
         this.setVisible(true);
         

@@ -1,6 +1,6 @@
 {
-  "battle_beibei": {
-    "key": "battle_beibei",
+  "battle_beibei_opponent": {
+    "key": "battle_beibei_opponent",
     "preload": {
       "png": "battle/beibei.png",
       "json": "battle/beibei.json"
@@ -16,12 +16,15 @@
       },
       "actions": {
         "attack": {
-          "frame": "face-normal",
           "animation": "attack",
           "piority": 80,
           "dialogs": [
-            "吃我的貝貝飛踢攻擊！",
-            "打你！"
+            { "dialog": [{
+                "face": { "key": "battle_beibei_opponent", "frame": "face-normal" },
+                "text": "attack!"
+              }],
+              "piority": 2
+            }
           ],
           "effect": {
             "type": "damage",
@@ -30,12 +33,15 @@
           }
         },
         "sp1": {
-          "frame": "face-attack",
           "animation": "sp",
           "piority": 80,
           "dialogs": [
-            "貝貝的治療飛吻！",
-            "啾～～～"
+            { "dialog": [{
+                "face": { "key": "battle_beibei_opponent", "frame": "face-normal" },
+                "text": "attack!"
+              }],
+              "piority": 2
+            }
           ],
           "effect": {
             "type": "recover",
@@ -44,12 +50,15 @@
           }
         },
         "sp2": {
-          "frame": "face-attack",
           "animation": "sp",
           "piority": 20,
           "dialogs": [
-            "貝貝的殺人飛吻！",
-            "啾！！！！！"
+            { "dialog": [{
+                "face": { "key": "battle_beibei_opponent", "frame": "face-normal" },
+                "text": "sp2!"
+              }],
+              "piority": 2
+            }
           ],
           "effect": {
             "type": "damage",
@@ -63,15 +72,164 @@
           "frame": "face-damage",
           "animation": "damage",
           "dialogs": [
-            "你幹嘛打我啦！",
-            "好痛啦！"
+            { "dialog": [{
+                "face": { "key": "battle_beibei_opponent", "frame": "face-normal" },
+                "text": "get damage!"
+              }],
+              "piority": 2
+            }
           ]
         },
         "recover": {
           "frame": "face-normal",
           "animation": "recover",
           "dialogs": [
-            "貝貝復活！"
+            { "dialog": [{
+                "face": { "key": "battle_beibei_opponent", "frame": "face-normal" },
+                "text": "get recover!"
+              }],
+              "piority": 2
+            }
+          ]
+        }
+      },
+      "results": {
+        "win": {
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_beibei_opponent", "frame": "face-normal" },
+                "text": "win!"
+              }],
+              "piority": 2
+            }
+          ]
+        },
+        "lose": {
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_beibei_opponent", "frame": "face-normal" },
+                "text": "lose!"
+              }],
+              "piority": 2
+            }
+          ]
+        }
+      }
+    }
+  },
+  "battle_afk_self": {
+    "key": "battle_afk_self",
+    "preload": {
+      "png": "battle/afk.png",
+      "json": "battle/afk.json"
+    },
+    "animations": [
+      { "prefix": "idle", "qty": 9, "freq": 8, "repeat": -1, "repeat_delay": 1000 },
+      { "prefix": "sp", "qty": 5, "freq": 8, "repeat": 0 }
+    ],
+    "battle": {
+      "base": {
+        "max_hp": 60,
+        "name": "AFK君"
+      },
+      "actions": {
+        "attack": {
+          "animation": "attack",
+          "piority": 80,
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_afk_self", "frame": "face-normal" },
+                "text": "attack!"
+              }],
+              "piority": 2
+            }
+          ],
+          "effect": {
+            "type": "damage",
+            "target": "opponent",
+            "value": 20
+          }
+        },
+        "sp1": {
+          "animation": "sp",
+          "piority": 80,
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_afk_self", "frame": "face-normal" },
+                "text": "attack!"
+              }],
+              "piority": 2
+            }
+          ],
+          "effect": {
+            "type": "recover",
+            "target": "opponent",
+            "value": 10
+          }
+        },
+        "sp2": {
+          "animation": "sp",
+          "piority": 20,
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_afk_self", "frame": "face-normal" },
+                "text": "sp2!"
+              }],
+              "piority": 2
+            }
+          ],
+          "effect": {
+            "type": "damage",
+            "target": "opponent",
+            "value": 20
+          }
+        }
+      },
+      "reactions": {
+        "damage": {
+          "frame": "face-damage",
+          "animation": "damage",
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_afk_self", "frame": "face-normal" },
+                "text": "get damage!"
+              }],
+              "piority": 2
+            }
+          ]
+        },
+        "recover": {
+          "frame": "face-normal",
+          "animation": "recover",
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_afk_self", "frame": "face-normal" },
+                "text": "get recover!"
+              }],
+              "piority": 2
+            }
+          ]
+        }
+      },
+      "results": {
+        "win": {
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_afk_self", "frame": "face-normal" },
+                "text": "win!"
+              }],
+              "piority": 2
+            }
+          ]
+        },
+        "lose": {
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_afk_self", "frame": "face-normal" },
+                "text": "lose!"
+              }],
+              "piority": 2
+            }
           ]
         }
       }
@@ -97,8 +255,8 @@
       { "prefix": "stare-left",  "qty": 6,  "freq": 8, "repeat": 0 },
       { "prefix": "stare-right", "qty": 6,  "freq": 8, "repeat": 0 }
     ],
-    "unavailablilities": {
-      "idle": {
+    "unavailable_actions": {
+      "egg": {
         "animation": "egg"
       },
       "born": {
@@ -108,47 +266,68 @@
     "idle_actions": {
       "idle": {
         "animation": "idle",
-        "piority": 80,
-        "direction": true
+        "piority": 5,
+        "has_direction": true
       },
       "stare": {
         "animation": "stare",
-        "piority": 10,
-        "direction": true
+        "piority": 5,
+        "has_direction": true
       },
       "walk": {
         "animation": "walk",
-        "piority": 10,
-        "direction": true
+        "piority": 100,
+        "is_move": true,
+        "has_direction": true
       }
     },
-    "actions": {
+    "functional_action": {
       "drink": {
         "animation": "drink",
         "point": 20,
         "dialogs": [
-          { "face": "face-normal", "text": "drink dialog {{user_name}}!" }
+          { "dialog": [{
+              "face": { "key": "tamagotchi_character_afk", "frame": "face-normal" },
+              "text": "drink dialog {{user_name}}!"
+            }],
+            "piority": 2
+          }
         ]
       },
       "write": {
         "animation": "write",
         "point": 20,
         "dialogs": [
-          { "face": "face-normal", "text": "write dialog {{user_name}}!" }
+          { "dialog": [{
+              "face": { "key": "tamagotchi_character_afk", "frame": "face-normal" },
+              "text": "write dialog {{user_name}}!"
+            }],
+            "piority": 2
+          }
         ]
       },
       "sleep": {
-        "animation": "lay-down",
+        "animation": "sleep",
         "point": 20,
         "dialogs": [
-          { "face": "face-normal", "text": "sleep dialog {{user_name}}!" }
+          { "dialog": [{
+              "face": { "key": "tamagotchi_character_afk", "frame": "face-normal" },
+              "text": "drink dialog {{user_name}}!"
+            }],
+            "piority": 2
+          }
         ]
       },
       "awake": {
         "animation": "lay-down",
         "point": 20,
         "dialogs": [
-          { "face": "face-normal", "text": "awake dialog {{user_name}}!" }
+          { "dialog": [{
+              "face": { "key": "tamagotchi_character_afk", "frame": "face-normal" },
+              "text": "awake dialog {{user_name}}!"
+            }],
+            "piority": 2
+          }
         ]
       }
     }

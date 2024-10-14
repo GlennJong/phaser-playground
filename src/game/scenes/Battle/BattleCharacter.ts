@@ -2,6 +2,14 @@ import Phaser from 'phaser';
 import { runTween } from '../../utils/runTween';
 import { StatusBoard } from './StatusBoard';
 import { Character } from '../../components/Character';
+import { TDialogData } from '../../components/PrimaryDialogue';
+import { selectFromPiority } from '../../utils/selectFromPiority';
+
+
+type TDialogItem = {
+    piority: number,
+    dialog: TDialogData[]
+}
 
 export type TEffect = {
     type: 'damage' | 'recover',
@@ -11,155 +19,142 @@ export type TEffect = {
 }
 
 type TReaction = {
-    icon: { key: string, frame: string },
     animation: 'damage' | 'recover' | { key: string },
-    dialogs: string[],
+    dialogs: TDialogItem[],
 };
 
 type TAction = {
-    icon: { key: string, frame: string },
     animation: 'attack' | { key: string },
-    dialogs: string[],
+    dialogs: TDialogItem[],
     piority: number,
     effect: TEffect
 };
 
 type TResult = {
     icon: { key: string, frame: string },
-    dialogs: string[],
+    dialogs: TDialogItem[],
 };
 
 export type TRunAction = {
-    dialog: string,
+    dialog: TDialogData[],
 } & TAction;
 
 export type TRunReaction = {
-    dialog: string,
+    dialog: TDialogData[],
     isDead: boolean
 } & TReaction;
 
 export type TRunResult = {
-    dialog: string,
+    dialog: TDialogData[],
 } & TResult;
 
 
-type TBase = {
-    hp?: number,
-    max_hp: number,
-    name: string,
-}
+// const opponentConfig: {
+//         base: TBase,
+//         actions: { [key: string]: TAction },
+//         reactions: { [key: string]: TReaction },
+//         results: { [key: string]: TResult }
+//     } = {
+//     base: {
+//         max_hp: 60,
+//         name: '貝貝'
+//     },
+//     actions: {
+//         attack: {
+//             icon: { key: 'battle_beibei', frame: 'face-normal' },
+//             animation: 'attack',
+//             piority: 80,
+//             dialogs: [ '吃我的貝貝飛踢攻擊！', '打你！' ],
+//             effect: { type: 'damage', target: 'self', basic: 20 },
+//         },
+//         sp1: {
+//             icon: { key: 'battle_beibei', frame: 'face-attack' },
+//             animation: { key: 'sp' },
+//             piority: 20,
+//             dialogs: [ '貝貝的治療飛吻！', '啾～～～' ],
+//             effect: { type: 'recover', target: 'self', basic: 10 },
+//         },
+//         sp2: {
+//             icon: { key: 'battle_beibei', frame: 'face-attack' },
+//             animation: { key: 'sp' },
+//             piority: 20,
+//             dialogs: [ '貝貝的殺人飛吻！', '啾！！！！！' ],
+//             effect: { type: 'damage', target: 'self', basic: 30 },
+//         },
+//     },
+//     reactions: {
+//         damage: {
+//             icon: { key: 'battle_beibei', frame: 'face-damage' },
+//             animation: 'damage',
+//             dialogs: [ '你幹嘛打我啦！', '好痛啦！' ]
+//         },
+//         recover: {
+//             icon: { key: 'battle_beibei', frame: 'face-normal' },
+//             animation: 'recover',
+//             dialogs: [ '貝貝復活！' ]
+//         },
+//     },
+//     results: {
+//         win: {
+//             icon: { key: 'battle_beibei', frame: 'face-normal' },
+//             dialogs: [ '想跟我貝貝打架你還早十年呢！！！！', '貝貝的勝利！' ]
+//         },
+//         lose: {
+//             icon: { key: 'battle_beibei', frame: 'face-damage' },
+//             dialogs: [ '我輸惹...', '好不甘心...' ]
+//         }
+//     }
+// }
 
-const opponentConfig: {
-        base: TBase,
-        actions: { [key: string]: TAction },
-        reactions: { [key: string]: TReaction },
-        results: { [key: string]: TResult }
-    } = {
-    base: {
-        max_hp: 60,
-        name: '貝貝'
-    },
-    actions: {
-        attack: {
-            icon: { key: 'battle_beibei', frame: 'face-normal' },
-            animation: 'attack',
-            piority: 80,
-            dialogs: [ '吃我的貝貝飛踢攻擊！', '打你！' ],
-            effect: { type: 'damage', target: 'self', basic: 20 },
-        },
-        sp1: {
-            icon: { key: 'battle_beibei', frame: 'face-attack' },
-            animation: { key: 'sp' },
-            piority: 20,
-            dialogs: [ '貝貝的治療飛吻！', '啾～～～' ],
-            effect: { type: 'recover', target: 'self', basic: 10 },
-        },
-        sp2: {
-            icon: { key: 'battle_beibei', frame: 'face-attack' },
-            animation: { key: 'sp' },
-            piority: 20,
-            dialogs: [ '貝貝的殺人飛吻！', '啾！！！！！' ],
-            effect: { type: 'damage', target: 'self', basic: 30 },
-        },
-    },
-    reactions: {
-        damage: {
-            icon: { key: 'battle_beibei', frame: 'face-damage' },
-            animation: 'damage',
-            dialogs: [ '你幹嘛打我啦！', '好痛啦！' ]
-        },
-        recover: {
-            icon: { key: 'battle_beibei', frame: 'face-normal' },
-            animation: 'recover',
-            dialogs: [ '貝貝復活！' ]
-        },
-    },
-    results: {
-        win: {
-            icon: { key: 'battle_beibei', frame: 'face-normal' },
-            dialogs: [ '想跟我貝貝打架你還早十年呢！！！！', '貝貝的勝利！' ]
-        },
-        lose: {
-            icon: { key: 'battle_beibei', frame: 'face-damage' },
-            dialogs: [ '我輸惹...', '好不甘心...' ]
-        }
-    }
-}
-
-const selfConfig: {
-        base: TBase,
-        actions: { [key: string]: TAction },
-        reactions: { [key: string]: TReaction },
-        results: { [key: string]: TResult }
-    } = {
-    base: {
-        max_hp: 100,
-        name: 'AFK君'
-    },
-    actions: {
-        attack: {
-            icon: { key: 'battle_afk', frame: 'face-normal' },
-            animation: 'attack',
-            piority: 80,
-            dialogs: [ '普通衝撞攻擊！', '普通拍擊！' ],
-            effect: { type: 'damage', target: 'opponent', basic: 20 },
-        },
-        sp: {
-            icon: { key: 'battle_afk', frame: 'face-attack' },
-            animation: 'attack',
-            piority: 80,
-            dialogs: [ '特殊衝撞攻擊！', '特殊拍擊！' ],
-            effect: { type: 'damage', target: 'opponent', basic: 40 },
-        },
-    },
-    reactions: {
-        damage: {
-            icon: { key: 'battle_afk', frame: 'face-damage' },
-            animation: 'damage',
-            dialogs: [ '啊～～～', '好痛！！' ]
-        },
-        recover: {
-            icon: { key: 'battle_afk', frame: 'face-normal' },
-            animation: 'recover',
-            dialogs: [ '恢復了一點點生命:)', '復活了:)' ]
-        },
-    },
-    results: {
-        win: {
-            icon: { key: 'battle_afk', frame: 'face-normal' },
-            dialogs: [ '好耶！我贏了！', 'AFK君的勝利，嘻嘻！' ]
-        },
-        lose: {
-            icon: { key: 'battle_afk', frame: 'face-damage' },
-            dialogs: [ '是我輸ㄌ', '哭哭哭' ]
-        }
-    }
-}
-
-
-function getRandomRatio(): number {
-    return 1 + (0.5 - Math.random());
-}
+// const selfConfig: {
+//         base: TBase,
+//         actions: { [key: string]: TAction },
+//         reactions: { [key: string]: TReaction },
+//         results: { [key: string]: TResult }
+//     } = {
+//     base: {
+//         max_hp: 100,
+//         name: 'AFK君'
+//     },
+//     actions: {
+//         attack: {
+//             icon: { key: 'battle_afk', frame: 'face-normal' },
+//             animation: 'attack',
+//             piority: 80,
+//             dialogs: [ '普通衝撞攻擊！', '普通拍擊！' ],
+//             effect: { type: 'damage', target: 'opponent', basic: 20 },
+//         },
+//         sp: {
+//             icon: { key: 'battle_afk', frame: 'face-attack' },
+//             animation: 'attack',
+//             piority: 80,
+//             dialogs: [ '特殊衝撞攻擊！', '特殊拍擊！' ],
+//             effect: { type: 'damage', target: 'opponent', basic: 40 },
+//         },
+//     },
+//     reactions: {
+//         damage: {
+//             icon: { key: 'battle_afk', frame: 'face-damage' },
+//             animation: 'damage',
+//             dialogs: [ '啊～～～', '好痛！！' ]
+//         },
+//         recover: {
+//             icon: { key: 'battle_afk', frame: 'face-normal' },
+//             animation: 'recover',
+//             dialogs: [ '恢復了一點點生命:)', '復活了:)' ]
+//         },
+//     },
+//     results: {
+//         win: {
+//             icon: { key: 'battle_afk', frame: 'face-normal' },
+//             dialogs: [ '好耶！我贏了！', 'AFK君的勝利，嘻嘻！' ]
+//         },
+//         lose: {
+//             icon: { key: 'battle_afk', frame: 'face-damage' },
+//             dialogs: [ '是我輸ㄌ', '哭哭哭' ]
+//         }
+//     }
+// }
 
 const fullWidth = 160;
 
@@ -173,13 +168,10 @@ const defaultStatusBoardPosition = {
     opponent: { x: 50, y: 20 }
 };
 
-function getRandomDialog(data: string[]) {
-    return data[Math.floor(Math.random() * data.length)];
-}
-
 export default class BattleCharacter extends Character
 {
     public currentHp: number;
+    public hp: { current: number, max: number } = { current: 0, max: 0 };
     private actions: { [key: string]: TAction };
     private reactions: { [key: string]: TReaction };
     private results: { [key: string]: TResult };
@@ -195,44 +187,50 @@ export default class BattleCharacter extends Character
     )
     {
         // get current character config
-        const { beibei } = scene.cache.json.get('battle_character');
+        const currentBattleCharacterConfig = scene.cache.json.get('battle_character')[key] || scene.cache.json.get('battle_character')['default'];
+        
+        if (!currentBattleCharacterConfig) return;
+        
+        const { animations, battle } = currentBattleCharacterConfig;
 
         const characterProps = {
             ...defaultCharacterPosition[role],
-            animations: beibei.animations
+            animations: animations
         };
-        
+
         super(
             scene,
             key,
             characterProps,
         );
-        
 
         // step3: define role
         this.role = role;
 
         // step4: define config
-        const config = role === 'self' ? selfConfig : opponentConfig;
-        this.avaliableActions = Object.keys(config.actions);
-        this.actions = config.actions;
-        this.reactions = config.reactions;
-        this.results = config.results;
+        // const config = role === 'self' ? selfConfig : opponentConfig;
+        this.avaliableActions = Object.keys(battle.actions);
+        this.actions = battle.actions;
+        this.reactions = battle.reactions;
+        this.results = battle.results;
         
         // step5: define current action
-        this.currentHp = typeof data.hp !== 'undefined' ? data.hp : config.base.max_hp;
+        this.hp = {
+            current: typeof data.hp !== 'undefined' ? data.hp : battle.base.max_hp,
+            max: battle.base.max_hp
+        };
         
         // step6: set default character status board and character animation
-        const { name, max_hp } = config.base;
+        const { name } = battle.base;
         const boardPosition = defaultStatusBoardPosition[role];
-        this.board = new StatusBoard(scene, boardPosition.x, boardPosition.y, { hp: this.currentHp, max_hp, name });
+        this.board = new StatusBoard(
+            scene,
+            boardPosition.x,
+            boardPosition.y,
+            { hp: { current: this.hp.current, max: this.hp.max }, name }
+        );
 
-        if (role === 'self') {
-            this.playStatic('self-idle');
-        }
-        else {
-            this.playAnimation('idle');
-        }
+        this.playAnimation('idle');
 
         this.getRandomAction();
 
@@ -249,8 +247,7 @@ export default class BattleCharacter extends Character
     private handlePlayKeyFrameAnimation = async (key: string) => {
         await this.board.setAlpha(0);
         await this.playAnimation(key, 1000);
-        const idlekey = this.role === 'self' ? 'idle-self' : 'idle';
-        this.playAnimation(idlekey);
+        this.playAnimation('idle');
         await this.board.setAlpha(1);
     }
 
@@ -269,7 +266,7 @@ export default class BattleCharacter extends Character
 
         if (!currentAction) return;
 
-        const { animation, dialogs, effect } = currentAction;
+        const { animation, dialogs } = currentAction;
         
         // Run key frame animation
         if (typeof animation !== 'string' && animation.key) {
@@ -279,13 +276,15 @@ export default class BattleCharacter extends Character
             this.handlePlayAttackReaction();
         }
 
-        if (effect) {
-            effect.value = Math.floor(effect.basic * getRandomRatio());
-        }
+        // if (effect) {
+        //     effect.value = Math.floor(effect.basic);
+        // }
+
+        console.log({ dialogs })
         
         return { 
             ...currentAction,
-            dialog: getRandomDialog(dialogs),
+            dialog: selectFromPiority(dialogs).dialog,
          };
     }
 
@@ -294,18 +293,19 @@ export default class BattleCharacter extends Character
         function easeInOutCubic(x: number): number {
             return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
         }
-        const result = Math.max(0, this.currentHp - value);
-        this.currentHp = result;
+        const result = Math.max(0, this.hp.current - value);
+        this.hp.current = result;
         await runTween(this.character, { alpha: 0, repeat: 3 }, 100, easeInOutCubic);
         this.character.setAlpha(1);
-        await this.board.setHP(this.currentHp);
+        await this.board.setHP(this.hp.current);
     }
     
     private handlePlayRecoverReaction = async (value: number) => {
-        this.currentHp += value;
+        const result = Math.min(this.hp.max, this.hp.current + value);
+        this.hp.current = result;
         await runTween(this.character, { scale: 1.15, yoyo: 1 }, 200);
         this.character.setScale(1);
-        await this.board.setHP(this.currentHp);
+        await this.board.setHP(this.hp.current);
     }
 
     public runReaction(reaction = 'damage', value: number): TRunReaction | undefined {
@@ -328,8 +328,8 @@ export default class BattleCharacter extends Character
         
         return { 
             ...currentReaction,
-            dialog: getRandomDialog(dialogs),
-            isDead: this.currentHp <= 0
+            dialog: selectFromPiority(dialogs).dialog,
+            isDead: this.hp.current <= 0
          };
     }
 
@@ -346,7 +346,7 @@ export default class BattleCharacter extends Character
         
         return {
             ...currentResult,
-            dialog: getRandomDialog(dialogs),
+            dialog: selectFromPiority(dialogs).dialog,
         };
     }
 

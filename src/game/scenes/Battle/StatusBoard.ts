@@ -22,13 +22,16 @@ const hpTextY= 16;
 
 export type TStatusBoardProps = {
     name: string,
-    hp: number,
-    max_hp: number
+    hp: {
+        current: number,
+        max: number,
+    }
+    // hp: number,
+    // max_hp: number
 }
 
 export class StatusBoard extends Phaser.GameObjects.Container {
-    private hp: number;
-    private maxHp: number;
+    private hp: { current: number, max: number };
     private hpBar: Phaser.GameObjects.Sprite;
     private hpBarWidth: number;
     private currentHpText: Phaser.GameObjects.Text;
@@ -42,8 +45,10 @@ export class StatusBoard extends Phaser.GameObjects.Container {
     {
         // step1. Inherite from scene & set hp value
         super(scene);
-        this.maxHp = data.max_hp;
-        this.hp = data.hp;
+        this.hp = {
+            current: data.hp.current,
+            max: data.hp.current
+        };
 
         // step2. init background
         const background = scene.make.nineslice({
@@ -92,7 +97,7 @@ export class StatusBoard extends Phaser.GameObjects.Container {
         .setOrigin(0);
 
         this.hpBarWidth = hpFrameWidth - (hpBarHead.width/2) - paddingX - 3;
-        hpBar.displayWidth = (this.hp / this.maxHp) * this.hpBarWidth;
+        hpBar.displayWidth = (this.hp.current / this.hp.max) * this.hpBarWidth;
         this.hpBar = hpBar;
 
         this.add(hpFrame);
@@ -134,7 +139,7 @@ export class StatusBoard extends Phaser.GameObjects.Container {
         //     x: x + (defaultWidth/2) - paddingX,
         //     y: y - (defaultHeight/2) + paddingY + hpTextY,
         //     style: { fontFamily: numberFontFamily, fontSize: numberFontSize, color: '#000' },
-        //     text: this.maxHp.toString(),
+        //     text: this.hp.max.toString(),
         // }).setOrigin(1, 0);
         
         // maxHPText.setResolution(numberFontResolution);
@@ -158,7 +163,7 @@ export class StatusBoard extends Phaser.GameObjects.Container {
 
             const resultHp = value;
             this.currentHpAction = {
-                from: { hp: this.hp, },
+                from: { hp: this.hp.current, },
                 to: { hp: resultHp < 0 ? 0 : resultHp},
                 callback: callbackFunc
             }
@@ -186,15 +191,15 @@ export class StatusBoard extends Phaser.GameObjects.Container {
 
             const point = from.hp + ((to.hp - from.hp) * count/total)
             
-            this.hp = Math.floor(point);
-            this.hpBar.displayWidth = (this.hp / this.maxHp) * this.hpBarWidth;
+            this.hp.current = Math.floor(point);
+            this.hpBar.displayWidth = (this.hp.current / this.hp.max) * this.hpBarWidth;
             // if (this.currentHpText) {
             //     this.currentHpText.setText(this.hp.toString());
             // }
 
             if (total == count) {
-                this.hp = to.hp;
-                this.hpBar.displayWidth = (this.hp / this.maxHp) * this.hpBarWidth;
+                this.hp.current = to.hp;
+                this.hpBar.displayWidth = (this.hp.current / this.hp.max) * this.hpBarWidth;
                 // this.currentHpText.setText(this.hp.toString());
                 
                 // reset after moved
