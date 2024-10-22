@@ -87,6 +87,16 @@ export class TamagotchiCharacter extends Character {
         );
         
         const { hp, callbackFunctions } = props;
+
+        
+        const { displayHeight } = this.character;
+        const shadow = scene.add.circle(characterProps.x, characterProps.y, displayHeight, 0x000000);
+        shadow.setOrigin(0.5, -1.2);
+        shadow.setAlpha(0.4);
+        shadow.setScale(0.2, 0.1);
+        shadow.setDepth(1);
+        this.character.setDepth(2);
+        this.setFollowShadow(shadow);
         
         // actions
         this.idleActions = tamagotchi_afk.idle_actions;

@@ -72,7 +72,6 @@ export default class Battle extends Scene
             y: canvas.height/2,
         });
 
-
         // init characters
         this.opponent = new BattleCharacter(
             scene,
@@ -92,9 +91,9 @@ export default class Battle extends Scene
         this.self.board.setAlpha(0);
         this.opponent.board.setAlpha(0);
 
-
         // init dialogue
         this.dialogue = new PrimaryDialogue(scene);
+        this.dialogue.setDepth(99);
     }
 
     private generateRandomBattleProcess(): TProcess[] {
@@ -163,22 +162,22 @@ export default class Battle extends Scene
 
     private async handleFinishGame() {
         await this.dialogue.runDialog(finishDialogs)
-        sceneConverter(this.scene.scene, 'Room', { hp: this.self.currentHp, mp: 100 });
+        sceneConverter(this.scene.scene, 'Room', { hp: this.self.hp.current, mp: 100 });
     }
 
     private async openingCharacterMovement() {
-        this.self.setAlpha(0);
-        this.opponent.setAlpha(0);
+        this.self.character.setAlpha(0);
+        this.opponent.character.setAlpha(0);
         
         // run self opening animation
-        this.self.setAlpha(1);
+        this.self.character.setAlpha(1);
         await this.self.openingCharacter();
 
         // run battle introduce
         await this.dialogue.runDialog(contents);
 
         // run opponent opening animation
-        this.opponent.setAlpha(1);
+        this.opponent.character.setAlpha(1);
         await this.opponent.openingCharacter();
 
         // show status board for both
