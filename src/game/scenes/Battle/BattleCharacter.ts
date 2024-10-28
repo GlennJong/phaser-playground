@@ -147,9 +147,9 @@ export default class BattleCharacter extends Character
         const position = defaultCharacterPosition[this.role];
         const distance = this.role === 'self' ? fullWidth : fullWidth  * -1;
 
-        this.character.setPosition(position.x + distance, position.y)
+        this.character.setPosition(position.x + distance, position.y);
         await runTween(this.character, { x: position.x }, 1000);
-        this.shadow.setVisible(1);
+        this.shadow.setVisible(true);
     }
 
     private handlePlayKeyFrameAnimation = async (key: string) => {

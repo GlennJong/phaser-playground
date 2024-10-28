@@ -243,12 +243,13 @@
     },
     "animations": [
       { "prefix": "born",        "qty": 7,  "freq": 8, "repeat": 0 },
-      { "prefix": "drink",       "qty": 7,  "freq": 4, "repeat": 0 },
       { "prefix": "egg",         "qty": 2,  "freq": 1, "repeat": -1 },
       { "prefix": "walk-left",   "qty": 6,  "freq": 8, "repeat": 4 },
       { "prefix": "walk-right",  "qty": 6,  "freq": 8, "repeat": 4 },
-      { "prefix": "write",       "qty": 13, "freq": 8, "repeat": 0 },
+      { "prefix": "drink",       "qty": 7,  "freq": 4, "repeat": 0, "repeat_delay": 1000 },
+      { "prefix": "write",       "qty": 13, "freq": 8, "repeat": 0, "repeat_delay": 1000 },
       { "prefix": "lay-down",    "qty": 4,  "freq": 8, "repeat": 0 },
+      { "prefix": "wake-up",     "qty": 5,  "freq": 8, "repeat": 0 },
       { "prefix": "sleep",       "qty": 5,  "freq": 2, "repeat": -1 },
       { "prefix": "idle-left",   "qty": 3,  "freq": 2, "repeat": -1 },
       { "prefix": "idle-right",  "qty": 3,  "freq": 2, "repeat": -1 },
@@ -288,7 +289,19 @@
         "dialogs": [
           { "dialog": [{
               "face": { "key": "tamagotchi_character_afk", "frame": "face-normal" },
-              "text": "drink dialog {{user_name}}!"
+              "text": "中文字在這裡 drink dialog {{user_name}}!"
+            }],
+            "piority": 2
+          }
+        ]
+      },
+      "battle": {
+        "animation": "drink",
+        "point": 0,
+        "dialogs": [
+          { "dialog": [{
+              "face": { "key": "tamagotchi_character_afk", "frame": "face-normal" },
+              "text": "battle dialog {{user_name}}!"
             }],
             "piority": 2
           }
@@ -312,19 +325,7 @@
         "dialogs": [
           { "dialog": [{
               "face": { "key": "tamagotchi_character_afk", "frame": "face-normal" },
-              "text": "drink dialog {{user_name}}!"
-            }],
-            "piority": 2
-          }
-        ]
-      },
-      "awake": {
-        "animation": "lay-down",
-        "point": 20,
-        "dialogs": [
-          { "dialog": [{
-              "face": { "key": "tamagotchi_character_afk", "frame": "face-normal" },
-              "text": "awake dialog {{user_name}}!"
+              "text": "sleep dialog {{user_name}}!"
             }],
             "piority": 2
           }

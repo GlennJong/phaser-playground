@@ -25,7 +25,7 @@ export async function sceneStarter(scene: Phaser.Scene) {
 
 class CircleScreenTransition extends Phaser.GameObjects.Container {
     private visibleArea = Phaser.GameObjects.Arc; // TODO: incorrect type
-    private maxSize: number;
+    private curcleMaxSize: number;
     
     constructor(
         scene: Phaser.Scene
@@ -36,7 +36,7 @@ class CircleScreenTransition extends Phaser.GameObjects.Container {
         const { zoom } = scene.scale;
         const { width, height } = scene.sys.game.canvas;
 
-        this.maxSize = Math.max(width*zoom, height*zoom);
+        this.curcleMaxSize = Math.max(width*zoom, height*zoom);
 
         const coverRect = scene.add.rectangle(0, 0, width*zoom, height*zoom, maskCoverColor).setVisible(true);
         const visibleArea = scene.add.circle(width/2, height/2, 0, maskCoverColor).setVisible(false);
@@ -45,6 +45,8 @@ class CircleScreenTransition extends Phaser.GameObjects.Container {
 
         const mask = visibleArea.createGeometryMask();
 
+        this.setDepth(99);
+        
         mask.invertAlpha = true;
         coverRect.setMask(mask);
 
@@ -55,7 +57,7 @@ class CircleScreenTransition extends Phaser.GameObjects.Container {
     }
     
     public max() {
-        this.visibleArea.setRadius(this.maxSize);
+        this.visibleArea.setRadius(this.curcleMaxSize);
     }
     
     public async run() {

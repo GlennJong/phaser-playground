@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { Character, CharacterProps } from "../../components/Character";
+import { Character } from "../../components/Character";
 import { canvas } from "../../constants";
 import { selectFromPiority } from "../../utils/selectFromPiority";
 import { TDialogData } from "../../components/PrimaryDialogue";
@@ -29,7 +29,9 @@ type TFunctionAction = {
 
 // type TSpecialAction = string;
 type TStatus = { [key: string]: number };
-type TamagotchiCharacterProps = CharacterProps & {
+type TamagotchiCharacterProps = {
+    x: number, 
+    y: number,
     edge: { from: number, to: number },
     callbackFunctions: { [key: string]: <T extends number>(props: T) => void },
     hp?: number
@@ -44,9 +46,9 @@ const defaultXSec = 5;
 // TODO: low hp status...
 const defaultMoveDistance = 32;
 
-
 export class TamagotchiCharacter extends Character {
     private isAlive: boolean = true;
+    private isSleep: boolean = false;
     private isBorn: boolean = false;
     private isActing: boolean = false;
 
@@ -88,12 +90,14 @@ export class TamagotchiCharacter extends Character {
         
         const { hp, callbackFunctions } = props;
 
+        // set character depth\
+        this.setDepth(1);
+
         
-        const { displayHeight } = this.character;
-        const shadow = scene.add.circle(characterProps.x, characterProps.y, displayHeight, 0x000000);
-        shadow.setOrigin(0.5, -1.2);
-        shadow.setAlpha(0.4);
-        shadow.setScale(0.2, 0.1);
+        const shadow = scene.add.circle(characterProps.x, characterProps.y, 10, 0x000000);
+        shadow.setOrigin(0.5, -1.8);
+        shadow.setAlpha(0.6);
+        shadow.setScale(0.8, 0.3);
         shadow.setDepth(1);
         this.character.setDepth(2);
         this.setFollowShadow(shadow);
@@ -134,7 +138,7 @@ export class TamagotchiCharacter extends Character {
     }
     
     private async handleAutomaticAction() {
-        if (this.isActing) return;
+        if (this.isActing || this.isSleep) return;
 
         const currentAction = selectFromPiority<TIdleAction>(this.idleActions);
 
@@ -216,38 +220,53 @@ export class TamagotchiCharacter extends Character {
     // }
 
     public runFuntionalAction(action: string) : { dialog:  TDialogData[] } | undefined {
-        if (this.isActing) return;
-        // TODO: set correct action pirority!
-        if (!this.isAlive && typeof this.functionalAction[action] !== 'undefined') return;
-
+        
+        if (!this.isAlive || this.isActing) return;
+        
         const { point, dialogs } = this.functionalAction[action];
 
-        const currentHp = this.status.hp + point;
+        if (point) {
+            const currentHp = this.status.hp + point;
+            this.status.hp = currentHp >= 100 ? 100 : currentHp <= 0 ? 0: currentHp;
+        }
 
-        this.status.hp = currentHp >= 100 ? 100 : currentHp <= 0 ? 0: currentHp;
 
         const runAnimation = async () => {
             if (action === 'drink') {
                 this.isActing = true;
                 await this.playAnimation('drink');
                 this.isActing = false;
+                if (this.isSleep) {
+                    this.isActing = true;
+                    await this.playAnimation('lay-down');
+                    this.playAnimation('sleep');
+                    this.isActing = false;
+                }
             }
             else if (action === 'write') {
                 this.isActing = true;
                 await this.playAnimation('write');
                 this.isActing = false;
+                if (this.isSleep) {
+                    this.isActing = true;
+                    await this.playAnimation('lay-down');
+                    this.playAnimation('sleep');
+                    this.isActing = false;
+                }
             }
             else if (action === 'sleep') {
-                this.isActing = true;
-                await this.playAnimation('lay-down');
-                await this.playAnimation('sleep');
-                // endless action
-            }
-            else if (action === 'awake') {
-                this.isActing = true;
-                await this.playAnimation('lay-up');
-                await this.playAnimation('sleep');
-                this.isActing = false;
+                this.isSleep = !this.isSleep;
+                if (this.isSleep) {
+                    this.isActing = true;
+                    await this.playAnimation('lay-down');
+                    this.playAnimation('sleep');
+                    this.isActing = false;
+                }
+                else {
+                    this.isActing = true;
+                    await this.playAnimation('wake-up');
+                    this.isActing = false;
+                }
             }
         }
 
@@ -260,6 +279,7 @@ export class TamagotchiCharacter extends Character {
         }
     }
     
+    public currentAction = undefined;
 
     private xSec = defaultXSec;
     
@@ -268,7 +288,7 @@ export class TamagotchiCharacter extends Character {
         if (this.isActing) {
             this.updatePosition();
         }
-        
+
         // run handler every x secs
         if (Math.floor(time/1000) % this.xSec === 0) {
              // prevent trigger by each frames in every x secs

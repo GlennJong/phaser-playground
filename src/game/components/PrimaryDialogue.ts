@@ -21,10 +21,9 @@ const defaultDialogTransitionSpeed = 150;
 const defaultHeight = 40;
 
 const textBoxWidth = 110;
-const textBoxHeight = defaultHeight;
+const textBoxHeight = defaultHeight - 4;
 const textBoxFontSize = 10;
-// const textBoxFontFamily = 'Tiny5, "cubic-11"';
-const textBoxFontFamily = '"cubic-11"';
+const textBoxFontFamily = 'BoutiqueBitmap';
 const textBoxSpacing = 4;
 
 const defaultIconSize = 32;
@@ -119,12 +118,11 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
             color: '#000',
             fontSize: `${textBoxFontSize}px`,
             fontFamily: textBoxFontFamily,
-            lineSpacing: 2,
             padding: {
                 top: textBoxSpacing,
                 bottom: textBoxSpacing,
             },
-            resolution: 5,
+            resolution: 6,
             wrap: {
                 mode: 'word',
                 width: textBoxWidth - (textBoxSpacing * 2)
@@ -231,6 +229,7 @@ export class PrimaryDialogue extends Phaser.GameObjects.Container {
         
         if (!alive) {
             // 4. run transition for closing dialog
+            this._textBox.stop();
             await runTween<RexUIPlugin.TextBox>(this._textBox, { scale: 0 }, defaultDialogTransitionSpeed);
 
             // 5. hide dialugue container

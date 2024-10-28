@@ -62,7 +62,6 @@ export default class Room extends Scene
         // Recorder
         new RoomRecorder(scene, { x: 26, y: 62 })
 
-
         scene.make.sprite({ key: 'tamagotchi_room_desk', x: 134, y: 48 });
 
         // Header Block
@@ -77,7 +76,7 @@ export default class Room extends Scene
                  edge: { from: 50, to: 120 },
                  hp: data.hp,
                  callbackFunctions: {
-                    onHpChange: (value: number) => this.header.setValue({hp: value})
+                    onHpChange: (value: number) => this.header.setValue({hp: value}),
                 }
             },
         );
@@ -87,7 +86,28 @@ export default class Room extends Scene
         this.keyboardInputer = scene.input.keyboard?.createCursorKeys();
         
     }
-    
+
+    private isFunctionalRunning: boolean = false;
+    private functionalActionQuene: string[] = [];
+
+    private handleFunctionalActionQuene = async() => {
+        this.isFunctionalRunning = true;
+        const currentAction = this.functionalActionQuene[0];
+
+        const _run = async() => {
+            const result = this.tamagotchi.runFuntionalAction(currentAction);
+            if (result) {
+                await this.dialogue.runDialog(result.dialog);
+                this.isFunctionalRunning = false;
+                this.functionalActionQuene.splice(0, 1);
+            }
+            else {
+                setTimeout(_run, 100);
+            }
+        }
+
+        _run();
+    }
     
     controller(input: string) {
         console.log(input);
@@ -97,28 +117,33 @@ export default class Room extends Scene
     private keyboardflipFlop = { left: false, right: false, space: false };
 
     private async handleHeaderAction(action: string) {
+        this.functionalActionQuene.push(action);
 
         // TODO: 4 different actions here
         // drink, battle, write, sleep
-        const result = this.tamagotchi.runFuntionalAction(action);
-        if (typeof result === 'undefined') return;
+        // const result = this.tamagotchi.runFuntionalAction(action);
+        // if (typeof result === 'undefined') return;
         
-        if (result?.dialog) {
-            await this.dialogue.runDialog(result.dialog);
-        }
+        // if (result?.dialog) {
+        //     await this.dialogue.runDialog(result.dialog);
+        // }
         
-        // Special action: Battle
-        if (action === 'battle') {
-            sceneConverter(this, 'Battle', this.tamagotchi.status);
-        }
+        // // Special action: Battle
+        // if (action === 'battle') {
+        //     sceneConverter(this, 'Battle', this.tamagotchi.status);
+        // }
 
     }
     
     update(time: number) {
         
+        if (this.functionalActionQuene.length !== 0 && !this.isFunctionalRunning) {
+            this.handleFunctionalActionQuene();
+        }
+        
         // movement controller
-        this.tamagotchi.characterHandler(time);
         this.header.statusHandler();
+        this.tamagotchi.characterHandler(time);
 
         // temp Controller
         if (this.keyboardInputer) {

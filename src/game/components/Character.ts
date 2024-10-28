@@ -2,9 +2,19 @@ import Phaser from "phaser";
 
 type TDirection = "none" | "left" | "right" | "top" | "down";
 
+type TAnimation = {
+    prefix: string, 
+    qty: number,
+    freq: number,
+    repeat: number,
+    duration: number,
+    repeat_delay: number
+}
+
 export type CharacterProps = {
     x: number,
     y: number,
+    animations: TAnimation[],
 }
 
 export class Character extends Phaser.GameObjects.Container {
@@ -23,7 +33,6 @@ export class Character extends Phaser.GameObjects.Container {
         const { x, y, animations } = props;
         
         // load animation by key
-        // const currentConfig = animsConfigs[key];
         this.characterKey = key;
 
         if (animations) {
@@ -37,7 +46,7 @@ export class Character extends Phaser.GameObjects.Container {
     
                 if (typeof _ani.freq !== 'undefined')        data.frameRate = _ani.freq;
                 if (typeof _ani.duration !== 'undefined')    data.duration = _ani.duration;
-                if (typeof _ani.repeatDelay !== 'undefined') data.duration = _ani.repeatDelay;
+                if (typeof _ani.repeat_delay !== 'undefined') data.repeatDelay = _ani.repeat_delay;
                 
                 scene.anims.create(data);
             });
