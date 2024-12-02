@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { ContainerPerspective } from 'phaser3-rex-plugins/plugins/perspectiveimage';
 
 type TOption = {
   x: number,
@@ -100,6 +101,7 @@ export class HeaderHp extends Phaser.GameObjects.Container {
         this.icon.setFrame('hp-empty')
         this.step = '10';
       }
+      console.log(this.value, this.step)
       this.text.setText(this.value.toString());
     }
     

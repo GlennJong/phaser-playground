@@ -92,7 +92,6 @@ export class TamagotchiCharacter extends Character {
 
         // set character depth\
         this.setDepth(1);
-
         
         const shadow = scene.add.circle(characterProps.x, characterProps.y, 10, 0x000000);
         shadow.setOrigin(0.5, -1.8);
@@ -138,7 +137,7 @@ export class TamagotchiCharacter extends Character {
     }
     
     private async handleAutomaticAction() {
-        if (this.isActing || this.isSleep) return;
+        if (this.isActing) return;
 
         const currentAction = selectFromPiority<TIdleAction>(this.idleActions);
 
@@ -180,6 +179,8 @@ export class TamagotchiCharacter extends Character {
 
     private handleRecoverHpByTime() {
         const result = this.status.hp + defaultRecoverHpByTime;
+        
+        // TODO: change hp
         this.status.hp = result >= 100 ? 100 : result <= 0 ? 0: result;
         this.callbackFunctions.onHpChange(this.status.hp);
         this.handleDetectCharacterIsAlive();
@@ -187,6 +188,8 @@ export class TamagotchiCharacter extends Character {
 
     private handleDecreaseHpByTime() {
         const result = this.status.hp - defaultDecreaseHpByTime;
+        
+        // TODO: change hp
         this.status.hp = result >= 100 ? 100 : result <= 0 ? 0: result;
         this.callbackFunctions.onHpChange(this.status.hp);
         this.handleDetectCharacterIsAlive();
@@ -227,9 +230,11 @@ export class TamagotchiCharacter extends Character {
 
         if (point) {
             const currentHp = this.status.hp + point;
-            this.status.hp = currentHp >= 100 ? 100 : currentHp <= 0 ? 0: currentHp;
-        }
 
+            // TODO: change hp
+            this.status.hp = currentHp >= 100 ? 100 : currentHp <= 0 ? 0: currentHp;
+            this.callbackFunctions.onHpChange(this.status.hp);
+        }
 
         const runAnimation = async () => {
             if (action === 'drink') {
@@ -302,8 +307,10 @@ export class TamagotchiCharacter extends Character {
                     this.handleBornAction();
                 }
 
-                this.handleDecreaseHpByTime();
-                this.handleAutomaticAction();
+                if (!this.isSleep) {
+                    this.handleDecreaseHpByTime();
+                    this.handleAutomaticAction();
+                }
 
             }
             else {

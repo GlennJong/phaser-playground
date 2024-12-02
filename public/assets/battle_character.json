@@ -251,10 +251,12 @@
       { "prefix": "lay-down",    "qty": 4,  "freq": 8, "repeat": 0 },
       { "prefix": "wake-up",     "qty": 5,  "freq": 8, "repeat": 0 },
       { "prefix": "sleep",       "qty": 5,  "freq": 2, "repeat": -1 },
-      { "prefix": "idle-left",   "qty": 3,  "freq": 2, "repeat": -1 },
-      { "prefix": "idle-right",  "qty": 3,  "freq": 2, "repeat": -1 },
-      { "prefix": "stare-left",  "qty": 6,  "freq": 8, "repeat": 0 },
-      { "prefix": "stare-right", "qty": 6,  "freq": 8, "repeat": 0 }
+      { "prefix": "idle-left",   "qty": 2,  "freq": 1, "repeat": -1 },
+      { "prefix": "idle-right",  "qty": 2,  "freq": 1, "repeat": -1 },
+      { "prefix": "stare-left",  "qty": 6,  "freq": 4, "repeat": 0 },
+      { "prefix": "stare-right", "qty": 6,  "freq": 4, "repeat": 0 },
+      { "prefix": "wink-left",   "qty": 3,  "freq": 4, "repeat": 0 },
+      { "prefix": "wink-right",  "qty": 3,  "freq": 4, "repeat": 0 }
     ],
     "unavailable_actions": {
       "egg": {
@@ -267,18 +269,23 @@
     "idle_actions": {
       "idle": {
         "animation": "idle",
-        "piority": 5,
+        "piority": 10,
         "has_direction": true
       },
       "stare": {
         "animation": "stare",
-        "piority": 5,
+        "piority": 6,
         "has_direction": true
       },
       "walk": {
         "animation": "walk",
-        "piority": 100,
+        "piority": 4,
         "is_move": true,
+        "has_direction": true
+      },
+      "wink": {
+        "animation": "wink",
+        "piority": 8,
         "has_direction": true
       }
     },
@@ -321,7 +328,7 @@
       },
       "sleep": {
         "animation": "sleep",
-        "point": 20,
+        "point": 0,
         "dialogs": [
           { "dialog": [{
               "face": { "key": "tamagotchi_character_afk", "frame": "face-normal" },

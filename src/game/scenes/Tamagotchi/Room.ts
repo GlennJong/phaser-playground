@@ -6,7 +6,7 @@ import { Header } from './Header';
 import { TamagotchiCharacter } from './TamagotchiCharacter';
 import { RoomWindow } from './RoomWindow';
 import { RoomRecorder } from './RoomRecorder';
-import { sceneConverter, sceneStarter } from '../../components/CircleSceneTransition';
+import { sceneStarter } from '../../components/CircleSceneTransition';
 
 type TInheritData = {
     hp: number,
@@ -88,16 +88,23 @@ export default class Room extends Scene
     }
 
     private isFunctionalRunning: boolean = false;
-    private functionalActionQuene: string[] = [];
+    private functionalActionQuene:{user: string, action: string}[] = [];
 
     private handleFunctionalActionQuene = async() => {
         this.isFunctionalRunning = true;
-        const currentAction = this.functionalActionQuene[0];
+        const currentActionQuene = this.functionalActionQuene[0];
 
         const _run = async() => {
-            const result = this.tamagotchi.runFuntionalAction(currentAction);
+            const { action, user } = currentActionQuene;
+
+            const result = this.tamagotchi.runFuntionalAction(action);
             if (result) {
-                await this.dialogue.runDialog(result.dialog);
+                
+                const currentDialog = result.dialog.map(_item => {
+                    return { ..._item, text: _item.text.replaceAll('{{user_name}}', user) };
+                });
+                
+                await this.dialogue.runDialog(currentDialog);
                 this.isFunctionalRunning = false;
                 this.functionalActionQuene.splice(0, 1);
             }
@@ -117,7 +124,9 @@ export default class Room extends Scene
     private keyboardflipFlop = { left: false, right: false, space: false };
 
     private async handleHeaderAction(action: string) {
-        this.functionalActionQuene.push(action);
+        const user = 'curry_cat';
+        
+        this.functionalActionQuene.push({ user, action });
 
         // TODO: 4 different actions here
         // drink, battle, write, sleep
