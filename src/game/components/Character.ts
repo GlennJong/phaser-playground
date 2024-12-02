@@ -73,6 +73,7 @@ export class Character extends Phaser.GameObjects.Container {
     public async playAnimation(key: string, time?: number): Promise<void> {
         return new Promise(resolve => {
             const animationName = `${this.characterKey}_${key}`;
+
             this.character.play(animationName);
 
             this.character.on('animationcomplete', (e: Phaser.Animations.Animation) => {

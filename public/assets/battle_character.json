@@ -1,4 +1,120 @@
 {
+  "battle_currycat_opponent": {
+    "key": "battle_currycat_opponent",
+    "preload": {
+      "png": "battle/currycat.png",
+      "json": "battle/currycat.json"
+    },
+    "animations": [
+      { "prefix": "idle", "qty": 1, "freq": 1, "repeat": -1 },
+      { "prefix": "sp", "qty": 17, "freq": 8, "repeat": 0 }
+    ],
+    "battle": {
+      "base": {
+        "max_hp": 60,
+        "name": "CurryCat"
+      },
+      "actions": {
+        "attack": {
+          "animation": "attack",
+          "piority": 1,
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_currycat_opponent", "frame": "avatar-normal" },
+                "text": "attack!"
+              }],
+              "piority": 2
+            }
+          ],
+          "effect": {
+            "type": "damage",
+            "target": "self",
+            "value": 20
+          }
+        },
+        "sp1": {
+          "animation": "sp",
+          "piority": 80,
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_currycat_opponent", "frame": "avatar-normal" },
+                "text": "sp attack!"
+              }],
+              "piority": 2
+            }
+          ],
+          "effect": {
+            "type": "damage",
+            "target": "self",
+            "value": 10
+          }
+        },
+        "sp2": {
+          "animation": "sp",
+          "piority": 20,
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_currycat_opponent", "frame": "avatar-normal" },
+                "text": "sp recover!"
+              }],
+              "piority": 2
+            }
+          ],
+          "effect": {
+            "type": "recover",
+            "target": "opponent",
+            "value": 20
+          }
+        }
+      },
+      "reactions": {
+        "damage": {
+          "animation": "damage",
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_currycat_opponent", "frame": "avatar-damage" },
+                "text": "get damage!"
+              }],
+              "piority": 2
+            }
+          ]
+        },
+        "recover": {
+          "animation": "recover",
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_currycat_opponent", "frame": "avatar-recover" },
+                "text": "get recover!"
+              }],
+              "piority": 2
+            }
+          ]
+        }
+      },
+      "results": {
+        "win": {
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_currycat_opponent", "frame": "avatar-normal" },
+                "text": "win!"
+              }],
+              "piority": 2
+            }
+          ]
+        },
+        "lose": {
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_currycat_opponent", "frame": "avatar-normal" },
+                "text": "lose!"
+              }],
+              "piority": 2
+            }
+          ]
+        }
+      }
+    }
+  },
   "battle_beibei_opponent": {
     "key": "battle_beibei_opponent",
     "preload": {
@@ -69,11 +185,10 @@
       },
       "reactions": {
         "damage": {
-          "frame": "face-damage",
           "animation": "damage",
           "dialogs": [
             { "dialog": [{
-                "face": { "key": "battle_beibei_opponent", "frame": "face-normal" },
+                "face": { "key": "battle_beibei_opponent", "frame": "face-damage" },
                 "text": "get damage!"
               }],
               "piority": 2
@@ -81,11 +196,10 @@
           ]
         },
         "recover": {
-          "frame": "face-normal",
           "animation": "recover",
           "dialogs": [
             { "dialog": [{
-                "face": { "key": "battle_beibei_opponent", "frame": "face-normal" },
+                "face": { "key": "battle_beibei_opponent", "frame": "face-recover" },
                 "text": "get recover!"
               }],
               "piority": 2

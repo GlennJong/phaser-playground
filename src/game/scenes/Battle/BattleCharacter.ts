@@ -18,12 +18,12 @@ export type TEffect = {
 }
 
 type TReaction = {
-    animation: 'damage' | 'recover' | { key: string },
+    animation: 'damage' | 'recover' | string,
     dialogs: TDialogItem[],
 };
 
 type TAction = {
-    animation: 'attack' | { key: string },
+    animation: 'attack' | string,
     dialogs: TDialogItem[],
     piority: number,
     effect: TEffect
@@ -175,13 +175,18 @@ export default class BattleCharacter extends Character
         if (!currentAction) return;
 
         const { animation, dialogs } = currentAction;
+        console.log({animation})
         
         // Run key frame animation
-        if (typeof animation !== 'string' && animation.key) {
-            this.handlePlayKeyFrameAnimation(animation.key);
-        }
-        else if (animation === 'attack') {
+        // if (typeof animation !== 'string' && animation.key) {
+        //     this.handlePlayKeyFrameAnimation(animation.key);
+        // }
+        // else if (animation === 'attack') {
+        if (animation === 'attack') {
             this.handlePlayAttackReaction();
+        }
+        else {
+            this.handlePlayKeyFrameAnimation(animation);
         }
         
         return { 

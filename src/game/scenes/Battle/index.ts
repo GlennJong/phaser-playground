@@ -75,7 +75,7 @@ export default class Battle extends Scene
         // init characters
         this.opponent = new BattleCharacter(
             scene,
-            'battle_beibei_opponent',
+            'battle_currycat_opponent',
             'opponent',
             {}
         );
@@ -118,6 +118,7 @@ export default class Battle extends Scene
             const actionCharacter = from === 'self' ? this.self : this.opponent; 
 
             const currentAction = actionCharacter.getRandomAction();
+
             const actionResult = actionCharacter.runAction(currentAction);
             if (!actionResult) return ;
             

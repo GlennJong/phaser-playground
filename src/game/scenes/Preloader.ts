@@ -39,11 +39,17 @@ export class Preloader extends Scene
         this.load.json('battle_character', 'battle_character.json');
         this.load.on('filecomplete-json-battle_character', (key, type, data) => {
 
-            const { battle_beibei_opponent, battle_afk_self, tamagotchi_afk } = data;
+            const {
+                battle_beibei_opponent,
+                battle_currycat_opponent,
+                battle_afk_self,
+                tamagotchi_afk
+            } = data;
             this.config = data;
             
             // Battle Character
             this.load.atlas(battle_beibei_opponent.key, battle_beibei_opponent.preload.png, battle_beibei_opponent.preload.json);
+            this.load.atlas(battle_currycat_opponent.key, battle_currycat_opponent.preload.png, battle_currycat_opponent.preload.json);
             this.load.atlas(battle_afk_self.key, battle_afk_self.preload.png, battle_afk_self.preload.json);
 
             // Tamagotchi Character
@@ -68,8 +74,8 @@ export class Preloader extends Scene
             this.load.image('battle_background', 'battle/background.png');
             this.load.atlas('battle_board', 'battle/board.png', 'battle/board.json');
             this.load.atlas('battle_afk', 'battle/afk.png', 'battle/afk.json');
-            this.load.atlas('battle_beibei', 'battle/beibei.png', 'battle/beibei.json');
-            this.load.atlas('battle_opponent', 'battle/opponent.png', 'battle/opponent.json');
+            // this.load.atlas('battle_beibei', 'battle/beibei.png', 'battle/beibei.json');
+            // this.load.atlas('battle_opponent', 'battle/opponent.png', 'battle/opponent.json');
             
             
             // Dialogue
