@@ -18,7 +18,7 @@ export class RoomWindow extends Phaser.GameObjects.Container {
 
         // Icon
         const window = scene.make.sprite({
-            key: 'tamagotchi_room_window',
+            key: 'tamagotchi_room',
             frame: 'window-1',
             x: x,
             y: y,
@@ -26,7 +26,7 @@ export class RoomWindow extends Phaser.GameObjects.Container {
 
         scene.anims.create({
             key: 'window-cloud',
-            frames: scene.anims.generateFrameNames('tamagotchi_room_window', { prefix: `window-`, start: 1, end: 3 }),
+            frames: scene.anims.generateFrameNames('tamagotchi_room', { prefix: `window-`, start: 1, end: 3 }),
             repeat: -1,
             yoyo: true,
             frameRate: 0.5 // each frame by 2 sec
@@ -34,7 +34,7 @@ export class RoomWindow extends Phaser.GameObjects.Container {
 
         scene.anims.create({
             key: 'window-wind',
-            frames: scene.anims.generateFrameNames('tamagotchi_room_window', { prefix: `window-`, start: 4, end: 9 }),
+            frames: scene.anims.generateFrameNames('tamagotchi_room', { prefix: `window-`, start: 4, end: 9 }),
             repeat: -1,
             frameRate: 8
         });

@@ -39,7 +39,7 @@ export default class Battle extends Scene
     preload()
     {
         this.load.setPath('assets');
-        this.load.image('background-battle', 'background-battle.png');
+        // this.load.image('background-battle', 'background-battle.png');
     }
 
     init(data) {
@@ -66,16 +66,16 @@ export default class Battle extends Scene
     
     private handleInitGameScene(scene: Phaser.Scene, playerData) {
 
-        this.background = scene.make.image({
-            key: 'battle_background',
-            x: canvas.width/2,
-            y: canvas.height/2,
-        });
+        // this.background = scene.make.image({
+        //     key: 'battle_background',
+        //     x: canvas.width/2,
+        //     y: canvas.height/2,
+        // });
 
         // init characters
         this.opponent = new BattleCharacter(
             scene,
-            'battle_currycat_opponent',
+            'battle_jennie_opponent',
             'opponent',
             {}
         );

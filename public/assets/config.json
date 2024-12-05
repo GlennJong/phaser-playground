@@ -1,4 +1,13 @@
 {
+  "tamagotchi_room": {
+    "key": "tamagotchi_room",
+    "preload": {
+      "png": "tamagotchi/room.png",
+      "json": "tamagotchi/room.json"
+    },
+    "recorder": { "prefix": "recorder", "qty": 1, "freq": 1, "repeat": -1 },
+    "window": { "prefix": "window", "qty": 1, "freq": 1, "repeat": -1 }
+  },
   "battle_currycat_opponent": {
     "key": "battle_currycat_opponent",
     "preload": {
@@ -222,6 +231,238 @@
           "dialogs": [
             { "dialog": [{
                 "face": { "key": "battle_beibei_opponent", "frame": "face-normal" },
+                "text": "lose!"
+              }],
+              "piority": 2
+            }
+          ]
+        }
+      }
+    }
+  },
+  "battle_shangshang_opponent": {
+    "key": "battle_shangshang_opponent",
+    "preload": {
+      "png": "battle/shangshang.png",
+      "json": "battle/shangshang.json"
+    },
+    "animations": [
+      { "prefix": "idle", "qty": 6, "freq": 8, "repeat": -1, "repeat_delay": 1000 },
+      { "prefix": "sp", "qty": 9, "freq": 8, "repeat": 0 }
+    ],
+    "battle": {
+      "base": {
+        "max_hp": 60,
+        "name": "貝貝"
+      },
+      "actions": {
+        "attack": {
+          "animation": "attack",
+          "piority": 80,
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_shangshang_opponent", "frame": "avatar_normal" },
+                "text": "attack!"
+              }],
+              "piority": 2
+            }
+          ],
+          "effect": {
+            "type": "damage",
+            "target": "self",
+            "value": 20
+          }
+        },
+        "sp1": {
+          "animation": "sp",
+          "piority": 80,
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_shangshang_opponent", "frame": "avatar_angry" },
+                "text": "attack!"
+              }],
+              "piority": 2
+            }
+          ],
+          "effect": {
+            "type": "recover",
+            "target": "self",
+            "value": 10
+          }
+        },
+        "sp2": {
+          "animation": "sp",
+          "piority": 20,
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_shangshang_opponent", "frame": "avatar_angry" },
+                "text": "sp2!"
+              }],
+              "piority": 2
+            }
+          ],
+          "effect": {
+            "type": "damage",
+            "target": "self",
+            "value": 20
+          }
+        }
+      },
+      "reactions": {
+        "damage": {
+          "animation": "damage",
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_shangshang_opponent", "frame": "avatar_sad" },
+                "text": "get damage!"
+              }],
+              "piority": 2
+            }
+          ]
+        },
+        "recover": {
+          "animation": "recover",
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_shangshang_opponent", "frame": "avatar_normal" },
+                "text": "get recover!"
+              }],
+              "piority": 2
+            }
+          ]
+        }
+      },
+      "results": {
+        "win": {
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_shangshang_opponent", "frame": "avatar_angry" },
+                "text": "win!"
+              }],
+              "piority": 2
+            }
+          ]
+        },
+        "lose": {
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_shangshang_opponent", "frame": "avatar_sad" },
+                "text": "lose!"
+              }],
+              "piority": 2
+            }
+          ]
+        }
+      }
+    }
+  },
+  "battle_jennie_opponent": {
+    "key": "battle_jennie_opponent",
+    "preload": {
+      "png": "battle/jennie.png",
+      "json": "battle/jennie.json"
+    },
+    "animations": [
+      { "prefix": "idle", "qty": 7, "freq": 8, "repeat": -1, "repeat_delay": 1000 },
+      { "prefix": "sp", "qty": 16, "freq": 8, "repeat": 0 }
+    ],
+    "battle": {
+      "base": {
+        "max_hp": 60,
+        "name": "貝貝"
+      },
+      "actions": {
+        "attack": {
+          "animation": "attack",
+          "piority": 80,
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_jennie_opponent", "frame": "avatar_normal" },
+                "text": "attack!"
+              }],
+              "piority": 2
+            }
+          ],
+          "effect": {
+            "type": "damage",
+            "target": "self",
+            "value": 20
+          }
+        },
+        "sp1": {
+          "animation": "sp",
+          "piority": 80,
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_jennie_opponent", "frame": "avatar_angry" },
+                "text": "attack!"
+              }],
+              "piority": 2
+            }
+          ],
+          "effect": {
+            "type": "recover",
+            "target": "self",
+            "value": 10
+          }
+        },
+        "sp2": {
+          "animation": "sp",
+          "piority": 20,
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_jennie_opponent", "frame": "avatar_angry" },
+                "text": "sp2!"
+              }],
+              "piority": 2
+            }
+          ],
+          "effect": {
+            "type": "damage",
+            "target": "self",
+            "value": 20
+          }
+        }
+      },
+      "reactions": {
+        "damage": {
+          "animation": "damage",
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_jennie_opponent", "frame": "avatar_sad" },
+                "text": "get damage!"
+              }],
+              "piority": 2
+            }
+          ]
+        },
+        "recover": {
+          "animation": "recover",
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_jennie_opponent", "frame": "avatar_normal" },
+                "text": "get recover!"
+              }],
+              "piority": 2
+            }
+          ]
+        }
+      },
+      "results": {
+        "win": {
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_jennie_opponent", "frame": "avatar_angry" },
+                "text": "win!"
+              }],
+              "piority": 2
+            }
+          ]
+        },
+        "lose": {
+          "dialogs": [
+            { "dialog": [{
+                "face": { "key": "battle_jennie_opponent", "frame": "avatar_sad" },
                 "text": "lose!"
               }],
               "piority": 2

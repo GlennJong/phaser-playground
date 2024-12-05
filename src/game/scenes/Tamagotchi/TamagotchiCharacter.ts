@@ -75,7 +75,7 @@ export class TamagotchiCharacter extends Character {
         const key = 'tamagotchi_afk';
         
         // get current character config
-        const { tamagotchi_afk } = scene.cache.json.get('battle_character');
+        const { tamagotchi_afk } = scene.cache.json.get('config');
 
         const characterProps = {
             ...props,

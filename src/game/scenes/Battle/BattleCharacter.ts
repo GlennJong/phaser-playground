@@ -83,7 +83,7 @@ export default class BattleCharacter extends Character
     )
     {
         // get current character config
-        const currentBattleCharacterConfig = scene.cache.json.get('battle_character')[key] || scene.cache.json.get('battle_character')['default'];
+        const currentBattleCharacterConfig = scene.cache.json.get('config')[key] || scene.cache.json.get('config')['default'];
         
         if (!currentBattleCharacterConfig) return;
         

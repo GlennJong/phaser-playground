@@ -36,23 +36,29 @@ export class Preloader extends Scene
 
         this.load.setPath('assets');
 
-        this.load.json('battle_character', 'battle_character.json');
-        this.load.on('filecomplete-json-battle_character', (key, type, data) => {
+        this.load.json('config', 'config.json');
+        this.load.on('filecomplete-json-config', (key, type, data) => {
 
             const {
                 battle_beibei_opponent,
+                battle_shangshang_opponent,
+                battle_jennie_opponent,
                 battle_currycat_opponent,
                 battle_afk_self,
+                tamagotchi_room,
                 tamagotchi_afk
             } = data;
             this.config = data;
             
             // Battle Character
             this.load.atlas(battle_beibei_opponent.key, battle_beibei_opponent.preload.png, battle_beibei_opponent.preload.json);
+            this.load.atlas(battle_shangshang_opponent.key, battle_shangshang_opponent.preload.png, battle_shangshang_opponent.preload.json);
+            this.load.atlas(battle_jennie_opponent.key, battle_jennie_opponent.preload.png, battle_jennie_opponent.preload.json);
             this.load.atlas(battle_currycat_opponent.key, battle_currycat_opponent.preload.png, battle_currycat_opponent.preload.json);
             this.load.atlas(battle_afk_self.key, battle_afk_self.preload.png, battle_afk_self.preload.json);
 
             // Tamagotchi Character
+            this.load.atlas(tamagotchi_room.key, tamagotchi_room.preload.png, tamagotchi_room.preload.json);
             this.load.atlas(tamagotchi_afk.key, tamagotchi_afk.preload.png, tamagotchi_afk.preload.json);
 
 
@@ -112,6 +118,6 @@ export class Preloader extends Scene
         //  For example, you can define global animations here, so we can use them in other scenes.
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-        this.scene.start('Battle', this.config);
+        this.scene.start('Tamagotchi', this.config);
     }
 }

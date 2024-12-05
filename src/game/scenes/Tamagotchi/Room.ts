@@ -48,9 +48,15 @@ export default class Room extends Scene
     private dialogue: PrimaryDialogue;
 
     private handleRenderScene(scene: Phaser.Scene, data: TInheritData) {
-        const background = scene.add.image(canvas.width/2, canvas.height/2, 'tamagotchi_room');
-        background.displayWidth = canvas.width;
-        background.displayHeight = canvas.height;
+        
+        // Room Background
+        const background = scene.make.image({
+            key: 'tamagotchi_room',
+            frame: 'room',
+            x: canvas.width/2,
+            y: canvas.height/2
+        });
+        scene.add.existing(background);
 
         // Dialogue
         const dialogue = new PrimaryDialogue(scene);
@@ -61,8 +67,6 @@ export default class Room extends Scene
 
         // Recorder
         new RoomRecorder(scene, { x: 26, y: 62 })
-
-        scene.make.sprite({ key: 'tamagotchi_room_desk', x: 134, y: 48 });
 
         // Header Block
         this.header = new Header(scene);
@@ -80,6 +84,21 @@ export default class Room extends Scene
                 }
             },
         );
+
+
+        scene.make.sprite({
+            key: 'tamagotchi_room',
+            frame: 'gameboy',
+            x: 10,
+            y: 120,
+        });
+        
+        scene.make.sprite({
+            key: 'tamagotchi_room',
+            frame: 'tv-desk',
+            x: 60,
+            y: 120,
+        });
 
         // apply hp
         this.header.setValue({ hp: this.tamagotchi.status.hp });

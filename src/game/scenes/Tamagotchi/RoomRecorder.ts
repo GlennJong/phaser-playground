@@ -17,26 +17,32 @@ export class RoomRecorder extends Phaser.GameObjects.Container {
         const { x, y } = option;
 
         // Icon
-
         const recorder = scene.make.sprite({
-            key: 'tamagotchi_room_player',
-            frame: 'recorder-2',
+            key: 'tamagotchi_room',
+            frame: 'recorder_2',
             x: x,
             y: y,
         });
 
-        scene.anims.create({
-            key: 'recoreder-play',
-            frames: scene.anims.generateFrameNames('tamagotchi_room_recorder', { prefix: `recorder-`, start: 1, end: 12 }),
-            repeat: -1,
-            frameRate: 6
+        const recorderShadow = scene.make.sprite({
+            key: 'tamagotchi_room',
+            frame: 'recorder_shadow',
+            x: x - 3,
+            y: y + 15,
         });
+        
+        const animation: Phaser.Types.Animations.Animation = {
+            key: 'room_recoreder_animation',
+            frames: scene.anims.generateFrameNames('tamagotchi_room', { prefix: `recorder_`, start: 1, end: 12 }),
+            frameRate: 10,
+            repeat: -1,
+        };
 
-        recorder.play('recoreder-play');
+        scene.anims.create(animation);
 
-        // switch animation here...
-        // window.play('window-cloud');
+        recorder.play('room_recoreder_animation');
 
+        this.add(recorderShadow);
         this.add(recorder);
 
         scene.add.existing(this);
