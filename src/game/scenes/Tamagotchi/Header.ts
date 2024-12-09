@@ -14,6 +14,7 @@ export class Header extends Phaser.GameObjects.Container {
     private selectors: { [key: string]: HeaderSelector } = {};
     private hp: HeaderHp;
     private coin: HeaderCoin;
+    private timer;
 
     constructor(
         scene: Phaser.Scene
@@ -93,11 +94,24 @@ export class Header extends Phaser.GameObjects.Container {
         
     }
 
+    private hideHeader() {
+        if (this.timer) {
+            clearTimeout(this.timer);
+        }
+        this.timer = setTimeout(() => {
+            this.setAlpha(0);
+        }, 5000);
+    }
+
     private updateSelector() {
+        this.setAlpha(1);
+        
         Object.keys(this.selectors).map(_key => {
             this.selectors[_key].unselect();
         })
         this.selectors[this.currentSelector].select();
+        
+        this.hideHeader();
     }
 
     public moveToNextSelector() {

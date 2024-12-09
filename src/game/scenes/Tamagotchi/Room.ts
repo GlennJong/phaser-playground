@@ -7,6 +7,7 @@ import { TamagotchiCharacter } from './TamagotchiCharacter';
 import { RoomWindow } from './RoomWindow';
 import { RoomRecorder } from './RoomRecorder';
 import { sceneStarter } from '../../components/CircleSceneTransition';
+import { CustomDecroation } from './CustomDecroation';
 
 type TInheritData = {
     hp: number,
@@ -57,20 +58,22 @@ export default class Room extends Scene
             y: canvas.height/2
         });
         scene.add.existing(background);
+        
+        // Window
+        new RoomWindow(scene, { x: 80, y: 32 });
+        
+        // Recorder
+        new RoomRecorder(scene, { x: 26, y: 62 })
+
+        new CustomDecroation(scene, 'front');
 
         // Dialogue
         const dialogue = new PrimaryDialogue(scene);
         this.dialogue = dialogue;
 
-        // Window
-        new RoomWindow(scene, { x: 80, y: 32 });
-
-        // Recorder
-        new RoomRecorder(scene, { x: 26, y: 62 })
 
         // Header Block
         this.header = new Header(scene);
-        // this.header.setAlpha(0); // TODO: auto hide
         
         // Build Tamagotchi Charactor
         this.tamagotchi = new TamagotchiCharacter(
@@ -84,21 +87,6 @@ export default class Room extends Scene
                 }
             },
         );
-
-
-        scene.make.sprite({
-            key: 'tamagotchi_room',
-            frame: 'gameboy',
-            x: 10,
-            y: 120,
-        });
-        
-        scene.make.sprite({
-            key: 'tamagotchi_room',
-            frame: 'tv-desk',
-            x: 60,
-            y: 120,
-        });
 
         // apply hp
         this.header.setValue({ hp: this.tamagotchi.status.hp });
@@ -175,6 +163,7 @@ export default class Room extends Scene
 
         // temp Controller
         if (this.keyboardInputer) {
+            // this.header.setAlpha(1);
             if (this.keyboardInputer.left.isDown) {
                 if (this.keyboardflipFlop.left) return;
                 this.header.moveToPreviousSelector();

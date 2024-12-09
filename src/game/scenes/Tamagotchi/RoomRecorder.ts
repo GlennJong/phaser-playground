@@ -24,12 +24,12 @@ export class RoomRecorder extends Phaser.GameObjects.Container {
             y: y,
         });
 
-        const recorderShadow = scene.make.sprite({
-            key: 'tamagotchi_room',
-            frame: 'recorder_shadow',
-            x: x - 3,
-            y: y + 15,
-        });
+        // const recorderShadow = scene.make.sprite({
+        //     key: 'tamagotchi_room',
+        //     frame: 'recorder_shadow',
+        //     x: x - 3,
+        //     y: y + 15,
+        // });
         
         const animation: Phaser.Types.Animations.Animation = {
             key: 'room_recoreder_animation',
@@ -42,7 +42,7 @@ export class RoomRecorder extends Phaser.GameObjects.Container {
 
         recorder.play('room_recoreder_animation');
 
-        this.add(recorderShadow);
+        // this.add(recorderShadow);
         this.add(recorder);
 
         scene.add.existing(this);

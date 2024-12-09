@@ -9,7 +9,7 @@ const contents = [
     { icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: 'READY TO BATTLE!'},
 ]
 const contents2 = [
-    { icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: '挑戰者是貝貝!'},
+    { icon: { key: 'tamagotchi_character_afk', frame: 'face-normal' }, text: '挑戰者是CurryCat!'},
 ]
 
 const finishDialogs = [
@@ -75,7 +75,7 @@ export default class Battle extends Scene
         // init characters
         this.opponent = new BattleCharacter(
             scene,
-            'battle_jennie_opponent',
+            'battle_currycat_opponent',
             'opponent',
             {}
         );
