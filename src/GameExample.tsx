@@ -119,6 +119,8 @@ function App2()
     // }
 
     const handleClickOauthLoginButton = () => {
+        
+        // console.log()
         if (app.client_id) {
             openTwitchOauthLogin('', 'https://localhost:8001/redirect');
         }
@@ -150,7 +152,7 @@ function App2()
             
             
             <div style={{ zIndex: 1, position: 'relative' }}>
-                <PhaserGame ref={phaserRef} currentActiveScene={undefined} />
+                {/* <PhaserGame ref={phaserRef} currentActiveScene={undefined} /> */}
                 <div style={{ width: '500px', whiteSpace: 'break-spaces' }}>
                     {
                         [...temp].reverse().slice(0, 5).map((_item, i) =>
@@ -158,9 +160,8 @@ function App2()
                         )
                     }
                 </div>
-                <a href="https://prod.liveshare.vsengsaas.visualstudio.com/join?24BBD3AAE9A3CB30CE439296EEF5EFAFEDAB">link</a>
                 <br />
-                {/* <button onClick={handleClickOauthLoginButton}>login</button> */}
+                <button onClick={handleClickOauthLoginButton}>login</button>
                 {/* <button onClick={handleClickTestButton}>test</button> */}
                 {/* <button onClick={handleConnectChatWebhook}>Connect Chat webhook</button> */}
                 {/* <button onClick={handleDisconnectChatWebhook}>Disconnect Chat webhook</button> */}

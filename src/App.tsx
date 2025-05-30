@@ -75,7 +75,7 @@ function App()
                     - 解析度調節器<br/>
                     - 串接 Twitch API<br/>
                 </p>
-                <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
+                {/* <PhaserGame ref={phaserRef} currentActiveScene={currentScene} /> */}
             </div>
             <div>
             </div>
